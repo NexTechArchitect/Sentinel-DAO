@@ -11,9 +11,8 @@ contract UpdateDAOParams is Script {
         address config = vm.envAddress("DAO_CONFIG_ADDRESS");
 
         vm.startBroadcast(key);
-
-        DAOConfig(config).setVotingPeriod(60000);
-        DAOConfig(config).setQuorumPercentage(6);
+        DAOConfig(config).updateVotingPeriod(60000);
+        DAOConfig(config).updateQuorum(6);
 
         vm.stopBroadcast();
     }
