@@ -1,78 +1,79 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {IUpgradeExecutor} from "../interfaces/IUpgradeExecutor.sol";
+import {RoleManager} from "../security/RoleManager.sol";
+import {Unauthorized, ZeroAddress, ArrayLengthMismatch} from "../errors/CommonErrors.sol";
 
 /**
- * @title Proxy Upgrade Controller
- * @notice A dedicated module for handling protocol upgrades safely.
- * @dev Acts as the administrative interface for UUPS (Universal Upgradeable Proxy Standard) contracts.
- * It separates the "decision to upgrade" (Governance) from the "mechanism of upgrade" (Executor).
- * @custom:security-note Critical component. Only the Timelock (DAO) can invoke functions here.
- * @author NexTechArchitect
+ * @title Upgrade Executor
+ * @notice Centralized handler for performing UUPS upgrades via the DAO.
+ * @dev Handles atomic upgrades and batch processing.
  */
-contract UpgradeExecutor is IUpgradeExecutor {
-    /*//////////////////////////////////////////////////////////////
-                                 ERRORS
-    //////////////////////////////////////////////////////////////*/
-    error OnlyTimelock();
+contract UpgradeExecutor {
+    RoleManager public immutable ROLE_MANAGER;
+
+    event UpgradeExecuted(address indexed proxy, address indexed newImplementation);
     error UpgradeFailed();
 
-    /*//////////////////////////////////////////////////////////////
-                                 STORAGE
-    //////////////////////////////////////////////////////////////*/
-
-    /// @notice The address of the Timelock (The only authorized caller).
-    address public immutable timelock;
-
-    /*//////////////////////////////////////////////////////////////
-                                MODIFIERS
-    //////////////////////////////////////////////////////////////*/
-
-    modifier onlyTimelock() {
-        if (msg.sender != timelock) revert OnlyTimelock();
-        _;
+    constructor(address _roleManager) {
+        if (_roleManager == address(0)) revert ZeroAddress();
+        ROLE_MANAGER = RoleManager(_roleManager);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                               CONSTRUCTOR
-    //////////////////////////////////////////////////////////////*/
-
     /**
-     * @notice Initializes the upgrade executor.
-     * @param _timelock The Governance Timelock address.
-     */
-    constructor(address _timelock) {
-        timelock = _timelock;
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                            UPGRADE LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Orchestrates a proxy upgrade.
-     * @dev calls `upgradeToAndCall` on the proxy. This is safer than a simple upgrade
-     * because it allows us to run migration logic (data initialization) in the same transaction.
-     *
-     * @param proxy The address of the proxy contract to be upgraded.
-     * @param newImplementation The address of the new logic contract.
-     * @param data Encoded function call for initialization (migration script).
+     * @notice Executes a single upgrade on a proxy.
      */
     function executeUpgrade(
         address proxy,
         address newImplementation,
         bytes calldata data
-    ) external onlyTimelock {
-        // We use a low-level call to support generic proxies (UUPS/Transparent)
-        (bool success, ) = proxy.call(
-            abi.encodeWithSignature(
-                "upgradeToAndCall(address,bytes)",
-                newImplementation,
-                data
-            )
-        );
+    ) external payable {
+        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+            revert Unauthorized();
+        
+        if (proxy == address(0) || newImplementation == address(0))
+            revert ZeroAddress();
 
+        bytes memory callData;
+        if (data.length > 0) {
+            callData = abi.encodeWithSignature("upgradeToAndCall(address,bytes)", newImplementation, data);
+        } else {
+            callData = abi.encodeWithSignature("upgradeTo(address)", newImplementation);
+        }
+
+        (bool success, ) = proxy.call{value: msg.value}(callData);
         if (!success) revert UpgradeFailed();
+
+        emit UpgradeExecuted(proxy, newImplementation);
+    }
+
+    /**
+     * @notice Batch upgrades for multiple contracts in one transaction.
+     * @dev Fixed: Added array length validation.
+     */
+    function executeBatchUpgrade(
+        address[] calldata proxies,
+        address[] calldata implementations,
+        bytes[] calldata datas
+    ) external {
+        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+            revert Unauthorized();
+
+        uint256 len = proxies.length;
+        if (len != implementations.length || len != datas.length) 
+            revert ArrayLengthMismatch();
+
+        for (uint256 i = 0; i < len; ) {
+            bytes memory callData = datas[i].length > 0
+                ? abi.encodeWithSignature("upgradeToAndCall(address,bytes)", implementations[i], datas[i])
+                : abi.encodeWithSignature("upgradeTo(address)", implementations[i]);
+
+            (bool success, ) = proxies[i].call(callData);
+            if (!success) revert UpgradeFailed();
+
+            emit UpgradeExecuted(proxies[i], implementations[i]);
+
+            unchecked { ++i; }
+        }
     }
 }

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {RoleManager} from "./RoleManager.sol";
+import {IRoleManager} from "../interfaces/IRoleManager.sol";
+import {ZeroAddress} from "../errors/CommonErrors.sol";
 import {
     OnlyGuardian,
     AlreadyPaused,
@@ -9,86 +10,77 @@ import {
 } from "../errors/SecurityErrors.sol";
 
 /**
- * @title Emergency Circuit Breaker
- * @notice A high-speed security module designed to halt protocol operations during a crisis.
- * @dev This contract acts as an override switch. While Governance is slow (1-week delay),
- * this contract allows a trusted 'Guardian' committee to pause sensitive actions instantly.
- *
- * @custom:security-note This decoupling of "Day-to-Day Governance" vs "Emergency Response"
- * is a best practice for immutable protocols.
- * @author NexTechArchitect
+ * @title Emergency Pause Mechanism
+ * @notice Provides a safety breaker that auto-resets after 7 days.
+ * @dev Optimized for gas using storage packing (bool + uint40 in one slot).
  */
 contract EmergencyPause {
-    /*////////////////////////////////////////////////////////
-                        STATE VARIABLES
-    ////////////////////////////////////////////////////////*/
+    IRoleManager public immutable ROLE_MANAGER;
 
-    RoleManager public immutable roleManager;
-    bool public paused;
+    
+    bool private _paused;
+    uint40 public lastPauseTime;
+    
+    uint40 public constant MAX_PAUSE_DURATION = 7 days;
 
-    bytes32 public constant GUARDIAN_ROLE = keccak256("GUARDIAN_ROLE");
+    event Paused(address indexed guardian, uint256 timestamp);
+    event Unpaused(address indexed guardian, uint256 timestamp);
 
-    /*////////////////////////////////////////////////////////
-                           MODIFIERS
-    ////////////////////////////////////////////////////////*/
+    constructor(address _roleManager) {
+        if (_roleManager == address(0)) revert ZeroAddress();
+        ROLE_MANAGER = IRoleManager(_roleManager);
+    }
 
     /**
-     * @dev Restricts access to the Guardian Role (Security Council).
+     * @notice Checks if the contract is currently paused.
+     * @return bool True if paused and within the 7-day window.
      */
-    modifier onlyGuardian() {
-        if (!roleManager.hasRole(GUARDIAN_ROLE, msg.sender))
+    function isPaused() public view returns (bool) {
+        if (_paused) {
+           
+            if (block.timestamp > uint256(lastPauseTime) + MAX_PAUSE_DURATION) {
+                return false; 
+            }
+            return true;
+        }
+        return false;
+    }
+
+    function _checkGuardian() internal view {
+        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.GUARDIAN_ROLE(), msg.sender)) {
             revert OnlyGuardian();
+        }
+    }
+
+    function _checkNotPaused() internal view {
+        if (isPaused()) revert AlreadyPaused();
+    }
+
+
+    modifier onlyGuardian() {
+        _checkGuardian();
         _;
     }
 
     modifier whenNotPaused() {
-        if (paused) revert AlreadyPaused();
+        _checkNotPaused();
         _;
     }
 
-    modifier whenPaused() {
-        if (!paused) revert NotPaused();
-        _;
-    }
 
-    /*////////////////////////////////////////////////////////
-                            EVENTS
-    ////////////////////////////////////////////////////////*/
-    event Paused(address indexed guardian);
-    event Unpaused(address indexed guardian);
-
-    /*////////////////////////////////////////////////////////
-                          CONSTRUCTOR
-    ////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Connects the circuit breaker to the central access control system.
-     * @param _roleManager The address of the RoleManager contract.
-     */
-    constructor(address _roleManager) {
-        roleManager = RoleManager(_roleManager);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        EMERGENCY ACTIONS
-    ////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice ACTIVATES the emergency state.
-     * @dev Callable only by the Guardian. Instantly sets `paused` to true.
-     * Any contract depending on this flag (like the Treasury) will stop processing transactions.
-     */
     function pause() external onlyGuardian whenNotPaused {
-        paused = true;
-        emit Paused(msg.sender);
+        _paused = true;
+        lastPauseTime = uint40(block.timestamp);
+        emit Paused(msg.sender, block.timestamp);
     }
 
-    /**
-     * @notice DEACTIVATES the emergency state.
-     * @dev Restores normal protocol operations after the threat has been resolved.
-     */
-    function unpause() external onlyGuardian whenPaused {
-        paused = false;
-        emit Unpaused(msg.sender);
+    function unpause() external onlyGuardian {
+    
+        if (!_paused) revert NotPaused();
+        
+        _paused = false;
+        lastPauseTime = 0; 
+        
+        emit Unpaused(msg.sender, block.timestamp);
     }
 }

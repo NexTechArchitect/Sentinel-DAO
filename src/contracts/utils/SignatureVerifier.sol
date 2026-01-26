@@ -2,41 +2,47 @@
 pragma solidity ^0.8.30;
 
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import {IERC1271} from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 
 /**
- * @title Digital Signature Verifier
- * @notice A stateless utility library for verifying Elliptic Curve Digital Signatures (ECDSA).
- * @dev Abstracts the low-level cryptographic recovery operations provided by OpenZeppelin.
- * Used by the DelegationRegistry and OffchainResultExecutor to validate user intent without gas costs.
+ * @title Universal Signature Verifier
+ * @notice Gas-optimized library to validate signatures from EOAs and Smart Contracts (EIP-1271).
  * @author NexTechArchitect
  */
 library SignatureVerifier {
     /**
-     * @notice Recovers the address of the account that signed a specific message.
-     * @dev Wraps ECDSA.recover to extract the signer from the signature (v, r, s).
-     * @param messageHash The 32-byte hash of the data that was signed.
-     * @param signature The 65-byte signature provided by the user.
-     * @return The address that created the signature.
-     */
-    function recoverSigner(
-        bytes32 messageHash,
-        bytes memory signature
-    ) internal pure returns (address) {
-        return ECDSA.recover(messageHash, signature);
-    }
-
-    /**
-     * @notice Validates that a message was signed by a specific expected address.
-     * @param expectedSigner The address authorized to sign the message.
-     * @param messageHash The hash of the data.
-     * @param signature The signature to verify.
-     * @return True if the signature is valid and matches the expected signer.
+     * @notice Verifies that a signature belongs to a specific signer.
+     * @param signer The address claiming to have signed.
+     * @param digest The hash of the data signed.
+     * @param signature The signature bytes.
+     * @return bool True if signature is valid.
      */
     function verify(
-        address expectedSigner,
-        bytes32 messageHash,
+        address signer,
+        bytes32 digest,
         bytes memory signature
-    ) internal pure returns (bool) {
-        return recoverSigner(messageHash, signature) == expectedSigner;
+    ) internal view returns (bool) {
+
+        (address recovered, ECDSA.RecoverError error, ) = ECDSA.tryRecover(
+            digest,
+            signature
+        );
+
+        if (error == ECDSA.RecoverError.NoError && recovered == signer) {
+            return true;
+        }
+
+        if (signer.code.length > 0) {
+            
+            try IERC1271(signer).isValidSignature(digest, signature) returns (
+                bytes4 magicValue
+            ) {
+                return magicValue == IERC1271.isValidSignature.selector;
+            } catch {
+                return false;
+            }
+        }
+
+        return false;
     }
 }

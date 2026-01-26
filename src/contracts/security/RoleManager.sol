@@ -1,137 +1,83 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {
-    OnlyAdmin,
-    ZeroAddress,
-    RoleNotGranted,
-    RoleAlreadyGranted
-} from "../errors/SecurityErrors.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {ZeroAddress, ArrayLengthMismatch} from "../errors/CommonErrors.sol";
 
 /**
- * @title Role Manager (ACL)
- * @notice The centralized registry for managing permissions across the DAO ecosystem.
- * @dev Implements a Role-Based Access Control (RBAC) system. Instead of hardcoding addresses
- * in individual contracts, other contracts query this registry to check if a user has permission.
- * @custom:security-note The 'admin' is the Super-User (usually the Timelock) who manages these keys.
+ * @title Role Manager (RBAC)
+ * @notice Centralized Role-Based Access Control for the DAO.
+ * @dev Optimized by removing Enumerable extensions to save gas on permission updates.
  * @author NexTechArchitect
  */
-contract RoleManager {
-    /*/////////////////////////////////////////////////
-                         EVENTS
-    /////////////////////////////////////////////////*/
-    event RoleGranted(bytes32 indexed role, address indexed account);
-    event RoleRevoked(bytes32 indexed role, address indexed account);
-    event AdminTransferred(address indexed oldAdmin, address indexed newAdmin);
+contract RoleManager is AccessControl {
 
-    /*//////////////////////////////////////////////
-                         STORAGE
-    //////////////////////////////////////////////*/
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+    bytes32 public constant GUARDIAN_ROLE = keccak256("GUARDIAN_ROLE");
+    bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
 
-    /// @notice The super-admin address (The DAO Timelock).
-    address public admin;
+    constructor(address rootAdmin) {
+        if (rootAdmin == address(0)) revert ZeroAddress();
 
-    /// @dev Mapping of Role Hash => User Address => IsGranted
-    mapping(bytes32 => mapping(address => bool)) private roles;
+        
+        _grantRole(DEFAULT_ADMIN_ROLE, rootAdmin);
+        _grantRole(ADMIN_ROLE, rootAdmin);
 
-    /*/////////////////////////////////////////////////
-                      ROLE CONSTANTS
-    /////////////////////////////////////////////////*/
-
-    // Cryptographic hashes for the various system roles
-    bytes32 public constant ROLE_GOVERNANCE = keccak256("GOVERNOR_ROLE");
-    bytes32 public constant ROLE_TIMELOCK = keccak256("TIMELOCK_ROLE");
-    bytes32 public constant ROLE_TREASURY = keccak256("TREASURY_ROLE");
-    bytes32 public constant ROLE_UPGRADE = keccak256("UPGRADE_ROLE");
-    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
-
-    /*/////////////////////////////////////////////////
-                        MODIFIERS
-    /////////////////////////////////////////////////*/
-
-    /**
-     * @dev Restricts access to the global admin (Timelock).
-     */
-    modifier onlyAdmin() {
-        if (msg.sender != admin) revert OnlyAdmin();
-        _;
+        _setRoleAdmin(GUARDIAN_ROLE, ADMIN_ROLE);
+        _setRoleAdmin(EXECUTOR_ROLE, ADMIN_ROLE);
     }
 
-    /*/////////////////////////////////////////////////
-                       CONSTRUCTOR
-    /////////////////////////////////////////////////*/
 
     /**
-     * @notice Initializes the access control system.
-     * @param _admin The initial super-user (usually the deployer, then transferred to Timelock).
+     * @notice Grants multiple roles to multiple accounts in one transaction.
      */
-    constructor(address _admin) {
-        if (_admin == address(0)) revert ZeroAddress();
-        admin = _admin;
-    }
+    function grantRoleBatch(
 
-    /*/////////////////////////////////////////////////
-                    ROLE MANAGEMENT
-    /////////////////////////////////////////////////*/
+        bytes32[] calldata rolesList,
+        address[] calldata accounts
 
-    /**
-     * @notice Assigns a specific permission role to an account.
-     * @dev Only callable by the Admin.
-     * @param role The cryptographic hash of the role (e.g., keccak256("GUARDIAN_ROLE")).
-     * @param account The address receiving the permission.
-     */
-    function grantRole(bytes32 role, address account) external onlyAdmin {
-        if (account == address(0)) revert ZeroAddress();
+    ) external onlyRole(ADMIN_ROLE) {
+        
+        uint256 len = rolesList.length;
+        if (len != accounts.length) revert ArrayLengthMismatch();
 
-        // Check redundancy (optional, but good for gas/clean logs)
-        if (roles[role][account]) revert RoleAlreadyGranted();
-
-        roles[role][account] = true;
-        emit RoleGranted(role, account);
+        for (uint256 i = 0; i < len; ) {
+            if (accounts[i] == address(0)) revert ZeroAddress();
+            _grantRole(rolesList[i], accounts[i]);
+            unchecked { ++i; }
+        }
     }
 
     /**
-     * @notice Removes a permission role from an account.
-     * @dev Only callable by the Admin.
-     * @param role The cryptographic hash of the role.
-     * @param account The address losing the permission.
+     * @notice Revokes multiple roles from multiple accounts in one transaction.
+     * @dev Crucial for emergency response (stripping hacked wallets of access).
      */
-    function revokeRole(bytes32 role, address account) external onlyAdmin {
-        if (!roles[role][account]) revert RoleNotGranted();
+    function revokeRoleBatch(
 
-        roles[role][account] = false;
-        emit RoleRevoked(role, account);
+        bytes32[] calldata rolesList,
+        address[] calldata accounts
+    
+    ) external onlyRole(ADMIN_ROLE) {
+    
+        uint256 len = rolesList.length;
+        if (len != accounts.length) revert ArrayLengthMismatch();
+
+        for (uint256 i = 0; i < len; ) {
+            _revokeRole(rolesList[i], accounts[i]);
+            unchecked { ++i; }
+        }
     }
 
-    /**
-     * @notice Checks if an account holds a specific role.
-     * @dev Used by external contracts (like EmergencyPause) to verify permissions.
-     * @param role The role hash to check.
-     * @param account The user address.
-     * @return True if the user has the role, False otherwise.
-     */
-    function hasRole(
-        bytes32 role,
-        address account
-    ) external view returns (bool) {
-        return roles[role][account];
+    
+    function isGuardian(address account) external view returns (bool) {
+        return hasRole(GUARDIAN_ROLE, account);
     }
 
-    /*///////////////////////////////////////////////
-                    ADMIN MANAGEMENT
-    ///////////////////////////////////////////////*/
+    function isExecutor(address account) external view returns (bool) {
+        return hasRole(EXECUTOR_ROLE, account);
+    }
 
-    /**
-     * @notice Rotates the Super-Admin of the DAO.
-     * @dev Critical function. If this is set to an invalid address,
-     * the entire permission system becomes immutable (bricked).
-     * @param newAdmin The address of the new admin (usually the Governance Timelock).
-     */
-    function transferAdmin(address newAdmin) external onlyAdmin {
-        if (newAdmin == address(0)) revert ZeroAddress();
-
-        address oldAdmin = admin;
-        admin = newAdmin;
-        emit AdminTransferred(oldAdmin, newAdmin);
+    function isAdmin(address account) external view returns (bool) {
+        return hasRole(ADMIN_ROLE, account);
     }
 }

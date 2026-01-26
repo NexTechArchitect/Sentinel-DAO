@@ -1,88 +1,104 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import {SignatureVerifier} from "../utils/SignatureVerifier.sol";
 
+import {ZeroAddress} from "../errors/CommonErrors.sol";
+import {
+    OnlyTimelock,
+    InvalidSignature,
+    ResultAlreadyExecuted
+} from "../errors/GovernanceErrors.sol";
+
 /**
- * @title Off-Chain Result Executor (Oracle Bridge)
- * @notice Bridges off-chain governance (like Snapshot) with on-chain execution.
- * @dev Validates cryptographic signatures to ensure that results calculated off-chain
- * have not been tampered with before being settled on the blockchain.
- * @custom:security-note Prevents replay attacks by tracking executed Proposal IDs.
+ * @title Offchain Result Executor
+ * @notice Validates off-chain voting results via EIP-712 signatures for Snapshot X integration.
+ * @dev Optimized with assembly hashing and centralized signature verification.
  * @author NexTechArchitect
  */
-contract OffchainResultExecutor {
-    using SignatureVerifier for bytes32;
+contract OffchainResultExecutor is EIP712 {
+    address public immutable TIMELOCK;
+    address public signer;
 
-    /*//////////////////////////////////////////////////////////////
-                                 ERRORS
-    //////////////////////////////////////////////////////////////*/
-    error OnlyTimelock();
-    error InvalidSignature();
-    error ResultAlreadyExecuted();
-    error ZeroAddress();
+    bytes32 private constant RESULT_TYPEHASH =
+        keccak256("OffchainResult(uint256 proposalId,bytes32 resultHash)");
 
-    /*//////////////////////////////////////////////////////////////
-                                 STORAGE
-    //////////////////////////////////////////////////////////////*/
-    address public immutable timelock;
+    mapping(uint256 => bool) public executedResults;
 
-    // Tracks processed proposals to prevent double-execution (Replay Attack Protection)
-    mapping(uint256 => bool) public executed;
+    event ResultExecuted(uint256 indexed proposalId, bytes32 resultHash);
+    event SignerUpdated(address oldSigner, address newSigner);
 
-    /*//////////////////////////////////////////////////////////////
-                               CONSTRUCTOR
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Initializes the bridge with the authorized controller.
-     * @param _timelock The Governance Timelock address.
-     */
-    constructor(address _timelock) {
-        if (_timelock == address(0)) revert ZeroAddress();
-        timelock = _timelock;
+    modifier onlyTimelock() {
+        _checkTimelock();
+        _;
     }
 
-    /*//////////////////////////////////////////////////////////////
-                             EXTERNAL LOGIC
-    //////////////////////////////////////////////////////////////*/
+    function _checkTimelock() internal view {
+        if (msg.sender != TIMELOCK) revert OnlyTimelock();
+    }
+
+    constructor(
+        address _timelock,
+        address _signer,
+        string memory name,
+        string memory version
+    ) EIP712(name, version) {
+        if (_timelock == address(0) || _signer == address(0))
+            revert ZeroAddress();
+        TIMELOCK = _timelock;
+        signer = _signer;
+    }
 
     /**
-     * @notice Settles an off-chain vote on-chain.
-     * @dev verifies that the provided result hash was signed by the specific 'signer'.
-     * This ensures the data integrity of off-chain calculations.
-     * * @param proposalId The unique ID of the off-chain proposal.
-     * @param resultHash The hash of the voting result (e.g., Merkle Root of votes).
-     * @param signer The address of the trusted oracle/validator who signed the result.
-     * @param signature The cryptographic signature proving the signer approved this result.
+     * @notice Updates the authorized signer address.
+     * @dev Only callable by the Timelock DAO.
      */
-    function executeOffchainResult(
+    function setSigner(address _signer) external onlyTimelock {
+        if (_signer == address(0)) revert ZeroAddress();
+        emit SignerUpdated(signer, _signer);
+        signer = _signer;
+    }
+
+    /**
+     * @notice Returns the EIP-712 Domain Separator.
+     * @dev Crucial for generating valid signatures in Tests and Frontends.
+     */
+    function getDomainSeparator() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
+
+    /**
+     * @notice Executes a proposal result if the signature is valid and not replayed.
+     * @param proposalId The ID of the off-chain proposal.
+     * @param resultHash The hash of the voting result (e.g., Merkle Root).
+     * @param signature The EIP-712 signature from the authorized signer.
+     */
+    function executeResult(
         uint256 proposalId,
         bytes32 resultHash,
-        address signer,
         bytes calldata signature
     ) external {
-        // Access Control: Only the DAO Timelock can trigger settlement
-        if (msg.sender != timelock) revert OnlyTimelock();
+        if (executedResults[proposalId]) revert ResultAlreadyExecuted();
 
-        // Replay Protection: Ensure this specific proposal hasn't been settled before
-        if (executed[proposalId]) revert ResultAlreadyExecuted();
+        bytes32 structHash;
+        bytes32 typeHash = RESULT_TYPEHASH;
 
-        // Construct the data payload that was expected to be signed
-        bytes32 messageToVerify = keccak256(
-            abi.encodePacked(proposalId, resultHash)
-        );
+        assembly {
+            let ptr := mload(0x40)
+            mstore(ptr, typeHash)
+            mstore(add(ptr, 0x20), proposalId)
+            mstore(add(ptr, 0x40), resultHash)
+            structHash := keccak256(ptr, 0x60) 
+        }
 
-        // Verify the signature against the claimed signer
-        bool isValid = SignatureVerifier.verify(
-            signer,
-            messageToVerify,
-            signature
-        );
+        bytes32 hash = _hashTypedDataV4(structHash);
 
-        if (!isValid) revert InvalidSignature();
+        if (!SignatureVerifier.verify(signer, hash, signature)) {
+            revert InvalidSignature();
+        }
 
-        // Mark as executed to prevent future replays
-        executed[proposalId] = true;
+        executedResults[proposalId] = true;
+        emit ResultExecuted(proposalId, resultHash);
     }
 }

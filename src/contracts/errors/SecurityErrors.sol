@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-/*////////////////////////////////////////////////
-                SECURITY ERRORS
-////////////////////////////////////////////////*/
-// EmergencyPause errors
+error OnlyAdmin();
 error OnlyGuardian();
+error RoleAlreadyGranted();
+error RoleNotGranted();
+error SignerMismatch();
+error ZeroAddressProvided();
+// --- Pausable ---
 error AlreadyPaused();
 error NotPaused();
-// RoleManager errors
-error OnlyAdmin();
-error ZeroAddress();
-error RoleNotGranted();
-error RoleAlreadyGranted();

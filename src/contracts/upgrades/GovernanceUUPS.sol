@@ -1,50 +1,27 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
+import {UUPSUpgradeable} from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+
 /**
- * @title GovernanceUUPS
- * @notice UUPS upgrade logic controlled strictly by DAO Timelock
- * @dev Upgrade authority flows: Governor → Timelock → UUPS
- * @author NEXTECHARHITECT
+ * @title Governance UUPS Base
+ * @notice Abstract base for UUPS proxies ensuring upgrades are authorized.
  */
-
-import {
-    UUPSUpgradeable
-} from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import {
-    Initializable
-} from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
-
-contract GovernanceUUPS is Initializable, UUPSUpgradeable {
-    /*//////////////////////////////////////////////////////////////
-                                ERRORS
-    //////////////////////////////////////////////////////////////*/
-    error OnlyTimelock();
-    error ZeroAddress();
-
-    /*//////////////////////////////////////////////////////////////
-                                STORAGE
-    //////////////////////////////////////////////////////////////*/
-    address public timelock;
-
-    /*//////////////////////////////////////////////////////////////
-                             INITIALIZER
-    //////////////////////////////////////////////////////////////*/
-
-    function initialize(address _timelock) external initializer {
-        if (_timelock == address(0)) revert ZeroAddress();
-        timelock = _timelock;
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                          UUPS AUTHORIZATION
-    //////////////////////////////////////////////////////////////*/
+abstract contract GovernanceUUPS is UUPSUpgradeable {
+    error Unauthorized();
 
     /**
-     * @dev Called during upgrade.
-     * Upgrade can ONLY be executed via DAO Timelock.
+     * @dev Authorization check for UUPS upgrades.
+     * Reverts if caller is not the authorized upgrade authority.
      */
-    function _authorizeUpgrade(address) internal view override {
-        if (msg.sender != timelock) revert OnlyTimelock();
+    function _authorizeUpgrade(address ) internal view override {
+        if (msg.sender != _getUpgradeAuthority()) {
+            revert Unauthorized();
+        }
     }
+
+    /**
+     * @dev Returns the address allowed to upgrade this contract (e.g., Timelock).
+     */
+    function _getUpgradeAuthority() internal view virtual returns (address);
 }

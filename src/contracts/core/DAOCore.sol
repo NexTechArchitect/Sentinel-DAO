@@ -1,167 +1,86 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import {
-    OnlyTimelock,
-    InvalidAddress,
-    ModuleAlreadyExists,
-    ModuleNotFound,
-    SameAddress
-} from "../errors/GovernanceErrors.sol";
+import {RoleManager} from "../security/RoleManager.sol";
+import {GovernanceToken} from "../governance/GovernanceToken.sol";
+import {ZeroAddress, Unauthorized} from "../errors/CommonErrors.sol";
 
 /**
- * @title Core DAO Registry
- * @notice The central nervous system of the DAO Architecture.
- * @dev Acts as the source of truth for the active Governor, Timelock, and Treasury addresses.
- * Also manages the registry of pluggable modules (extensions).
- * @author NexTechArchitect
+ * @title DAOCore
+ * @notice Central registry and orchestration layer for the DAO ecosystem.
  */
 contract DAOCore {
-    /*//////////////////////////////////////////////////////////////
-                                 EVENTS
-    //////////////////////////////////////////////////////////////*/
-    event GovernorUpdated(
-        address indexed oldGovernor,
-        address indexed newGovernor
-    );
-    event TimelockUpdated(
-        address indexed oldTimelock,
-        address indexed newTimelock
-    );
-    event TreasuryUpdated(
-        address indexed oldTreasury,
-        address indexed newTreasury
-    );
-    event ModuleRegistered(bytes32 indexed moduleId, address indexed module);
-    event ModuleRemoved(bytes32 indexed moduleId);
+    RoleManager public immutable ROLE_MANAGER;
+    GovernanceToken public immutable TOKEN;
 
-    /*//////////////////////////////////////////////////////////////
-                                 STORAGE
-    //////////////////////////////////////////////////////////////*/
+    error AlreadyLocked();
+    error ModuleAlreadyExists();
+
     address public governor;
-    address public timelock;
     address public treasury;
+    address public timelock;
 
-    mapping(bytes32 => address) private modules;
+    mapping(bytes32 => address) public modules;
 
-    modifier onlyTimelock() {
-        if (msg.sender != timelock) revert OnlyTimelock();
-        _;
+    event ModuleLinked(bytes32 indexed moduleKey, address indexed moduleAddress);
+    event SystemLinked(address governor, address treasury, address timelock);
+    event SetupLocked(address indexed admin, uint256 timestamp);
+
+    bool private _locked;
+
+    constructor(address _roleManager, address _token) {
+        if (_roleManager == address(0)) revert ZeroAddress();
+        if (_token == address(0)) revert ZeroAddress();
+        ROLE_MANAGER = RoleManager(_roleManager);
+        TOKEN = GovernanceToken(_token);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                               CONSTRUCTOR
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Initializes the Core registry with the foundational contracts.
-     * @param _governor The address of the Governance logic contract.
-     * @param _timelock The address of the Timelock controller (The Owner).
-     * @param _treasury The address of the Treasury/Vault contract.
-     */
-    constructor(address _governor, address _timelock, address _treasury) {
-        if (_governor == address(0)) revert InvalidAddress();
-        if (_timelock == address(0)) revert InvalidAddress();
-        if (_treasury == address(0)) revert InvalidAddress();
+    function linkCoreModules(
+        address _governor,
+        address _treasury,
+        address _timelock
+    ) external {
+        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+            revert Unauthorized();
+        if (_locked) revert AlreadyLocked();
+        if (_governor == address(0)) revert ZeroAddress();
+        if (_treasury == address(0)) revert ZeroAddress();
+        if (_timelock == address(0)) revert ZeroAddress();
 
         governor = _governor;
-        timelock = _timelock;
         treasury = _treasury;
-    }
+        timelock = _timelock;
 
-    /*//////////////////////////////////////////////////////////////
-                           CORE ADDRESS UPDATES
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Rotates the Governor contract address.
-     * @dev Used when upgrading the governance voting logic (e.g., moving to a new standard).
-     * @param newGovernor The address of the new Governor contract.
-     */
-    function updateGovernor(address newGovernor) external onlyTimelock {
-        if (newGovernor == address(0)) revert InvalidAddress();
-        if (newGovernor == governor) revert SameAddress();
-        
-        address old = governor;
-        governor = newGovernor;
-        
-        emit GovernorUpdated(old, newGovernor);
+        emit SystemLinked(_governor, _treasury, _timelock);
     }
 
     /**
-     * @notice Rotates the Timelock controller address.
-     * @dev CRITICAL: This changes the 'Owner' of the system. 
-     * If set incorrectly, the DAO could become immutable (bricked).
-     * @param newTimelock The address of the new Timelock contract.
+     * @notice Allows the admin to add additional functional modules to the DAO registry.
+     * @param moduleKey Keccak256 hash or bytes32 identifier of the module.
+     * @param moduleAddress Contract address of the module.
      */
-    function updateTimelock(address newTimelock) external onlyTimelock {
-        if (newTimelock == address(0)) revert InvalidAddress();
-        if (newTimelock == timelock) revert SameAddress();
+    function registerModule(bytes32 moduleKey, address moduleAddress) external {
+        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+            revert Unauthorized();
+        if (moduleAddress == address(0)) revert ZeroAddress();
+        if (modules[moduleKey] != address(0)) revert ModuleAlreadyExists();
 
-        address old = timelock;
-        timelock = newTimelock;
-        
-        emit TimelockUpdated(old, newTimelock);
+        modules[moduleKey] = moduleAddress;
+        emit ModuleLinked(moduleKey, moduleAddress);
     }
 
     /**
-     * @notice Rotates the Treasury contract address.
-     * @dev Points the DAO to a new vault or asset manager.
-     * @param newTreasury The address of the new Treasury contract.
+     * @notice Permanently locks the core system addresses to prevent further changes.
+     * @dev Use with caution as this action is irreversible.
      */
-    function updateTreasury(address newTreasury) external onlyTimelock {
-        if (newTreasury == address(0)) revert InvalidAddress();
-        if (newTreasury == treasury) revert SameAddress();
-
-        address old = treasury;
-        treasury = newTreasury;
-        
-        emit TreasuryUpdated(old, newTreasury);
+    function lockSetup() external {
+        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+            revert Unauthorized();
+        _locked = true;
+        emit SetupLocked(msg.sender, block.timestamp);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            MODULE SYSTEM
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Registers a new extension module to the DAO.
-     * @dev Modules can be looked up by their bytes32 ID. Reverts if ID exists.
-     * @param moduleId The unique identifier for the module (e.g., keccak256("DEFI_ADAPTER")).
-     * @param module The address of the module contract.
-     */
-    function registerModule(
-        bytes32 moduleId,
-        address module
-    ) external onlyTimelock {
-        if (module == address(0)) revert InvalidAddress();
-        if (modules[moduleId] != address(0)) revert ModuleAlreadyExists();
-
-        modules[moduleId] = module;
-        emit ModuleRegistered(moduleId, module);
-    }
-
-    /**
-     * @notice Removes a module from the registry.
-     * @dev Does not destroy the module contract, simply unlinks it from Core.
-     * @param moduleId The unique identifier of the module to remove.
-     */
-    function removeModule(bytes32 moduleId) external onlyTimelock {
-        if (modules[moduleId] == address(0)) revert ModuleNotFound();
-
-        delete modules[moduleId];
-        emit ModuleRemoved(moduleId);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                              VIEW HELPERS
-    //////////////////////////////////////////////////////////////*/
-
-    /**
-     * @notice Retrieves the address of a registered module.
-     * @param moduleId The unique identifier of the module.
-     * @return The address of the module, or address(0) if not found.
-     */
-    function getModule(bytes32 moduleId) external view returns (address) {
-        return modules[moduleId];
+    function getModule(bytes32 moduleKey) external view returns (address) {
+        return modules[moduleKey];
     }
 }
