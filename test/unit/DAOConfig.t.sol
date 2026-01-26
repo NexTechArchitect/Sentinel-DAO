@@ -1,106 +1,122 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Test.sol";
-import "../../src/contracts/config/DAOConfig.sol";
+import {Test} from "forge-std/Test.sol";
+import {DAOConfig} from "../../src/contracts/config/DAOConfig.sol";
+import {InvalidValue, SameValue} from "../../src/contracts/errors/CommonErrors.sol";
+import {OnlyTimelock} from "../../src/contracts/errors/GovernanceErrors.sol";
 
 contract DAOConfigTest is Test {
-    DAOConfig config;
+    DAOConfig public config;
+    address public timelock = makeAddr("timelock");
+    address public hacker = makeAddr("hacker");
 
-    address timelock = address(11);
-    address attacker = address(22);
+    
+    event ConfigUpdated(string indexed param, uint256 newValue);
 
     function setUp() public {
-        config = new DAOConfig(timelock, 10, 7200, 4, 1_000e18);
+        config = new DAOConfig(
+            timelock,
+            1 days,   
+            1 weeks, 
+            100e18,   
+            4        
+        );
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            CONSTRUCTOR
-    //////////////////////////////////////////////////////////////*/
-
-    function test_constructor_sets_values() public view {
-        assertEq(config.votingDelay(), 10);
-        assertEq(config.votingPeriod(), 7200);
+    function test_InitialState() public view {
+        assertEq(config.TIMELOCK(), timelock);
+        assertEq(config.votingDelay(), 1 days);
+        assertEq(config.votingPeriod(), 1 weeks);
+        assertEq(config.proposalThreshold(), 100e18);
         assertEq(config.quorumPercentage(), 4);
-        assertEq(config.proposalThreshold(), 1_000e18);
-        assertEq(config.timelock(), timelock);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                        ACCESS CONTROL
-    //////////////////////////////////////////////////////////////*/
+    function test_SetVotingDelay_Success() public {
+        uint256 newDelay = 2 days;
 
-    function test_only_timelock_can_update() public {
-        vm.prank(attacker);
-        vm.expectRevert(DAOConfig.OnlyTimelock.selector);
-        config.updateVotingDelay(20);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        VOTING DELAY
-    //////////////////////////////////////////////////////////////*/
-
-    function test_update_voting_delay() public {
         vm.prank(timelock);
-        config.updateVotingDelay(20);
+        
+       
+        vm.expectEmit(true, false, false, true); 
+        emit ConfigUpdated("votingDelay", newDelay);
 
-        assertEq(config.votingDelay(), 20);
+        config.setVotingDelay(newDelay);
+        assertEq(config.votingDelay(), newDelay);
     }
 
-    function test_revert_same_voting_delay() public {
-        vm.prank(timelock);
-        vm.expectRevert(DAOConfig.SameValue.selector);
-        config.updateVotingDelay(10);
+    function test_RevertIf_SetVotingDelay_Unauthorized() public {
+        vm.prank(hacker);
+        vm.expectRevert(OnlyTimelock.selector);
+        config.setVotingDelay(2 days);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                        VOTING PERIOD
-    //////////////////////////////////////////////////////////////*/
-
-    function test_update_voting_period() public {
-        vm.prank(timelock);
-        config.updateVotingPeriod(10000);
-
-        assertEq(config.votingPeriod(), 10000);
+    function test_RevertIf_SetVotingDelay_SameValue() public {
+        vm.startPrank(timelock);
+        vm.expectRevert(SameValue.selector);
+        config.setVotingDelay(1 days);
+        vm.stopPrank();
     }
 
-    function test_revert_invalid_voting_period() public {
+    function test_SetVotingPeriod_Success() public {
+        uint256 newPeriod = 2 weeks;
+
         vm.prank(timelock);
-        vm.expectRevert(DAOConfig.InvalidValue.selector);
-        config.updateVotingPeriod(100);
+
+      
+        vm.expectEmit(true, false, false, true);
+        emit ConfigUpdated("votingPeriod", newPeriod);
+
+        config.setVotingPeriod(newPeriod);
+        assertEq(config.votingPeriod(), newPeriod);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            QUORUM
-    //////////////////////////////////////////////////////////////*/
-
-    function test_update_quorum() public {
-        vm.prank(timelock);
-        config.updateQuorum(10);
-
-        assertEq(config.quorumPercentage(), 10);
+    function test_RevertIf_SetVotingPeriod_Unauthorized() public {
+        vm.prank(hacker);
+        vm.expectRevert(OnlyTimelock.selector);
+        config.setVotingPeriod(2 weeks);
     }
 
-    function test_revert_invalid_quorum() public {
+    function test_SetProposalThreshold_Success() public {
+        uint256 newThreshold = 200e18;
+
         vm.prank(timelock);
-        vm.expectRevert(DAOConfig.InvalidValue.selector);
-        config.updateQuorum(0);
+        
+        
+        vm.expectEmit(true, false, false, true);
+        emit ConfigUpdated("proposalThreshold", newThreshold);
+
+        config.setProposalThreshold(newThreshold);
+        assertEq(config.proposalThreshold(), newThreshold);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                    PROPOSAL THRESHOLD
-    //////////////////////////////////////////////////////////////*/
-
-    function test_update_proposal_threshold() public {
+    function test_RevertIf_SetProposalThreshold_SameValue() public {
         vm.prank(timelock);
-        config.updateProposalThreshold(5_000e18);
-
-        assertEq(config.proposalThreshold(), 5_000e18);
+        vm.expectRevert(SameValue.selector);
+        config.setProposalThreshold(100e18);
     }
 
-    function test_revert_zero_threshold() public {
+    function test_SetQuorumPercentage_Success() public {
+        uint256 newQuorum = 10;
+
         vm.prank(timelock);
-        vm.expectRevert(DAOConfig.InvalidValue.selector);
-        config.updateProposalThreshold(0);
+        
+       
+        vm.expectEmit(true, false, false, true);
+        emit ConfigUpdated("quorumPercentage", newQuorum);
+
+        config.setQuorumPercentage(newQuorum);
+        assertEq(config.quorumPercentage(), newQuorum);
+    }
+
+    function test_RevertIf_QuorumExceeds100() public {
+        vm.prank(timelock);
+        vm.expectRevert(InvalidValue.selector);
+        config.setQuorumPercentage(101);
+    }
+
+    function test_RevertIf_TimelockZeroAddress() public {
+        vm.expectRevert(InvalidValue.selector);
+        new DAOConfig(address(0), 1, 1, 1, 1);
     }
 }

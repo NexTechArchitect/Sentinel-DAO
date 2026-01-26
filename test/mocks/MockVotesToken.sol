@@ -8,7 +8,6 @@ import {
 import {
     ERC20Votes
 } from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
-// FIX: Import Nonces directly so we can reference it in the override
 import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
 
 /**
@@ -22,10 +21,7 @@ contract MockVotesToken is ERC20, ERC20Permit, ERC20Votes {
         _mint(to, amount);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            REQUIRED OVERRIDES
-    //////////////////////////////////////////////////////////////*/
-
+    
     function _update(
         address from,
         address to,
@@ -34,7 +30,6 @@ contract MockVotesToken is ERC20, ERC20Permit, ERC20Votes {
         super._update(from, to, value);
     }
 
-    // FIX: Added 'Nonces' to the override list
     function nonces(
         address owner
     ) public view override(ERC20Permit, Nonces) returns (uint256) {

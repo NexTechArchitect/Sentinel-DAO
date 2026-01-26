@@ -1,153 +1,112 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Test.sol";
-import "../../src/contracts/core/GovernanceToken.sol";
+import {Test} from "forge-std/Test.sol";
+import {
+    GovernanceToken
+} from "../../src/contracts/governance/GovernanceToken.sol";
+import {ZeroAddress} from "../../src/contracts/errors/CommonErrors.sol";
+import {
+    NotGovernance,
+    MaxSupplyExceeded
+} from "../../src/contracts/errors/GovernanceErrors.sol";
 
 contract GovernanceTokenTest is Test {
-    GovernanceToken token;
-
-    // realistic addresses
-    address deployer = address(100);
-    address governanceExecutor = address(200);
-    address treasuryWallet = address(300);
-    address communityMember = address(400);
-    address attacker = address(999);
-
-    uint256 constant INITIAL_SUPPLY = 150_000_000 ether;
+    GovernanceToken public token;
+    address public executor = makeAddr("executor");
+    address public user1 = makeAddr("user1");
+    address public user2 = makeAddr("user2");
+    address public hacker = makeAddr("hacker");
 
     function setUp() public {
-        vm.startPrank(deployer);
+        vm.prank(executor);
+        token = new GovernanceToken(user1, executor);
+    }
 
-        token = new GovernanceToken(treasuryWallet, governanceExecutor);
+    function test_InitialState() public view {
+        assertEq(token.name(), "Diso Coin");
+        assertEq(token.symbol(), "DISO");
+        assertEq(token.GOVERNANCE_EXECUTOR(), executor);
+        assertEq(token.totalSupply(), 150_000_000 * 10 ** 18);
+        assertEq(token.balanceOf(user1), 150_000_000 * 10 ** 18);
+    }
+
+    function test_Minting_Success() public {
+        uint256 amount = 1000 * 10 ** 18;
+
+        vm.prank(executor);
+        token.mint(user2, amount);
+
+        assertEq(token.balanceOf(user2), amount);
+    }
+
+    function test_RevertIf_UnauthorizedMint() public {
+        vm.prank(hacker);
+        vm.expectRevert(NotGovernance.selector);
+        token.mint(hacker, 1000);
+    }
+
+    function test_RevertIf_MaxSupplyExceeded() public {
+        uint256 currentSupply = token.totalSupply();
+        uint256 maxSupply = token.MAX_SUPPLY();
+        uint256 availableToMint = maxSupply - currentSupply;
+
+        vm.startPrank(executor);
+
+        token.mint(user2, availableToMint);
+        assertEq(token.totalSupply(), maxSupply);
+
+        vm.expectRevert(MaxSupplyExceeded.selector);
+        token.mint(user2, 1);
 
         vm.stopPrank();
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            DEPLOYMENT TESTS
-    //////////////////////////////////////////////////////////////*/
+    function test_Burn_Success() public {
+        uint256 burnAmount = 50_000 * 10 ** 18;
 
-    function test_initial_supply_minted_correctly() public view {
-        uint256 supply = token.totalSupply();
-        assertEq(supply, INITIAL_SUPPLY);
+        vm.prank(user1);
+        token.burn(burnAmount);
+
+        assertEq(token.totalSupply(), (150_000_000 * 10 ** 18) - burnAmount);
     }
 
-    function test_initial_receiver_balance() public view {
-        assertEq(token.balanceOf(treasuryWallet), INITIAL_SUPPLY);
+    function test_VotingPower_UpdatesOnTransfer() public {
+        vm.prank(user1);
+        token.delegate(user1);
+
+        uint256 initialPower = token.getVotes(user1);
+        uint256 transferAmount = 10_000 * 10 ** 18;
+
+        vm.prank(user1);
+        bool success = token.transfer(user2, transferAmount);
+        assertTrue(success, "Transfer failed");
+
+        assertEq(token.getVotes(user1), initialPower - transferAmount);
+
+        vm.prank(user2);
+        token.delegate(user2);
+        assertEq(token.getVotes(user2), transferAmount);
     }
 
-    function test_initial_receiver_has_no_votes_until_delegated() public view {
-        uint256 votes = token.getVotes(treasuryWallet);
-        assertEq(votes, 0);
+    function test_SetGovernor_Success() public {
+        address newGovernor = makeAddr("newGovernor");
+
+        vm.prank(executor);
+        token.setGovernor(newGovernor);
+
+        assertEq(token.governor(), newGovernor);
     }
 
-    function test_self_delegate_activates_voting_power() public {
-        vm.prank(treasuryWallet);
-        token.delegate(treasuryWallet);
-
-        uint256 votes = token.getVotes(treasuryWallet);
-        assertEq(votes, INITIAL_SUPPLY);
+    function test_RevertIf_SetGovernor_Unauthorized() public {
+        vm.prank(hacker);
+        vm.expectRevert(NotGovernance.selector);
+        token.setGovernor(makeAddr("gov"));
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            MINT LOGIC
-    //////////////////////////////////////////////////////////////*/
-
-    function test_governance_executor_can_mint() public {
-        vm.prank(governanceExecutor);
-        token.mint(communityMember, 1_000 ether);
-
-        assertEq(token.balanceOf(communityMember), 1_000 ether);
-    }
-
-    function test_non_governance_cannot_mint() public {
-        vm.prank(attacker);
-        vm.expectRevert();
-        token.mint(attacker, 100 ether);
-    }
-
-    function test_mint_updates_total_supply() public {
-        uint256 beforeSupply = token.totalSupply();
-
-        vm.prank(governanceExecutor);
-        token.mint(communityMember, 5_000 ether);
-
-        uint256 afterSupply = token.totalSupply();
-
-        assertEq(afterSupply, beforeSupply + 5_000 ether);
-    }
-
-    function test_mint_exceeding_max_supply_reverts() public {
-        vm.prank(governanceExecutor);
-
-        vm.expectRevert();
-        token.mint(communityMember, 900_000_000 ether);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                            TRANSFER + VOTES
-    //////////////////////////////////////////////////////////////*/
-
-    function test_transfer_does_not_move_votes_without_delegate() public {
-        vm.prank(treasuryWallet);
-        token.transfer(communityMember, 1_000 ether);
-
-        assertEq(token.getVotes(communityMember), 0);
-    }
-
-    function test_transfer_updates_votes_after_delegate() public {
-        vm.prank(treasuryWallet);
-        token.delegate(treasuryWallet);
-
-        vm.prank(treasuryWallet);
-        token.transfer(communityMember, 10_000 ether);
-
-        uint256 remainingVotes = token.getVotes(treasuryWallet);
-        assertEq(remainingVotes, INITIAL_SUPPLY - 10_000 ether);
-    }
-
-    function test_delegate_to_other_user() public {
-        vm.prank(treasuryWallet);
-        token.delegate(communityMember);
-
-        uint256 votes = token.getVotes(communityMember);
-        assertEq(votes, INITIAL_SUPPLY);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        SNAPSHOT / PAST VOTES
-    //////////////////////////////////////////////////////////////*/
-
-    function test_get_past_votes() public {
-        vm.prank(treasuryWallet);
-        token.delegate(treasuryWallet);
-
-        uint256 blockBefore = block.number;
-
-        vm.roll(block.number + 1);
-
-        uint256 pastVotes = token.getPastVotes(treasuryWallet, blockBefore);
-
-        assertEq(pastVotes, INITIAL_SUPPLY);
-    }
-
-    function test_get_past_total_supply() public {
-        uint256 blockBefore = block.number;
-
-        vm.roll(block.number + 1);
-
-        uint256 pastSupply = token.getPastTotalSupply(blockBefore);
-
-        assertEq(pastSupply, INITIAL_SUPPLY);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        PERMIT TEST (ERC20Permit)
-    //////////////////////////////////////////////////////////////*/
-
-    function test_domain_separator_exists() public view {
-        bytes32 separator = token.DOMAIN_SEPARATOR();
-        assertTrue(separator != bytes32(0));
+    function test_RevertIf_SetGovernor_ZeroAddress() public {
+        vm.prank(executor);
+        vm.expectRevert(ZeroAddress.selector);
+        token.setGovernor(address(0));
     }
 }

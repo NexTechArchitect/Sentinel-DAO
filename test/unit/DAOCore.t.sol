@@ -1,171 +1,105 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.30;
 
-import "forge-std/Test.sol";
-
+import {Test} from "forge-std/Test.sol";
 import {DAOCore} from "../../src/contracts/core/DAOCore.sol";
-
-import {
-    OnlyTimelock,
-    InvalidAddress,
-    ModuleAlreadyExists,
-    ModuleNotFound,
-    SameAddress
-} from "../../src/contracts/errors/GovernanceErrors.sol";
+import {GovernanceToken} from "../../src/contracts/governance/GovernanceToken.sol";
+import {RoleManager} from "../../src/contracts/security/RoleManager.sol";
+import {Unauthorized} from "../../src/contracts/errors/CommonErrors.sol";
 
 contract DAOCoreTest is Test {
-    DAOCore core;
+    DAOCore public core;
+    RoleManager public roleManager;
+    GovernanceToken public token;
 
-    address governor = address(0x1111);
-    address timelock = address(0x2222);
-    address treasury = address(0x3333);
+    address public admin = makeAddr("admin");
+    address public governor = makeAddr("governor");
+    address public treasury = makeAddr("treasury");
+    address public timelock = makeAddr("timelock");
+    address public hacker = makeAddr("hacker");
 
-    address newGovernor = address(0xAAAA);
-    address newTimelock = address(0xBBBB);
-    address newTreasury = address(0xCCCC);
-
-    address attacker = address(0xDEAD);
-
-    bytes32 constant MODULE_STAKING = keccak256("STAKING");
-    bytes32 constant MODULE_AIRDROP = keccak256("AIRDROP");
+    event SystemLinked(address governor, address treasury, address timelock);
+    event SetupLocked(address indexed admin, uint256 timestamp);
+    event ModuleLinked(bytes32 indexed moduleKey, address indexed moduleAddress);
 
     function setUp() public {
-        core = new DAOCore(governor, timelock, treasury);
+        vm.startPrank(admin);
+        
+        roleManager = new RoleManager(admin);
+        token = new GovernanceToken(admin, admin); 
+        core = new DAOCore(address(roleManager), address(token));
+        
+        vm.stopPrank();
     }
 
-    /*//////////////////////////////////////////////////////////////
-                            CONSTRUCTOR
-    //////////////////////////////////////////////////////////////*/
+    function test_InitialState() public view {
+        assertEq(address(core.ROLE_MANAGER()), address(roleManager));
+        assertEq(address(core.TOKEN()), address(token));
+    }
 
-    function test_constructor_sets_addresses() public view {
+    function test_LinkCoreModules_Success() public {
+        vm.prank(admin);
+        
+        vm.expectEmit(false, false, false, true);
+        emit SystemLinked(governor, treasury, timelock);
+        
+        core.linkCoreModules(governor, treasury, timelock);
+
         assertEq(core.governor(), governor);
-        assertEq(core.timelock(), timelock);
         assertEq(core.treasury(), treasury);
+        assertEq(core.timelock(), timelock);
     }
 
-    function test_constructor_reverts_zero_address() public {
-        vm.expectRevert(InvalidAddress.selector);
-        new DAOCore(address(0), timelock, treasury);
-
-        vm.expectRevert(InvalidAddress.selector);
-        new DAOCore(governor, address(0), treasury);
-
-        vm.expectRevert(InvalidAddress.selector);
-        new DAOCore(governor, timelock, address(0));
+    function test_RevertIf_HackerLinksModules() public {
+        vm.prank(hacker);
+        vm.expectRevert(Unauthorized.selector);
+        core.linkCoreModules(governor, treasury, timelock);
     }
 
-    /*//////////////////////////////////////////////////////////////
-                        ACCESS CONTROL
-    //////////////////////////////////////////////////////////////*/
+    function test_LockSetup_Success() public {
+        vm.startPrank(admin);
+        
+        core.linkCoreModules(governor, treasury, timelock);
+        
+        vm.expectEmit(true, false, false, true);
+        emit SetupLocked(admin, block.timestamp);
+        
+        core.lockSetup();
 
-    function test_only_timelock_can_update() public {
-        vm.prank(attacker);
-        vm.expectRevert(OnlyTimelock.selector);
-        core.updateGovernor(newGovernor);
+        vm.expectRevert(DAOCore.AlreadyLocked.selector); 
+        core.linkCoreModules(makeAddr("newGov"), treasury, timelock);
+        
+        vm.stopPrank();
     }
 
-    /*//////////////////////////////////////////////////////////////
-                        GOVERNOR UPDATE
-    //////////////////////////////////////////////////////////////*/
-
-    function test_update_governor() public {
-        vm.prank(timelock);
-        core.updateGovernor(newGovernor);
-
-        assertEq(core.governor(), newGovernor);
+    function test_RevertIf_HackerLocksSetup() public {
+        vm.prank(hacker);
+        vm.expectRevert(Unauthorized.selector);
+        core.lockSetup();
     }
 
-    function test_update_governor_same_address_reverts() public {
-        vm.prank(timelock);
-        vm.expectRevert(SameAddress.selector);
-        core.updateGovernor(governor);
+    function test_RegisterModule_Success() public {
+        bytes32 moduleKey = keccak256("TEST_MODULE");
+        address moduleAddr = makeAddr("module");
+
+        vm.prank(admin);
+        vm.expectEmit(true, true, false, false);
+        emit ModuleLinked(moduleKey, moduleAddr);
+        
+        core.registerModule(moduleKey, moduleAddr);
+
+        assertEq(core.getModule(moduleKey), moduleAddr);
     }
 
-    function test_update_governor_zero_address_reverts() public {
-        vm.prank(timelock);
-        vm.expectRevert(InvalidAddress.selector);
-        core.updateGovernor(address(0));
-    }
+    function test_RevertIf_ModuleAlreadyExists() public {
+        bytes32 moduleKey = keccak256("TEST_MODULE");
+        address moduleAddr = makeAddr("module");
 
-    /*//////////////////////////////////////////////////////////////
-                        TIMELOCK UPDATE
-    //////////////////////////////////////////////////////////////*/
+        vm.startPrank(admin);
+        core.registerModule(moduleKey, moduleAddr);
 
-    function test_update_timelock() public {
-        vm.prank(timelock);
-        core.updateTimelock(newTimelock);
-
-        assertEq(core.timelock(), newTimelock);
-    }
-
-    function test_update_timelock_same_reverts() public {
-        vm.prank(timelock);
-        vm.expectRevert(SameAddress.selector);
-        core.updateTimelock(timelock);
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                        TREASURY UPDATE
-    //////////////////////////////////////////////////////////////*/
-
-    function test_update_treasury() public {
-        vm.prank(timelock);
-        core.updateTreasury(newTreasury);
-
-        assertEq(core.treasury(), newTreasury);
-    }
-
-    function test_update_treasury_zero_reverts() public {
-        vm.prank(timelock);
-        vm.expectRevert(InvalidAddress.selector);
-        core.updateTreasury(address(0));
-    }
-
-    /*//////////////////////////////////////////////////////////////
-                            MODULE SYSTEM
-    //////////////////////////////////////////////////////////////*/
-
-    function test_register_module() public {
-        vm.prank(timelock);
-        core.registerModule(MODULE_STAKING, address(0x9999));
-
-        assertEq(core.getModule(MODULE_STAKING), address(0x9999));
-    }
-
-    function test_register_module_only_timelock() public {
-        vm.prank(attacker);
-        vm.expectRevert(OnlyTimelock.selector);
-        core.registerModule(MODULE_STAKING, address(1));
-    }
-
-    function test_register_module_zero_address_reverts() public {
-        vm.prank(timelock);
-        vm.expectRevert(InvalidAddress.selector);
-        core.registerModule(MODULE_STAKING, address(0));
-    }
-
-    function test_register_module_duplicate_reverts() public {
-        vm.prank(timelock);
-        core.registerModule(MODULE_STAKING, address(1));
-
-        vm.prank(timelock);
-        vm.expectRevert(ModuleAlreadyExists.selector);
-        core.registerModule(MODULE_STAKING, address(2));
-    }
-
-    function test_remove_module() public {
-        vm.prank(timelock);
-        core.registerModule(MODULE_AIRDROP, address(123));
-
-        vm.prank(timelock);
-        core.removeModule(MODULE_AIRDROP);
-
-        assertEq(core.getModule(MODULE_AIRDROP), address(0));
-    }
-
-    function test_remove_nonexistent_module_reverts() public {
-        vm.prank(timelock);
-        vm.expectRevert(ModuleNotFound.selector);
-        core.removeModule(MODULE_AIRDROP);
+        vm.expectRevert(DAOCore.ModuleAlreadyExists.selector);
+        core.registerModule(moduleKey, makeAddr("otherModule"));
+        vm.stopPrank();
     }
 }
