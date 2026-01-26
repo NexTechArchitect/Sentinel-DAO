@@ -1,0 +1,1579 @@
+Script started on 2026-01-25 12:36:44+00:00 [TERM="xterm-256color" TTY="/dev/pts/3" COLUMNS="119" LINES="17"]
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ tree scri[t
+[?2004lscri[t  [error opening dir]
+
+0 directories, 0 files
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ tree script
+[?2004l[01;34mscript[0m
+├── [01;34mdeploy[0m
+└── [01;34mdeployment[0m
+    ├── 01_DeployGovernanceToken.s.sol
+    ├── 02_DeployTimelock.s.sol
+    ├── 03_DeployDAOConfig.s.sol
+    ├── 04_DeployGovernor.s.sol
+    ├── 05_DeployTreasury.s.sol
+    ├── 06_DeploySecurity.s.sol
+    ├── 07_DeployCore.s.sol
+    ├── 08_WireDAO.s.sol
+    ├── 09_FundTreasury.s.sol
+    ├── 10_CreateProposal.s.sol
+    ├── 11_CastVote.s.sol
+    └── 12_ExecuteProposal.s.sol
+
+3 directories, 12 files
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80: command not found
+0x5FC8d32690cc91D4c39d9d3abcBD16989F875707: command not found
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l0x5FC8d32690cc91D4c39d9d3abcBD16989F875707: command not found
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ slj[K[K[Ksource .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠒[0m][0m Solc 0.8.30 finished in 800.42ms
+[1m[31mError[0m[1m:[0m Compiler run [31mfailed[0m:
+[1;31mError (6160)[0m[1;37m: Wrong argument count for function call: 0 arguments given but expected 2.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:61:41:
+[34m   |[0m
+[34m61 |[0m         DelegationRegistry delegation = [33mnew DelegationRegistry()[0m;
+[34m   |[0m                                         [1;33m^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7m forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url htt[27m[7mp[27m[7m://127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$  forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠃[0m][0m Solc 0.8.30 finished in 667.29ms
+[1m[31mError[0m[1m:[0m Compiler run [31mfailed[0m:
+[1;31mError (9553)[0m[1;37m: Invalid type for argument in function call. Invalid implicit conversion from address to string memory requested.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:62:64:
+[34m   |[0m
+[34m62 |[0m         DelegationRegistry delegation = new DelegationRegistry([33mroleManager[0m, token);
+[34m   |[0m                                                                [1;33m^^^^^^^^^^^[0m
+
+[1;31mError (9553)[0m[1;37m: Invalid type for argument in function call. Invalid implicit conversion from address to string memory requested.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:62:77:
+[34m   |[0m
+[34m62 |[0m         DelegationRegistry delegation = new DelegationRegistry(roleManager, [33mtoken[0m);
+[34m   |[0m                                                                             [1;33m^^^^^[0m
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7m forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url htt[27m[7mp[27m[7m://127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$  forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠔[0m][0m Solc 0.8.30 finished in 236.13ms
+[1m[31mError[0m[1m:[0m Compiler run [31mfailed[0m:
+[1;31mError (7576)[0m[1;37m: Undeclared identifier.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:62:64:
+[34m   |[0m
+[34m62 |[0m         DelegationRegistry delegation = new DelegationRegistry([33mROLE_MANAGER[0m, TOKEN);
+[34m   |[0m                                                                [1;33m^^^^^^^^^^^^[0m
+
+[1;31mError (7576)[0m[1;37m: Undeclared identifier.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:62:78:
+[34m   |[0m
+[34m62 |[0m         DelegationRegistry delegation = new DelegationRegistry(ROLE_MANAGER, [33mTOKEN[0m);
+[34m   |[0m                                                                              [1;33m^^^^^[0m
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠃[0m][0m Solc 0.8.30 finished in 661.63ms
+[1m[31mError[0m[1m:[0m Compiler run [31mfailed[0m:
+[1;31mError (9553)[0m[1;37m: Invalid type for argument in function call. Invalid implicit conversion from address to string memory requested.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:62:64:
+[34m   |[0m
+[34m62 |[0m         DelegationRegistry delegation = new DelegationRegistry([33mroleManager[0m, token);
+[34m   |[0m                                                                [1;33m^^^^^^^^^^^[0m
+
+[1;31mError (9553)[0m[1;37m: Invalid type for argument in function call. Invalid implicit conversion from address to string memory requested.[0m
+  [34m-->[0m script/deployment/06_DeploySecurity.s.sol:62:77:
+[34m   |[0m
+[34m62 |[0m         DelegationRegistry delegation = new DelegationRegistry(roleManager, [33mtoken[0m);
+[34m   |[0m                                                                             [1;33m^^^^^[0m
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/06_DeploySecurity.s.sol:DeploySecurity --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠒[0m][0m Solc 0.8.30 finished in 1.37s
+Compiler run [32msuccessful[0m!
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying Security & Feature Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  RageQuit Deployed: 0x610178dA211FEF7D417bC0e6FeD39F05609AD788
+  ProposalGuard Deployed: 0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e
+  EmergencyPause Deployed: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+  QuadraticFunding Deployed: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
+  GovernanceAnalytics Deployed: 0x9A676e781A523b5d0C0e43731313A708CB607508
+  DelegationRegistry Deployed: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+  OffchainResultExecutor Deployed: 0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1
+  VotingPowerSnapshot Deployed: 0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE
+  ConvictionVoting Deployed: 0x68B1D87F95878fE05B998F19b66F4baba5De1aed
+  --------------------------------------------------
+  !!! COPY TO .env !!!
+  RAGE_QUIT_ADDRESS= 0x610178dA211FEF7D417bC0e6FeD39F05609AD788
+  PROPOSAL_GUARD_ADDRESS= 0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e
+  QF_ADDRESS= 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
+  EMERGENCY_PAUSE_ADDRESS= 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+  DELEGATION_REGISTRY_ADDRESS= 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.871577411 gwei
+
+Estimated total gas used for script: 6009007
+
+Estimated amount required: 0.005237314763740877 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[5A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[5A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[6A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[6A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[7A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[7A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[8A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[8A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[9A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[9A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[10A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[10A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 8]
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[11A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[11A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[11A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[11A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[10A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[10A
+##### anvil-hardhat
+✅  [Success] Hash: 0x952c367a6f14c37b45d83b86fe2ed9992f036231476483844d28155e7862088d
+Contract Address: 0x610178dA211FEF7D417bC0e6FeD39F05609AD788
+Block: 9
+Paid: 0.000211331907783869 ETH (548467 gas * 0.385313807 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[10A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[10A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[9A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[9A
+##### anvil-hardhat
+✅  [Success] Hash: 0xb2927f3fb13a9983a6dcfd02a7c496dcac7e896cd7bebbca9098ef1e78db054f
+Contract Address: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+Block: 12
+Paid: 0.00022354203855555 ETH (849225 gas * 0.263230638 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[9A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[9A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[8A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[8A
+##### anvil-hardhat
+✅  [Success] Hash: 0x9e91c01703914b8726a3cd61a9bffd283ee3c0b619543c0fc889044d4334719b
+Contract Address: 0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1
+Block: 12
+Paid: 0.00018438648115305 ETH (700475 gas * 0.263230638 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[8A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[8A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[7A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[7A
+##### anvil-hardhat
+✅  [Success] Hash: 0xd19d44641ba8a4de3aa15897bb3b7de4eb8cf095231a443547cc4209404b47f2
+Contract Address: 0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e
+Block: 10
+Paid: 0.000127319253352632 ETH (375672 gas * 0.338910681 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[7A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[7A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[6A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[6A
+##### anvil-hardhat
+✅  [Success] Hash: 0xd53c779245b5e9a8b733663589081e8e4f6cb8901c2729683e8b56366059e104
+Contract Address: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
+Block: 11
+Paid: 0.00025593585987853 ETH (857701 gas * 0.29839753 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[6A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[6A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[5A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[5A
+##### anvil-hardhat
+✅  [Success] Hash: 0xe16c366c03b60639d21cae96a2c6ebc7ed2ff9851f518f6067797262c5213a4f
+Contract Address: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+Block: 10
+Paid: 0.00009476281551441 ETH (279610 gas * 0.338910681 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[5A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[5A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A
+##### anvil-hardhat
+✅  [Success] Hash: 0xd17e4190953914cb7f69990f3ba6269125e52dc8768e5fe28cce5dbf7542572d
+Contract Address: 0x9A676e781A523b5d0C0e43731313A708CB607508
+Block: 12
+Paid: 0.000061011070814364 ETH (231778 gas * 0.263230638 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠂[0m [33m[Pending][0m 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A
+##### anvil-hardhat
+✅  [Success] Hash: 0x4c089ba6de7441a8dcf3b5ff4235c15d7dc1da638a9d5f5a64588ce102b223dc
+Contract Address: 0x68B1D87F95878fE05B998F19b66F4baba5De1aed
+Block: 13
+Paid: 0.000146306546598546 ETH (623706 gas * 0.234576141 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0xc713c0085d16ba61ff76be8575e01e421c820aa9f77cb969c0654f4a5cbe8b88
+Contract Address: 0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE
+Block: 12
+Paid: 0.000040980272185116 ETH (155682 gas * 0.263230638 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.001345576245836067 ETH (4622316 gas * avg 0.294336821 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.001345576245836067 ETH (4622316 gas * avg 0.294336821 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/9 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.001345576245836067 ETH (4622316 gas * avg 0.294336821 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/9 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.001345576245836067 ETH (4622316 gas * avg 0.294336821 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/06_DeploySecurity.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/06_DeploySecurity.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/07_DeployCore.s.sol:DeployCore --fork-url http://127.0[27m[7m.[27m[7m0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/07_DeployCore.s.sol:DeployCore --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠔[0m][0m Solc 0.8.30 finished in 1.23s
+Compiler run [32msuccessful[0m!
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying Core Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  --------------------------------------------------
+  DAOCore Address: 0x3Aa5ebB10DC797CAC828524e59A333d0A371443c
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.469152281 gwei
+
+Estimated total gas used for script: 681908
+
+Estimated amount required: 0.000319918693632148 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠂[0m [33m[Pending][0m 0x46f2f2105a478be73867be5b2312cf558fbd91f22f39ceaa707fba90cf05feb7
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x46f2f2105a478be73867be5b2312cf558fbd91f22f39ceaa707fba90cf05feb7
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0x46f2f2105a478be73867be5b2312cf558fbd91f22f39ceaa707fba90cf05feb7
+Contract Address: 0x3Aa5ebB10DC797CAC828524e59A333d0A371443c
+Block: 14
+Paid: 0.000108304560753025 ETH (524545 gas * 0.206473345 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000108304560753025 ETH (524545 gas * avg 0.206473345 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000108304560753025 ETH (524545 gas * avg 0.206473345 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000108304560753025 ETH (524545 gas * avg 0.206473345 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000108304560753025 ETH (524545 gas * avg 0.206473345 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/07_DeployCore.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/07_DeployCore.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ sourcr [K[Ke .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8[27m[7m5[27m[7m45 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠰[0m][0m Solc 0.8.30 finished in 163.38ms
+[1m[31mError[0m[1m:[0m Compiler run [31mfailed[0m:
+[1;31mError (8936)[0m[1;37m: Invalid character in string. If you are trying to use Unicode characters, use a unicode"..." string literal.[0m
+  [34m-->[0m script/deployment/08_WireDAO.s.sol:79:21:
+[34m   |[0m
+[34m79 |[0m         console.log("SUCCESS: DAO IS NOW LIVE AND CONNECTED 🟢");
+[34m   |[0m                     [1;33m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8[27m[7m5[27m[7m45 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠔[0m][0m Solc 0.8.30 finished in 1.21s
+Compiler run [33msuccessful with warnings[0m:
+[1;33mWarning (2072)[0m[1;37m: Unused local variable.[0m
+  [34m-->[0m script/deployment/08_WireDAO.s.sol:63:9:
+[34m   |[0m
+[34m63 |[0m         [33mbytes32 EXECUTOR_ROLE[0m = timelock.EXECUTOR_ROLE();
+[34m   |[0m         [1;33m^^^^^^^^^^^^^^^^^^^^^[0m
+
+Traces:
+  [802534] [33m→ new[0m WireDAO@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 3898 bytes of code
+
+  [6596] [31mWireDAO[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("CORE_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TIMELOCK_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOVERNOR_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TREASURY_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("QF_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_ANALYTICS_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Revert][0m vm.envAddress: environment variable "GOV_ANALYTICS_ADDRESS" not found
+    └─ [31m← [Revert][0m vm.envAddress: environment variable "GOV_ANALYTICS_ADDRESS" not found
+
+
+[1m[31mError[0m[1m:[0m script failed: vm.envAddress: environment variable "GOV_ANALYTICS_ADDRESS" not found
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8[27m[7m5[27m[7m45 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠒[0m][0m Solc 0.8.30 finished in 854.27ms
+Compiler run [32msuccessful[0m!
+Traces:
+  [782514] [33m→ new[0m WireDAO@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 3798 bytes of code
+
+  [205412] [31mWireDAO[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("CORE_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TIMELOCK_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOVERNOR_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TREASURY_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("QF_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_ANALYTICS_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("RAGE_QUIT_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Wiring DAO Contracts with:", 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [34mVM[0m::[34mstartBroadcast[0m(<pk>)
+    │   └─ [34m← [Return][0m
+    ├─ [77172] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mlinkCoreModules[0m(0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6, 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318, 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [2736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit SystemLinked([36mgovernor: 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6, treasury: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318, timelock: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Core Modules Linked")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [26153] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mregisterModule[0m(0xda6248c7cc7e0d3a708b6111de106ba633043797be5292ace06f7e2dd57ea32f, 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit ModuleLinked([36mmoduleKey: 0xda6248c7cc7e0d3a708b6111de106ba633043797be5292ace06f7e2dd57ea32f, moduleAddress: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [26153] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mregisterModule[0m(0xb6f99f7ecbf7f996fd38252f106d2cf2aba65e4ab966dba82dd780bb2c62a7fc, 0x9A676e781A523b5d0C0e43731313A708CB607508)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit ModuleLinked([36mmoduleKey: 0xb6f99f7ecbf7f996fd38252f106d2cf2aba65e4ab966dba82dd780bb2c62a7fc, moduleAddress: 0x9A676e781A523b5d0C0e43731313A708CB607508[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [26153] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mregisterModule[0m(0xf37cbd98ba67ccbe87977e5537e79c691af76c1186f119e656e57e7d14bea090, 0x610178dA211FEF7D417bC0e6FeD39F05609AD788)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit ModuleLinked([36mmoduleKey: 0xf37cbd98ba67ccbe87977e5537e79c691af76c1186f119e656e57e7d14bea090, moduleAddress: 0x610178dA211FEF7D417bC0e6FeD39F05609AD788[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Feature Modules Registered")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [23632] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mlockSetup[0m()
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit SetupLocked([36madmin: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, timestamp: 1769345281 [2m[1.769e9][0m[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Core Setup Locked")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [284] [32m0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m::[32mPROPOSER_ROLE[0m()[33m [staticcall][0m
+    │   └─ [32m← [Return][0m 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1
+    ├─ [305] [32m0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m::[32mCANCELLER_ROLE[0m()[33m [staticcall][0m
+    │   └─ [32m← [Return][0m 0xfd643c72710c63c0180259aba6b2d05451e3591a24e58b62239378085726f783
+    ├─ [5054] [31m0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m::[31mgrantRole[0m(0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1, 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6)
+    │   └─ [31m← [Revert][0m AccessControlUnauthorizedAccount(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    └─ [31m← [Revert][0m AccessControlUnauthorizedAccount(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 0x0000000000000000000000000000000000000000000000000000000000000000)
+
+
+
+== Logs ==
+  Wiring DAO Contracts with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  Core Modules Linked
+  Feature Modules Registered
+  Core Setup Locked
+[1m[31mError[0m[1m:[0m script failed: AccessControlUnauthorizedAccount(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 0x0000000000000000000000000000000000000000000000000000000000000000)
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7m forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:[27m[7m8[27m[7m545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$  forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+No files changed, compilation skipped
+Traces:
+  [782514] [33m→ new[0m WireDAO@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 3798 bytes of code
+
+  [205412] [31mWireDAO[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("CORE_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TIMELOCK_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOVERNOR_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TREASURY_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("QF_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_ANALYTICS_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("RAGE_QUIT_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Wiring DAO Contracts with:", 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [34mVM[0m::[34mstartBroadcast[0m(<pk>)
+    │   └─ [34m← [Return][0m
+    ├─ [77172] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mlinkCoreModules[0m(0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6, 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318, 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [2736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit SystemLinked([36mgovernor: 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6, treasury: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318, timelock: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Core Modules Linked")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [26153] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mregisterModule[0m(0xda6248c7cc7e0d3a708b6111de106ba633043797be5292ace06f7e2dd57ea32f, 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit ModuleLinked([36mmoduleKey: 0xda6248c7cc7e0d3a708b6111de106ba633043797be5292ace06f7e2dd57ea32f, moduleAddress: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [26153] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mregisterModule[0m(0xb6f99f7ecbf7f996fd38252f106d2cf2aba65e4ab966dba82dd780bb2c62a7fc, 0x9A676e781A523b5d0C0e43731313A708CB607508)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit ModuleLinked([36mmoduleKey: 0xb6f99f7ecbf7f996fd38252f106d2cf2aba65e4ab966dba82dd780bb2c62a7fc, moduleAddress: 0x9A676e781A523b5d0C0e43731313A708CB607508[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [26153] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mregisterModule[0m(0xf37cbd98ba67ccbe87977e5537e79c691af76c1186f119e656e57e7d14bea090, 0x610178dA211FEF7D417bC0e6FeD39F05609AD788)
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit ModuleLinked([36mmoduleKey: 0xf37cbd98ba67ccbe87977e5537e79c691af76c1186f119e656e57e7d14bea090, moduleAddress: 0x610178dA211FEF7D417bC0e6FeD39F05609AD788[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Feature Modules Registered")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [23632] [32m0x3Aa5ebB10DC797CAC828524e59A333d0A371443c[0m::[32mlockSetup[0m()
+    │   ├─ [290] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mADMIN_ROLE[0m()[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775
+    │   ├─ [736] [32m0x5FbDB2315678afecb367f032d93F642f64180aa3[0m::[32mhasRole[0m(0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m true
+    │   ├─ emit SetupLocked([36madmin: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, timestamp: 1769345281 [2m[1.769e9][0m[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Core Setup Locked")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [284] [32m0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m::[32mPROPOSER_ROLE[0m()[33m [staticcall][0m
+    │   └─ [32m← [Return][0m 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1
+    ├─ [305] [32m0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m::[32mCANCELLER_ROLE[0m()[33m [staticcall][0m
+    │   └─ [32m← [Return][0m 0xfd643c72710c63c0180259aba6b2d05451e3591a24e58b62239378085726f783
+    ├─ [5054] [31m0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9[0m::[31mgrantRole[0m(0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1, 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6)
+    │   └─ [31m← [Revert][0m AccessControlUnauthorizedAccount(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 0x0000000000000000000000000000000000000000000000000000000000000000)
+    └─ [31m← [Revert][0m AccessControlUnauthorizedAccount(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 0x0000000000000000000000000000000000000000000000000000000000000000)
+
+
+
+== Logs ==
+  Wiring DAO Contracts with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  Core Modules Linked
+  Feature Modules Registered
+  Core Setup Locked
+[1m[31mError[0m[1m:[0m script failed: AccessControlUnauthorizedAccount(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, 0x0000000000000000000000000000000000000000000000000000000000000000)
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/02_DeployTimelock.s.sol:DeployTimelock --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/02_DeployTimelock.s.sol:DeployTimelock --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠑[0m][0m Solc 0.8.30 finished in 1.39s
+Compiler run [32msuccessful[0m!
+Traces:
+  [2578885] [33m→ new[0m DeployTimelock@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 12770 bytes of code
+
+  [190912] [31mDeployTimelock[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("ROLE_MANAGER_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Deploying Security Layer with:", 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [0] [34mVM[0m::[34mstartBroadcast[0m(<pk>)
+    │   └─ [34m← [Return][0m
+    ├─ [148189] [33m→ new[0m <unknown>@0xc6e7DF5E7b4f2A278906862b61205850344D4e7d
+    │   ├─ emit RoleGranted([36mrole: 0x0000000000000000000000000000000000000000000000000000000000000000, account: 0xc6e7DF5E7b4f2A278906862b61205850344D4e7d, sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266[0m)
+    │   ├─ emit RoleGranted([36mrole: 0x0000000000000000000000000000000000000000000000000000000000000000, account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266[0m)
+    │   ├─ emit RoleGranted([36mrole: 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1, account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266[0m)
+    │   ├─ emit RoleGranted([36mrole: 0xfd643c72710c63c0180259aba6b2d05451e3591a24e58b62239378085726f783, account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266[0m)
+    │   ├─ emit RoleGranted([36mrole: 0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63, account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, sender: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266[0m)
+    │   ├─ emit MinDelayChange([36moldDuration: 0, newDuration: 86400 [2m[8.64e4][0m[0m)
+    │   └─ [31m← [Revert][0m 0xefd04e01
+    └─ [31m← [Revert][0m AdminMustBeZero()
+
+
+
+== Logs ==
+  Deploying Security Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+[1m[31mError[0m[1m:[0m script failed: AdminMustBeZero()
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/02_DeployTimelock.s.sol:DeployTimelock --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/02_DeployTimelock.s.sol:DeployTimelock --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 2 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 2 files with Solc 0.8.30
+[2K[1m[[32m⠒[0m][0m Solc 0.8.30 finished in 908.26ms
+Compiler run [32msuccessful[0m!
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying Security Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  --------------------------------------------------
+  DAOTimelock Address: 0xc6e7DF5E7b4f2A278906862b61205850344D4e7d
+  UpgradeExecutor Address: 0x59b670e9fA9D0A427751Af201D676719a970857b
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.412946689 gwei
+
+Estimated total gas used for script: 2943382
+
+Estimated amount required: 0.001215459851362198 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 1]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 1]
+    [32m⠂[0m [33m[Pending][0m 0x6da74a4a1ec8dae62612467a1bb9e723a886c6656283207e10f32ea8cd034778
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 1]
+    [32m⠂[0m [33m[Pending][0m 0x6da74a4a1ec8dae62612467a1bb9e723a886c6656283207e10f32ea8cd034778
+    [32m⠂[0m [33m[Pending][0m 0xbd3b0a9fe9eaaceb4832ad8df97c6530c00dbc079dc33a55a233e421f914f257
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x6da74a4a1ec8dae62612467a1bb9e723a886c6656283207e10f32ea8cd034778
+    [32m⠂[0m [33m[Pending][0m 0xbd3b0a9fe9eaaceb4832ad8df97c6530c00dbc079dc33a55a233e421f914f257
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xbd3b0a9fe9eaaceb4832ad8df97c6530c00dbc079dc33a55a233e421f914f257
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A
+##### anvil-hardhat
+✅  [Success] Hash: 0x6da74a4a1ec8dae62612467a1bb9e723a886c6656283207e10f32ea8cd034778
+Contract Address: 0xc6e7DF5E7b4f2A278906862b61205850344D4e7d
+Block: 15
+Paid: 0.00030048746797852 ETH (1654970 gas * 0.181566716 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xbd3b0a9fe9eaaceb4832ad8df97c6530c00dbc079dc33a55a233e421f914f257
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0xbd3b0a9fe9eaaceb4832ad8df97c6530c00dbc079dc33a55a233e421f914f257
+Contract Address: 0x59b670e9fA9D0A427751Af201D676719a970857b
+Block: 16
+Paid: 0.00009830477159063 ETH (609170 gas * 0.161374939 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00039879223956915 ETH (2264140 gas * avg 0.171470827 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00039879223956915 ETH (2264140 gas * avg 0.171470827 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00039879223956915 ETH (2264140 gas * avg 0.171470827 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00039879223956915 ETH (2264140 gas * avg 0.171470827 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/02_DeployTimelock.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/02_DeployTimelock.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/03_DeployDAOConfig.s.sol:DeployDAOConfig --fork-url ht[27m[7mt[27m[7mp://127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/03_DeployDAOConfig.s.sol:DeployDAOConfig --fork-url htt[1Pp://127.0.0.1:8545 --broadcas[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[7mforge script script/deployment/03_DeployDAOConfig.s.sol:DeployDAOConfig --fork-url ht[27m[7mt[27m[7mp://127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/03_DeployDAOConfig.s.sol:DeployDAOConfig --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+No files changed, compilation skipped
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying Configuration Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  --------------------------------------------------
+  DAOConfig Address: 0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.322749877 gwei
+
+Estimated total gas used for script: 551551
+
+Estimated amount required: 0.000178013017409227 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠂[0m [33m[Pending][0m 0x834c67a959f7339b2966c314b3f6e5c210d92fdd722b292c6a7f0a15249adefd
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x834c67a959f7339b2966c314b3f6e5c210d92fdd722b292c6a7f0a15249adefd
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0x834c67a959f7339b2966c314b3f6e5c210d92fdd722b292c6a7f0a15249adefd
+Contract Address: 0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1
+Block: 17
+Paid: 0.00006025579231133 ETH (424270 gas * 0.142022279 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00006025579231133 ETH (424270 gas * avg 0.142022279 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00006025579231133 ETH (424270 gas * avg 0.142022279 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00006025579231133 ETH (424270 gas * avg 0.142022279 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00006025579231133 ETH (424270 gas * avg 0.142022279 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/03_DeployDAOConfig.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/03_DeployDAOConfig.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ a[Ksource .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+No files changed, compilation skipped
+Traces:
+  [5746698] [33m→ new[0m DeployGovernor@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 28588 bytes of code
+
+  [4725] [31mDeployGovernor[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TIMELOCK_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("CONFIG_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Revert][0m vm.envAddress: environment variable "CONFIG_ADDRESS" not found
+    └─ [31m← [Revert][0m vm.envAddress: environment variable "CONFIG_ADDRESS" not found
+
+
+[1m[31mError[0m[1m:[0m script failed: vm.envAddress: environment variable "CONFIG_ADDRESS" not found
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+No files changed, compilation skipped
+Traces:
+  [5746698] [33m→ new[0m DeployGovernor@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 28588 bytes of code
+
+  [4731] [31mDeployGovernor[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TIMELOCK_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("CONFIG_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Revert][0m vm.envAddress: failed parsing $CONFIG_ADDRESS as type `address`: parser error:
+$CONFIG_ADDRESS
+^
+invalid string length
+    └─ [31m← [Revert][0m vm.envAddress: failed parsing $CONFIG_ADDRESS as type `address`: parser error:
+$CONFIG_ADDRESS
+^
+invalid string length
+
+
+[1m[31mError[0m[1m:[0m script failed: vm.envAddress: failed parsing $CONFIG_ADDRESS as type `address`: parser error:
+$CONFIG_ADDRESS
+^
+invalid string length
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7mforge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http[27m[7m:[27m[7m//127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ forge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+No files changed, compilation skipped
+Traces:
+  [5746698] [33m→ new[0m DeployGovernor@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 28588 bytes of code
+
+  [4731] [31mDeployGovernor[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("TIMELOCK_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("CONFIG_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Revert][0m vm.envAddress: failed parsing $CONFIG_ADDRESS as type `address`: parser error:
+$CONFIG_ADDRESS
+^
+invalid string length
+    └─ [31m← [Revert][0m vm.envAddress: failed parsing $CONFIG_ADDRESS as type `address`: parser error:
+$CONFIG_ADDRESS
+^
+invalid string length
+
+
+[1m[31mError[0m[1m:[0m script failed: vm.envAddress: failed parsing $CONFIG_ADDRESS as type `address`: parser error:
+$CONFIG_ADDRESS
+^
+invalid string length
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7m forge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url htt[27m[7mp[27m[7m://127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$  forge script script/deployment/04_DeployGovernor.s.sol:DeployGovernor --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+No files changed, compilation skipped
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying Governance Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  Predicted Governor Address: 0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f
+  VetoCouncil Deployed at: 0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+  Governor Deployed at: 0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f
+  --------------------------------------------------
+  !!! COPY TO .env !!!
+  GOVERNOR_ADDRESS= 0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f
+  VETO_COUNCIL_ADDRESS= 0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.284044557 gwei
+
+Estimated total gas used for script: 6907360
+
+Estimated amount required: 0.00196199801123952 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 1]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 1]
+    [32m⠂[0m [33m[Pending][0m 0x2f332b22e39de622d09c41219405c2e951544df9da615dbd7a92594f4279aeac
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 1]
+    [32m⠂[0m [33m[Pending][0m 0x2f332b22e39de622d09c41219405c2e951544df9da615dbd7a92594f4279aeac
+    [32m⠂[0m [33m[Pending][0m 0xc9a4ce59cef587d2ab68a596deedd507e5e30aecd57b38ed9511dcfdb2ed5fa9
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x2f332b22e39de622d09c41219405c2e951544df9da615dbd7a92594f4279aeac
+    [32m⠂[0m [33m[Pending][0m 0xc9a4ce59cef587d2ab68a596deedd507e5e30aecd57b38ed9511dcfdb2ed5fa9
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x2f332b22e39de622d09c41219405c2e951544df9da615dbd7a92594f4279aeac
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A
+##### anvil-hardhat
+✅  [Success] Hash: 0xc9a4ce59cef587d2ab68a596deedd507e5e30aecd57b38ed9511dcfdb2ed5fa9
+Contract Address: 0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f
+Block: 19
+Paid: 0.000541061988363082 ETH (4938266 gas * 0.109565177 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x2f332b22e39de622d09c41219405c2e951544df9da615dbd7a92594f4279aeac
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0x2f332b22e39de622d09c41219405c2e951544df9da615dbd7a92594f4279aeac
+Contract Address: 0x322813Fd9A801c5507c9de605d63CEA4f2CE6c44
+Block: 18
+Paid: 0.000046800464424714 ETH (375089 gas * 0.124771626 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000587862452787796 ETH (5313355 gas * avg 0.117168401 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000587862452787796 ETH (5313355 gas * avg 0.117168401 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/2 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000587862452787796 ETH (5313355 gas * avg 0.117168401 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/2 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000587862452787796 ETH (5313355 gas * avg 0.117168401 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/04_DeployGovernor.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/04_DeployGovernor.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7msource .env && forge script script/deployment/05_DeployTreasury.s.sol:DeployTreasury [27m[7m-[27m[7m-fork-url http://127.0.0.1:8545 --broadcast[27m[Asource .env && forge script script/deployment/05_DeployTreasury.s.sol:DeployTreasury --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+No files changed, compilation skipped
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying DeFi Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  DAOTreasury Deployed at: 0x4A679253410272dd5232B3Ff7cF5dbB88f295319
+  --------------------------------------------------
+  TREASURY_ADDRESS= 0x4A679253410272dd5232B3Ff7cF5dbB88f295319
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.219130353 gwei
+
+Estimated total gas used for script: 1431432
+
+Estimated amount required: 0.000313670199455496 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠂[0m [33m[Pending][0m 0xc2d4d45109444cf07f204488e8477acc014562c1185682883c2a4dd9ba4722bc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xc2d4d45109444cf07f204488e8477acc014562c1185682883c2a4dd9ba4722bc
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0xc2d4d45109444cf07f204488e8477acc014562c1185682883c2a4dd9ba4722bc
+Contract Address: 0x4A679253410272dd5232B3Ff7cF5dbB88f295319
+Block: 20
+Paid: 0.00011052683497476 ETH (1101102 gas * 0.10037838 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00011052683497476 ETH (1101102 gas * avg 0.10037838 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00011052683497476 ETH (1101102 gas * avg 0.10037838 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00011052683497476 ETH (1101102 gas * avg 0.10037838 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00011052683497476 ETH (1101102 gas * avg 0.10037838 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/05_DeployTreasury.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/05_DeployTreasury.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7msource .env && forge script script/deployment/07_DeployCore.s.sol:DeployCore --fork-u[27m[7mr[27m[7ml http://127.0.0.1:8545 --broadcast[27m[Asource .env && forge script script/deployment/07_DeployCore.s.sol:DeployCore --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+No files changed, compilation skipped
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Deploying Core Layer with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  --------------------------------------------------
+  DAOCore Address: 0x7a2088a1bFc9d81c55368AE168C2C02570cB814F
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.200756759 gwei
+
+Estimated total gas used for script: 681908
+
+Estimated amount required: 0.000136897640016172 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠂[0m [33m[Pending][0m 0x55e773a439ff2891830a9622f1e192663c3bce5d6167ad8c5e87ca542a44e9c5
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x55e773a439ff2891830a9622f1e192663c3bce5d6167ad8c5e87ca542a44e9c5
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0x55e773a439ff2891830a9622f1e192663c3bce5d6167ad8c5e87ca542a44e9c5
+Contract Address: 0x7a2088a1bFc9d81c55368AE168C2C02570cB814F
+Block: 21
+Paid: 0.0000465544912763 ETH (524545 gas * 0.08875214 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.0000465544912763 ETH (524545 gas * avg 0.08875214 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.0000465544912763 ETH (524545 gas * avg 0.08875214 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.0000465544912763 ETH (524545 gas * avg 0.08875214 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.0000465544912763 ETH (524545 gas * avg 0.08875214 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/07_DeployCore.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/07_DeployCore.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7msource .env && forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url htt[27m[7mp[27m[7m://127.0.0.1:8545 --broadcast[27m[A]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env && forge script script/deployment/08_WireDAO.s.sol:WireDAO --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠊[0m][0m Solc 0.8.30 finished in 770.56ms
+Compiler run [32msuccessful[0m!
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Wiring DAO Contracts with: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  Core Modules Linked
+  Feature Modules Registered
+  Core Setup Locked
+  Timelock Roles Granted to Governor
+  Token Governance Transferred to Timelock
+  --------------------------------------------------
+  SUCCESS: DAO IS NOW LIVE AND CONNECTED 
+  Deployer no longer controls the Token.
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.177504279 gwei
+
+Estimated total gas used for script: 628970
+
+Estimated amount required: 0.00011164486636263 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[5A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[5A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[6A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[6A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[7A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[7A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[8A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[8A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[9A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[9A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 7]
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠂[0m [33m[Pending][0m 0x414d4c4758d739fccb4e47cc93d02e06b1020f9f4aea2e80145a539339a8de0a
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[10A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[10A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠂[0m [33m[Pending][0m 0x414d4c4758d739fccb4e47cc93d02e06b1020f9f4aea2e80145a539339a8de0a
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[10A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[10A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[9A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[9A
+##### anvil-hardhat
+✅  [Success] Hash: 0x414d4c4758d739fccb4e47cc93d02e06b1020f9f4aea2e80145a539339a8de0a
+Block: 25
+Paid: 0.00000230947091456 ETH (44020 gas * 0.052464128 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[9A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[9A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[8A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[8A
+##### anvil-hardhat
+✅  [Success] Hash: 0x83a159e6771e1cca5a378315382322e3fec82591a93bd4473f61a17d651811c7
+Block: 23
+Paid: 0.000003595263674643 ETH (52597 gas * 0.068354919 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠂[0m [33m[Pending][0m 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[8A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[8A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[7A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[7A
+##### anvil-hardhat
+✅  [Success] Hash: 0x164aab08b83b8606b26d7b7c9e74d40b1d3fbeaf42d249b1898ad70a43554748
+Block: 25
+Paid: 0.000002702794482176 ETH (51517 gas * 0.052464128 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠂[0m [33m[Pending][0m 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[7A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[7A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[6A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[6A
+##### anvil-hardhat
+✅  [Success] Hash: 0x6f053f4dcb792a3cdea06e58089ed0eb15f1bce02cf5bcd96790b08f13089151
+Block: 24
+Paid: 0.000003087393151683 ETH (51517 gas * 0.059929599 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[6A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[6A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[5A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[5A
+##### anvil-hardhat
+✅  [Success] Hash: 0x678582b0c7c2fc43bfe5d587170ba8f97000df7c8523dded7fbd48fba926aaeb
+Block: 23
+Paid: 0.000003595263674643 ETH (52597 gas * 0.068354919 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[5A[2K[1B[2K[1B[2K[1B[2K[1B[2K[1B[2K[5A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A
+##### anvil-hardhat
+✅  [Success] Hash: 0x0fcd0690b70aed32d0ee7c361f7b605c422d1bd0b77a4536653173e60e613204
+Block: 22
+Paid: 0.000007752160736256 ETH (99328 gas * 0.078046077 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠂[0m [33m[Pending][0m 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[4A[2K[1B[2K[1B[2K[1B[2K[1B[2K[4A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A
+##### anvil-hardhat
+✅  [Success] Hash: 0x7ad64de37162da31abc8e94994b232a166649a24b6f4c7ce4022209878d9a415
+Block: 23
+Paid: 0.000003499498433124 ETH (51196 gas * 0.068354919 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0xa4a5b6ce013eeca54aea2d54032190ba091990545daa9c3228c2fd4fa464f45a
+Block: 23
+Paid: 0.000003595263674643 ETH (52597 gas * 0.068354919 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000030137108741728 ETH (455369 gas * avg 0.064540451 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000030137108741728 ETH (455369 gas * avg 0.064540451 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/8 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000030137108741728 ETH (455369 gas * avg 0.064540451 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/8 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.000030137108741728 ETH (455369 gas * avg 0.064540451 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/08_WireDAO.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/08_WireDAO.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ source .env
+[?2004l[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7msource .env && forge script script/deployment/09_FundTreasury.s.sol:FundTreasury --fo[27m[7mr[27m[7mk-url http://127.0.0.1:8545 --broadcast[27m[Asource .env && forge script script/deployment/09_FundTreasury.s.sol:FundTreasury --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...
+[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠊[0m][0m Solc 0.8.30 finished in 785.05ms
+Compiler run [32msuccessful[0m!
+[32mScript ran successfully.[0m
+
+== Logs ==
+  Funding Treasury from: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  --------------------------------------------------
+  SUCCESS: Treasury Funded!
+  Treasury Balance: 50000000 Million DISO
+  --------------------------------------------------
+
+## Setting up 1 EVM.
+
+==========================
+
+Chain 31337
+
+Estimated gas price: 0.104928255 gwei
+
+Estimated total gas used for script: 85443
+
+Estimated amount required: 0.000008965384891965 ETH
+
+==========================
+[32m⠂[0m Sequence #1 on anvil-hardhat                                                                                         [2K[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[1A[2K[1B[2K[1A[32m⠂[0m Sequence #1 on anvil-hardhat
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Sending transactions [0 - 0]
+    [32m⠂[0m [33m[Pending][0m 0xfcb083bd5eac305ed070dc377b5654846001deac8c5918230a98f48683e92d7e
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠂[0m [33m[Pending][0m 0xfcb083bd5eac305ed070dc377b5654846001deac8c5918230a98f48683e92d7e
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A
+##### anvil-hardhat
+✅  [Success] Hash: 0xfcb083bd5eac305ed070dc377b5654846001deac8c5918230a98f48683e92d7e
+Block: 26
+Paid: 0.00000284233598052 ETH (61860 gas * 0.045947882 gwei)
+
+[32m⠂[0m Sequence #1 on anvil-hardhat | Waiting for pending transactions
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m⠂[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00000284233598052 ETH (61860 gas * avg 0.045947882 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00000284233598052 ETH (61860 gas * avg 0.045947882 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m------------------------------------------------------------------------------------[0m[0m] 0/1 txes (0.0s)
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[3A[2K[1B[2K[1B[2K[1B[2K[3A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00000284233598052 ETH (61860 gas * avg 0.045947882 gwei)
+
+    [32m⠁[0m [00:00:00] [[36m[34m--------------------------------------------------------------------------------[0m[0m] 0/1 receipts (0.0s)[2A[2K[1B[2K[1B[2K[2A[32m✅[0m Sequence #1 on anvil-hardhat | Total Paid: 0.00000284233598052 ETH (61860 gas * avg 0.045947882 gwei)
+                                                                                                                       
+
+==========================
+
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+Transactions saved to: /home/turtur/FOUNDRY-DAO-F25/broadcast/09_FundTreasury.s.sol/31337/run-latest.json
+
+Sensitive values saved to: /home/turtur/FOUNDRY-DAO-F25/cache/09_FundTreasury.s.sol/31337/run-latest.json
+
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7msource .env && forge script script/deployment/10_CreateProposal.s.sol:CreateProposal [27m[7m-[27m[7m-fork-url http://127.0.0.1:8545 --broadcast[27m[Asource .env && forge script script/deployment/10_CreateProposal.s.sol:CreateProposal --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠒[0m][0m Solc 0.8.30 finished in 1.28s
+Compiler run [32msuccessful[0m!
+Traces:
+  [512846] [33m→ new[0m CreateProposal@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 2451 bytes of code
+
+  [100925] [31mCreateProposal[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOVERNOR_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOV_TOKEN_ADDRESS")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34mstartBroadcast[0m(<pk>)
+    │   └─ [34m← [Return][0m
+    ├─ [0] [32mconsole[0m::[32mlog[0m("Delegating voting power to self...")[33m [staticcall][0m
+    │   └─ [32m← [Stop][0m
+    ├─ [74234] [32m0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512[0m::[32mdelegate[0m(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)
+    │   ├─ emit DelegateChanged([36mdelegator: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, fromDelegate: 0x0000000000000000000000000000000000000000, toDelegate: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266[0m)
+    │   ├─ emit DelegateVotesChanged([36mdelegate: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266, previousVotes: 0, newVotes: 150000000000000000000000000 [2m[1.5e26][0m[0m)
+    │   └─ [32m← [Stop][0m
+    ├─ [11408] [31m0xa85233C63b9Ee964Add6F2cffe00Fd84eb32338f[0m::[31mpropose[0m([0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512], [0], [0xa9059cbb000000000000000000000000000000000000000000000000000000000000012300000000000000000000000000000000000000000000003635c9adc5dea00000], "Proposal #1: Initial DAO Test Grant")
+    │   ├─ [1006] [32m0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512[0m::[32mgetVotes[0m(0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266)[33m [staticcall][0m
+    │   │   └─ [32m← [Return][0m 150000000000000000000000000 [2m[1.5e26][0m
+    │   └─ [31m← [Revert][0m DescriptionTooShort(35, 100)
+    └─ [31m← [Revert][0m DescriptionTooShort(35, 100)
+
+
+
+== Logs ==
+  Delegating voting power to self...
+[1m[31mError[0m[1m:[0m script failed: DescriptionTooShort(35, 100)
+[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ clear
+[?2004l[H[2J[3J[?2004h]0;turtur@NITRO-V: ~/FOUNDRY-DAO-F25[01;32mturtur@NITRO-V[00m:[01;34m~/FOUNDRY-DAO-F25[00m$ [7msource .env && forge script script/deployment/10_CreateProposal.s.sol:CreateProposal [27m[7m-[27m[7m-fork-url http://127.0.0.1:8545 --broadcast[27m[Asource .env && forge script script/deployment/10_CreateProposal.s.sol:CreateProposal --fork-url http://127.0.0.1:8545 --broadcast
+[?2004l[2K[1m[[32m⠃[0m][0m Compiling...[2K[1m[[32m⠊[0m][0m Compiling...[2K[1m[[32m⠒[0m][0m Compiling...
+[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠔[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠑[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠘[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠃[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠊[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠒[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠢[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠆[0m][0m Compiling 1 files with Solc 0.8.30[2K[1m[[32m⠰[0m][0m Compiling 1 files with Solc 0.8.30
+[2K[1m[[32m⠔[0m][0m Solc 0.8.30 finished in 1.27s
+Compiler run [32msuccessful[0m!
+Traces:
+  [551884] [33m→ new[0m CreateProposal@0x9f7cF1d1F558E57ef88a59ac3D47214eF25B6A06
+    └─ [32m← [Return][0m 2646 bytes of code
+
+  [128447] [31mCreateProposal[0m::[31mrun[0m()
+    ├─ [0] [34mVM[0m::[34menvUint[0m("PRIVATE_KEY")[33m [staticcall][0m
+    │   └─ [34m← [Return][0m <env var value>
+    ├─ [0] [34mVM[0m::[34maddr[0m(<pk>)[33m [staticcall][0m
+    │   └─ [34m← [Return][0m 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    ├─ [0] [34mVM[0m::[34menvAddress[0m("GOVERNOR_ADDRESS")

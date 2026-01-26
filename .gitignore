@@ -1,5 +1,6 @@
 .env
 out/
-broadcast/
 cache/
-*.swp
+broadcast/
+lib/
+.DS_Store
