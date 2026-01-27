@@ -104,47 +104,42 @@ graph TD
 
 ---
 
-## 📂 Detailed Code Structure
+## 📂 Architectural Topology
 
-A comprehensive breakdown of the smart contract architecture designed for modularity and separation of concerns.
+The codebase is organized into logical domains, strictly separating **Kernel Logic** from **Pluggable Modules**. This ensures that governance strategies can evolve without destabilizing the core treasury or security layers.
 
 ```text
-src
-└── contracts
-    ├── config
-    │   └── DAOConfig.sol            # Dynamic parameter management (Quorum, Thresholds)
-    ├── core                         # THE KERNEL
-    │   ├── DAOCore.sol              # Central Registry & Access Hub
-    │   ├── DAOTimelock.sol          # Final source of truth for execution
-    │   ├── DAOTreasury.sol          # Multi-asset Vault (ETH/ERC20/721/1155)
-    │   ├── HybridGovernorDynamic.sol# Main Decision Engine with Anti-Spam
-    │   └── TreasuryYieldStrategy.sol# Aave V3 Integration Logic
-    ├── delegation
-    │   └── DelegationRegistry.sol   # Gasless delegation via EIP-712
-    ├── governance                   # VOTING ENGINES
-    │   ├── ConvictionStaking.sol    # Locking mechanism for Conviction Voting
-    │   ├── ConvictionVoting.sol     # Time-weighted staking logic
-    │   ├── GovernanceToken.sol      # ERC20Votes with Delegation & Snapshots
-    │   ├── ProposalGuard.sol        # Anti-spam & Sanitation checks
-    │   ├── QuadraticFunding.sol     # Sqrt-based voting for public goods allocation
-    │   ├── RageQuit.sol             # Minority protection exit mechanism
-    │   ├── VetoCouncil.sol          # Optimistic Security (Guardian Multisig)
-    │   └── VotingStrategies.sol     # Mathematical libraries for power calculation
-    ├── offchain                     # REAL WORLD BRIDGE
-    │   ├── OffchainResultExecutor.sol # Execution bridge for Snapshot.org
-    │   └── VotingPowerSnapshot.sol    # Historical power tracking
-    ├── security                     # SENTINEL LAYER
-    │   ├── EmergencyPause.sol       # Time-bounded Circuit breaker
-    │   ├── GovernanceAnalytics.sol  # On-chain data tracking & metrics
-    │   └── RoleManager.sol          # Abstracted RBAC (Admin, Guardian, Proposer)
-    ├── upgrades                     # UPGRADEABILITY
-    │   ├── GovernanceUUPS.sol       # UUPS Proxy standard implementation
-    │   └── UpgradeExecutor.sol      # Secure upgrade path logic
-    └── utils                        # HELPERS
-        └── SignatureVerifier.sol    # EIP-712 Signature validation
-
-```
-
+src/contracts
+├── core/                  # THE KERNEL & STATE
+│   └── Holds the immutable registry, the Time-locked execution engine, 
+│       and the Multi-asset Treasury vault. This is the "Brain" of the DAO.
+│
+├── governance/            # CONSENSUS ENGINES
+│   └── Contains pluggable voting strategies (Quadratic Funding, Conviction Voting)
+│       and Optimistic Security modules (Veto Council, RageQuit).
+│
+├── security/              # SENTINEL DEFENSE LAYER
+│   └── Active defense systems including Circuit Breakers (Emergency Pause), 
+│       On-chain Analytics, and Role-Based Access Control (RBAC).
+│
+├── delegation/            # META-GOVERNANCE
+│   └── Logic for gasless interaction and EIP-712 signature-based 
+│       voting power delegation.
+│
+├── offchain/              # HYBRID BRIDGE
+│   └── Oracle adapters that verify off-chain signals (Snapshot.org) to trigger 
+│       on-chain execution, enabling a hybrid voting model.
+│
+├── config/                # DYNAMIC TUNING
+│   └── Manages mutable system parameters (Quorum, Thresholds, Delays), 
+│       allowing the DAO to self-optimize without code upgrades.
+│
+├── upgrades/              # LIFECYCLE MANAGEMENT
+│   └── UUPS Proxy implementations and secure upgrade paths to ensure 
+│       protocol longevity and future-proofing.
+│
+└── utils/                 # CRYPTOGRAPHIC PRIMITIVES
+    └── Low-level helpers for signature verification and data formatting.
 ---
 
 ## 🧩 Core Modules & Functionality
@@ -240,7 +235,7 @@ This repository serves as a reference implementation for advanced DAO patterns. 
 
 
 
-<i>Senior Smart Contract Developer · Solidity · Foundry · Web3 Security</i>
+<i>Senior Smart Contract Developer · Solidity · Foundry · Web3 Engineer</i>
 
 
 
