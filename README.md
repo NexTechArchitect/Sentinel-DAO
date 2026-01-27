@@ -241,26 +241,11 @@ This repository serves as a reference implementation for advanced DAO patterns. 
 2. **Use at your own risk:** Do not use this code to secure real value on Mainnet without a comprehensive review.
 
 ---
-
-<div align="center">
-<b>Built with ❤️ by NEXTECHARHITECT</b>
-
-
-
+<div align="center"> <b>Built with ❤️ by NEXTECHARHITECT</b>
 
 
 <i>Senior Smart Contract Developer · Solidity · Foundry · Web3 Engineer</i>
 
 
 
-
-
-
-
-<a href="https://github.com/NexTechArchitect">GitHub</a> •
-<a href="https://www.google.com/search?q=https://x.com/NexTechArchitect">Twitter</a>
-</div>
-
-```
-
-```
+<a href="https://github.com/NexTechArchitect">GitHub</a> • <a href="https://www.google.com/url?sa=E&source=gmail&q=https://x.com/itZ_AmiT0">Twitter</a> </div>
