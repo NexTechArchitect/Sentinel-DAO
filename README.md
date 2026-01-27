@@ -18,7 +18,7 @@
   treasury assets, protocol upgrades, and system parameters through enforced execution rules.
 </p>
 
-[View Deployed Contracts](#-deployed-contracts-verified) • [Design Philosophy](#-design-philosophy) • [Engineering Standards](#️-engineering--development-standards)
+[View Deployed Contracts](#-deployed-contracts-verified) • [Design Philosophy](#-design-philosophy) • [Engineering Standards](#-engineering--development-standards)
 
 </div>
 
@@ -31,7 +31,7 @@
 - [📂 Architectural Topology](#-architectural-topology)
 - [🧩 Core Modules & Functionality](#-core-modules--functionality)
 - [✅ Deployed Contracts (Verified)](#-deployed-contracts-verified)
-- [⚙️ Engineering Standards](#️-engineering--development-standards)
+- [⚙️ Engineering Standards](#-engineering--development-standards)
 - [🛠️ Installation & Setup](#️-installation--setup)
 - [⚠️ Disclaimer](#️-disclaimer)
 
@@ -53,39 +53,40 @@ The system is anchored by a **Hybrid Governor**. While it leverages OpenZeppelin
 
 ```mermaid
 graph TD
-    %% Styling
+    %% Styling Definitions
     classDef core fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff;
     classDef gov fill:#4f46e5,stroke:#fff,stroke-width:1px,color:#fff;
     classDef sec fill:#be123c,stroke:#fff,stroke-width:1px,color:#fff;
     classDef defi fill:#059669,stroke:#fff,stroke-width:1px,color:#fff;
 
-    subgraph Kernel
+    %% Nodes and Subgraphs
+    subgraph "Kernel Layer"
         Core((⚡ DAO Core)):::core
         Timelock[⏳ Timelock Controller]:::core
         Config[⚙️ Global Config]:::core
     end
 
-    subgraph Governance Engine
+    subgraph "Governance Engine"
         Gov[⚖️ Hybrid Governor]:::gov
         Token[🪙 GovToken + Delegation]:::gov
         QF[Quadratic Funding]:::gov
         Conviction[⏳ Conviction Voting]:::gov
     end
 
-    subgraph Security Layer
+    subgraph "Security Layer"
         Veto[🚫 Veto Council]:::sec
         Guard[🛡️ Proposal Guard]:::sec
         Rage[🚪 RageQuit Module]:::sec
         Pause[⏸️ Emergency Pause]:::sec
     end
 
-    subgraph Treasury & DeFi
+    subgraph "Treasury & DeFi"
         Vault[💰 DAO Treasury]:::defi
         Yield[📈 Yield Strategy]:::defi
         Aave[🏦 Aave V3 Protocol]:::defi
     end
 
-    %% Relations
+    %% Relations / Connections
     Gov <==> Core
     Core <==> Timelock
     Core <==> Vault
@@ -96,11 +97,13 @@ graph TD
     
     Veto -- Cancels --> Gov
     Rage -- Withdraws --> Vault
+    Guard -.-> Gov
+    Pause -.-> Core
     
     Vault -- Idle Assets --> Yield
     Yield <--> Aave
 
----
+```
 
 ---
 
@@ -111,40 +114,40 @@ The codebase is organized into logical domains, strictly separating **Kernel Log
 ```text
 src/contracts
 ├── core
-│   THE KERNEL & STATE
-│   Holds the immutable registry, the Time-locked execution engine,
-│   and the Multi-asset Treasury vault
-│
+    THE KERNEL & STATE
+    Holds the immutable registry, the Time-locked execution engine,
+    and the Multi-asset Treasury vault
+    
 ├── governance
-│   CONSENSUS ENGINES
-│   Contains pluggable voting strategies like Quadratic Funding and Conviction Voting
-│   along with Optimistic Security modules
-│
+    CONSENSUS ENGINES
+    Contains pluggable voting strategies like Quadratic Funding and Conviction Voting
+    along with Optimistic Security modules
+    
 ├── security
-│   SENTINEL DEFENSE LAYER
-│   Active defense systems including Circuit Breakers, On-chain Analytics,
-│   and Role-Based Access Control
-│
+    SENTINEL DEFENSE LAYER
+    Active defense systems including Circuit Breakers, On-chain Analytics,
+    and Role-Based Access Control
+    
 ├── delegation
-│   META-GOVERNANCE
-│   Logic for gasless interaction and EIP-712 signature-based
-│   voting power delegation
-│
+    META-GOVERNANCE
+    Logic for gasless interaction and EIP-712 signature-based
+    voting power delegation
+    
 ├── offchain
-│   HYBRID BRIDGE
-│   Oracle adapters that verify off-chain signals to trigger
-│   on-chain execution
-│
+    HYBRID BRIDGE
+    Oracle adapters that verify off-chain signals to trigger
+    on-chain execution
+    
 ├── config
-│   DYNAMIC TUNING
-│   Manages mutable system parameters allowing the DAO to self-optimize
-│   without code upgrades
-│
+    DYNAMIC TUNING
+    Manages mutable system parameters allowing the DAO to self-optimize
+    without code upgrades
+    
 ├── upgrades
-│   LIFECYCLE MANAGEMENT
-│   UUPS Proxy implementations and secure upgrade paths to ensure
-│   protocol longevity
-│
+    LIFECYCLE MANAGEMENT
+    UUPS Proxy implementations and secure upgrade paths to ensure
+    protocol longevity
+    
 └── utils
     CRYPTOGRAPHIC PRIMITIVES
     Low-level helpers for signature verification and data formatting
