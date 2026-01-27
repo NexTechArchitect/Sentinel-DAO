@@ -18,7 +18,7 @@
   treasury assets, protocol upgrades, and system parameters through enforced execution rules.
 </p>
 
-[View Deployed Contracts](#-deployed-contracts-verified) • [Design Philosophy](#-design-philosophy) • [Engineering Standards](#-engineering--development-standards)
+[View Deployed Contracts](#-deployed-contracts-verified) • [Design Philosophy](#-design-philosophy) • [Engineering Standards](#️-engineering--development-standards)
 
 </div>
 
@@ -28,10 +28,10 @@
 
 - [🧠 Design Philosophy](#-design-philosophy)
 - [🏛️ System Architecture](#️-system-architecture)
-- [📂 Detailed Code Structure](#-detailed-code-structure)
+- [📂 Architectural Topology](#-architectural-topology)
 - [🧩 Core Modules & Functionality](#-core-modules--functionality)
 - [✅ Deployed Contracts (Verified)](#-deployed-contracts-verified)
-- [⚙️ Engineering Standards](#-engineering--development-standards)
+- [⚙️ Engineering Standards](#️-engineering--development-standards)
 - [🛠️ Installation & Setup](#️-installation--setup)
 - [⚠️ Disclaimer](#️-disclaimer)
 
@@ -110,36 +110,47 @@ The codebase is organized into logical domains, strictly separating **Kernel Log
 
 ```text
 src/contracts
-├── core/                  # THE KERNEL & STATE
-│   └── Holds the immutable registry, the Time-locked execution engine, 
-│       and the Multi-asset Treasury vault. This is the "Brain" of the DAO.
+├── core
+│   THE KERNEL & STATE
+│   Holds the immutable registry, the Time-locked execution engine,
+│   and the Multi-asset Treasury vault
 │
-├── governance/            # CONSENSUS ENGINES
-│   └── Contains pluggable voting strategies (Quadratic Funding, Conviction Voting)
-│       and Optimistic Security modules (Veto Council, RageQuit).
+├── governance
+│   CONSENSUS ENGINES
+│   Contains pluggable voting strategies like Quadratic Funding and Conviction Voting
+│   along with Optimistic Security modules
 │
-├── security/              # SENTINEL DEFENSE LAYER
-│   └── Active defense systems including Circuit Breakers (Emergency Pause), 
-│       On-chain Analytics, and Role-Based Access Control (RBAC).
+├── security
+│   SENTINEL DEFENSE LAYER
+│   Active defense systems including Circuit Breakers, On-chain Analytics,
+│   and Role-Based Access Control
 │
-├── delegation/            # META-GOVERNANCE
-│   └── Logic for gasless interaction and EIP-712 signature-based 
-│       voting power delegation.
+├── delegation
+│   META-GOVERNANCE
+│   Logic for gasless interaction and EIP-712 signature-based
+│   voting power delegation
 │
-├── offchain/              # HYBRID BRIDGE
-│   └── Oracle adapters that verify off-chain signals (Snapshot.org) to trigger 
-│       on-chain execution, enabling a hybrid voting model.
+├── offchain
+│   HYBRID BRIDGE
+│   Oracle adapters that verify off-chain signals to trigger
+│   on-chain execution
 │
-├── config/                # DYNAMIC TUNING
-│   └── Manages mutable system parameters (Quorum, Thresholds, Delays), 
-│       allowing the DAO to self-optimize without code upgrades.
+├── config
+│   DYNAMIC TUNING
+│   Manages mutable system parameters allowing the DAO to self-optimize
+│   without code upgrades
 │
-├── upgrades/              # LIFECYCLE MANAGEMENT
-│   └── UUPS Proxy implementations and secure upgrade paths to ensure 
-│       protocol longevity and future-proofing.
+├── upgrades
+│   LIFECYCLE MANAGEMENT
+│   UUPS Proxy implementations and secure upgrade paths to ensure
+│   protocol longevity
 │
-└── utils/                 # CRYPTOGRAPHIC PRIMITIVES
-    └── Low-level helpers for signature verification and data formatting.
+└── utils
+    CRYPTOGRAPHIC PRIMITIVES
+    Low-level helpers for signature verification and data formatting
+
+```
+
 ---
 
 ## 🧩 Core Modules & Functionality
@@ -165,7 +176,7 @@ src/contracts
 ### 🔹 Hybrid Compatibility
 
 * **Off-Chain Bridge:** Snapshot-style voting results can be verified through **EIP-712 signatures** and executed on-chain without trusting centralized servers.
-* **Analytics:** Proposal outcomes and activity metrics are recorded on-chain (`GovernanceAnalytics.sol`) to support long-term health monitoring.
+* **Analytics:** Proposal outcomes and activity metrics are recorded on-chain to support long-term health monitoring.
 
 ---
 
@@ -191,8 +202,8 @@ All contracts have been deployed and fully verified on the **Sepolia Testnet**.
 
 This codebase represents an advanced smart contract implementation adhering to production-grade standards:
 
-* **Gas-Aware Design:** Usage of custom errors (`error Unauthorized()`) and storage packing.
-* **Explicit Access Checks:** Every sensitive function is guarded by `RoleManager` or `Timelock`.
+* **Gas-Aware Design:** Usage of custom errors and storage packing.
+* **Explicit Access Checks:** Every sensitive function is guarded by RoleManager or Timelock.
 * **Testing Rigor:** The system is covered by extensive unit tests, integration tests, fuzz testing, and system-level lifecycle simulations.
 * **Separation of Concerns:** Role management, logic, and storage are decoupled to ensure upgradeability without data loss.
 
