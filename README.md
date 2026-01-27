@@ -1,57 +1,104 @@
 
+<div align="center">
+
 # 🛡️ Sentinel DAO Protocol
 
 [![Foundry](https://img.shields.io/badge/Built%20with-Foundry-FFdb1C.svg)](https://getfoundry.sh/)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.30-363636.svg)](https://docs.soliditylang.org/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Network](https://img.shields.io/badge/Network-Sepolia-grey)](https://sepolia.etherscan.io/)
-[![Status](https://img.shields.io/badge/Deployment-Verified-brightgreen)]()
+[![Architecture](https://img.shields.io/badge/Architecture-Hub%20%26%20Spoke-blueviolet)]()
 
-> **A production-grade, modular governance framework engineered for security, scalability, and DeFi integration.**
+<br/>
 
-**Sentinel DAO** represents a paradigm shift in on-chain organization management. Moving beyond simple voting, it implements a **Hybrid Governance Model** (Token + Time-Weighted + Quadratic) backed by an **Optimistic Security Layer** (Veto Councils, RageQuit). The protocol features a DeFi-native Treasury that autonomously generates yield via **Aave V3**, turning idle assets into productive capital.
+**A protocol-level governance infrastructure designed to model how real decentralized organizations operate under long-term control.**
+
+<p align="center">
+  <b>Sentinel DAO</b> is not a demo or a UI-driven product. It is a rigorous governance framework capable of controlling <br/>
+  treasury assets, protocol upgrades, and system parameters through enforced execution rules.
+</p>
+
+[View Deployed Contracts](#-deployed-contracts-verified) • [Design Philosophy](#-design-philosophy) • [Engineering Standards](#-engineering--development-standards)
+
+</div>
 
 ---
 
 ## 📑 Table of Contents
 
+- [🧠 Design Philosophy](#-design-philosophy)
 - [🏛️ System Architecture](#️-system-architecture)
 - [📂 Detailed Code Structure](#-detailed-code-structure)
-- [🧠 Advanced Module Internals](#-advanced-module-internals)
+- [🧩 Core Modules & Functionality](#-core-modules--functionality)
 - [✅ Deployed Contracts (Verified)](#-deployed-contracts-verified)
+- [⚙️ Engineering Standards](#-engineering--development-standards)
 - [🛠️ Installation & Setup](#️-installation--setup)
-- [🧪 Testing & QA](#-testing--qa)
 - [⚠️ Disclaimer](#️-disclaimer)
+
+---
+
+## 🧠 Design Philosophy
+
+Sentinel DAO reflects **protocol engineering** rather than simple application development. It addresses real governance failure modes, long-term maintainability, and security isolation.
+
+1.  **No Implicit Power:** The architecture follows a strict separation of power. No contract has implicit power over another, and no privileged role can bypass governance execution.
+2.  **Enforced Delays:** All successful proposals execute exclusively through a **Timelock Controller**. This creates a transparent delay window, ensuring no governance decision is applied instantly.
+3.  **Governance as Infrastructure:** This system is designed to be extended, audited, and integrated. It serves as the "Operating System" for an organization, not just a voting booth.
 
 ---
 
 ## 🏛️ System Architecture
 
-The protocol utilizes a **Hub-and-Spoke** architecture centered around the `DAOCore` registry. This ensures modularity, allowing individual components (like voting strategies or security modules) to be upgraded without migrating the entire DAO.
+At the center is a **Hybrid Governor** that extends OpenZeppelin’s framework but introduces additional safety. Proposal creation, voting, execution, and treasury control are handled by independent modules that communicate only through clearly defined authority boundaries.
 
 ```mermaid
 graph TD
-    subgraph Core
-    Governor[Hybrid Governor] <--> Core[DAO Core Registry]
-    Core <--> Timelock[Timelock Controller]
-    Core <--> Treasury[DAO Treasury]
+    %% Styling
+    classDef core fill:#0f172a,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef gov fill:#4f46e5,stroke:#fff,stroke-width:1px,color:#fff;
+    classDef sec fill:#be123c,stroke:#fff,stroke-width:1px,color:#fff;
+    classDef defi fill:#059669,stroke:#fff,stroke-width:1px,color:#fff;
+
+    subgraph Kernel
+        Core((⚡ DAO Core)):::core
+        Timelock[⏳ Timelock Controller]:::core
+        Config[⚙️ Global Config]:::core
     end
 
-    subgraph Governance
-    Token[Gov Token] --> Governor
-    QF[Quadratic Funding] -.-> Governor
-    Conviction[Conviction Voting] -.-> Governor
+    subgraph Governance Engine
+        Gov[⚖️ Hybrid Governor]:::gov
+        Token[🪙 GovToken + Delegation]:::gov
+        QF[Quadratic Funding]:::gov
+        Conviction[⏳ Conviction Voting]:::gov
     end
 
-    subgraph Security
-    Veto[Veto Council] -- Cancels --> Governor
-    Guard[Proposal Guard] -- Validates --> Governor
-    Pause[Emergency Pause] -- Freezes --> Core
+    subgraph Security Layer
+        Veto[🚫 Veto Council]:::sec
+        Guard[🛡️ Proposal Guard]:::sec
+        Rage[🚪 RageQuit Module]:::sec
+        Pause[⏸️ Emergency Pause]:::sec
     end
 
-    subgraph DeFi
-    Treasury -- Yield Strategy --> AaveV3[Aave Pool]
+    subgraph Treasury & DeFi
+        Vault[💰 DAO Treasury]:::defi
+        Yield[📈 Yield Strategy]:::defi
+        Aave[🏦 Aave V3 Protocol]:::defi
     end
+
+    %% Relations
+    Gov <==> Core
+    Core <==> Timelock
+    Core <==> Vault
+    
+    Token --> Gov
+    QF -.-> Gov
+    Conviction -.-> Gov
+    
+    Veto -- Cancels --> Gov
+    Rage -- Withdraws --> Vault
+    
+    Vault -- Idle Assets --> Yield
+    Yield <--> Aave
 
 ```
 
@@ -68,12 +115,12 @@ src
     │   └── DAOConfig.sol            # Dynamic parameter management (Quorum, Thresholds)
     ├── core                         # THE KERNEL
     │   ├── DAOCore.sol              # Central Registry & Access Hub
-    │   ├── DAOTimelock.sol          # Time-delayed execution controller (OpenZeppelin ext)
+    │   ├── DAOTimelock.sol          # Final source of truth for execution
     │   ├── DAOTreasury.sol          # Multi-asset Vault (ETH/ERC20/721/1155)
-    │   ├── HybridGovernorDynamic.sol# Main Decision Engine (Supports multiple vote types)
+    │   ├── HybridGovernorDynamic.sol# Main Decision Engine with Anti-Spam
     │   └── TreasuryYieldStrategy.sol# Aave V3 Integration Logic
     ├── delegation
-    │   └── DelegationRegistry.sol   # Advanced delegation logic with EIP-712 Sig support
+    │   └── DelegationRegistry.sol   # Gasless delegation via EIP-712
     ├── governance                   # VOTING ENGINES
     │   ├── ConvictionStaking.sol    # Locking mechanism for Conviction Voting
     │   ├── ConvictionVoting.sol     # Time-weighted staking logic
@@ -87,9 +134,9 @@ src
     │   ├── OffchainResultExecutor.sol # Execution bridge for Snapshot.org
     │   └── VotingPowerSnapshot.sol    # Historical power tracking
     ├── security                     # SENTINEL LAYER
-    │   ├── EmergencyPause.sol       # Circuit breaker for critical bugs
+    │   ├── EmergencyPause.sol       # Time-bounded Circuit breaker
     │   ├── GovernanceAnalytics.sol  # On-chain data tracking & metrics
-    │   └── RoleManager.sol          # RBAC (Admin, Guardian, Proposer roles)
+    │   └── RoleManager.sol          # Abstracted RBAC (Admin, Guardian, Proposer)
     ├── upgrades                     # UPGRADEABILITY
     │   ├── GovernanceUUPS.sol       # UUPS Proxy standard implementation
     │   └── UpgradeExecutor.sol      # Secure upgrade path logic
@@ -100,40 +147,30 @@ src
 
 ---
 
-## 🧠 Advanced Module Internals
+## 🧩 Core Modules & Functionality
 
-Here is how the most critical and complex components of the system function:
+### 🔹 The Governance Kernel
 
-### 1. Quadratic Funding (QF)
+* **Hybrid Governor:** Voting strategies are not hardcoded. Proposals can be executed under token-weighted, quadratic, or conviction-based models.
+* **Timelock Controller:** Acts as the final source of truth. Funds cannot be moved and upgrades cannot happen without passing through the Timelock delay.
+* **Role Manager:** Permissions are not scattered. Administrative authority is explicitly defined, auditable, and revocable.
 
-* **Problem:** Standard 1-token-1-vote systems are dominated by whales.
-* **Solution:** We use the Square Root formula to calculate matching funds.
-* **Logic:** The cost to buy `n` votes is `n^2`. This means 100 people donating 1 DAI has significantly more impact than 1 person donating 100 DAI.
-* **Implementation:** `QuadraticFunding.sol` tracks unique contributor addresses per project to calculate the subsidy match from the Treasury.
+### 🔹 Security & Protection
 
-### 2. Autonomous Treasury (Yield Strategy)
+* **RageQuit Mechanism:** Enforces accountability. If governance becomes hostile, token holders can burn their tokens and exit with a proportional share of assets, preventing permanent lock-in.
+* **Emergency Pause:** Governed by Guardians, this system is **time-bounded**. It automatically expires after a fixed duration, preventing permanent freezes or hidden backdoors.
+* **Anti-Spam:** Proposal submission is protected through reputation checks and cooldown windows to prevent governance flooding.
 
-* **Problem:** DAO Treasuries often sit idle, losing value to inflation.
-* **Solution:** Integration with **Aave V3**.
-* **Logic:** The `TreasuryYieldStrategy.sol` contract serves as a bridge.
-1. `depositToAave(token, amount)`: Approves and supplies assets to the Aave Lending Pool.
-2. `withdrawFromAave(token, amount)`: Redeems aTokens back for underlying assets when needed for proposal execution.
+### 🔹 Autonomous Treasury
 
+* **Custody Rules:** Funds cannot be moved by admins directly. Transfers are possible *only* through Timelock execution or the RageQuit mechanism.
+* **Multi-Asset Vault:** Capable of holding ETH, ERC20, ERC721, and ERC1155 tokens.
+* **DeFi Integration:** Idle assets are programmatically deployed to Aave V3 via `TreasuryYieldStrategy`, turning the treasury into an active participant.
 
-* **Safety:** Only the Timelock execution can trigger withdrawals, preventing unauthorized drains.
+### 🔹 Hybrid Compatibility
 
-### 3. Conviction Voting
-
-* **Problem:** Flash-loan attacks allows attackers to borrow votes for one block to swing a decision.
-* **Solution:** Time-weighted voting power.
-* **Formula:** `Voting Power = Amount Staked * Time Locked`.
-* **Implementation:** `ConvictionStaking.sol` locks tokens. Power grows linearly over time until a max cap is reached. Users must unstake (forfeit power) to sell tokens.
-
-### 4. Veto Council (Optimistic Security)
-
-* **Problem:** Pure code-is-law is dangerous if a bug exists.
-* **Solution:** A 2-of-3 Multisig of trusted Guardians.
-* **Capability:** They cannot *pass* proposals, but they can *cancel* any proposal that is malicious or flagged as a bug exploit. This acts as a "human brake" on the autonomous system.
+* **Off-Chain Bridge:** Snapshot-style voting results can be verified through **EIP-712 signatures** and executed on-chain without trusting centralized servers.
+* **Analytics:** Proposal outcomes and activity metrics are recorded on-chain (`GovernanceAnalytics.sol`) to support long-term health monitoring.
 
 ---
 
@@ -155,9 +192,20 @@ All contracts have been deployed and fully verified on the **Sepolia Testnet**.
 
 ---
 
+## ⚙️ Engineering & Development Standards
+
+This codebase represents an advanced smart contract implementation adhering to production-grade standards:
+
+* **Gas-Aware Design:** Usage of custom errors (`error Unauthorized()`) and storage packing.
+* **Explicit Access Checks:** Every sensitive function is guarded by `RoleManager` or `Timelock`.
+* **Testing Rigor:** The system is covered by extensive unit tests, integration tests, fuzz testing, and system-level lifecycle simulations.
+* **Separation of Concerns:** Role management, logic, and storage are decoupled to ensure upgradeability without data loss.
+
+---
+
 ## 🛠️ Installation & Setup
 
-This project uses **Foundry** for a blazingly fast development workflow.
+**Prerequisites:** [Foundry Toolchain](https://getfoundry.sh/)
 
 ```bash
 # 1. Clone the repository
@@ -167,41 +215,8 @@ cd Sentinel-DAO
 # 2. Install Dependencies
 forge install
 
-# 3. Environment Setup
-cp .env.example .env
-# (Add your SEPOLIA_RPC_URL and PRIVATE_KEY in .env)
-
-# 4. Build Project
+# 3. Build Project
 make build
-
-```
-
----
-
-## 🧪 Testing & QA
-
-We maintain a rigorous testing standard including Unit, Integration, and Fuzzing layers.
-
-**Run All Tests:**
-
-```bash
-make test
-
-```
-
-**Run Integration Lifecycle:**
-*Simulates the entire flow: Propose -> Vote -> Queue -> Execute*
-
-```bash
-make test-integration
-
-```
-
-**Run Fuzz Tests:**
-*Stress tests the system with random inputs to find edge cases.*
-
-```bash
-forge test --match-path test/fuzz/*
 
 ```
 
@@ -215,18 +230,26 @@ This repository serves as a reference implementation for advanced DAO patterns. 
 
 1. **Audit Status:** This codebase has **NOT** undergone a formal security audit.
 2. **Use at your own risk:** Do not use this code to secure real value on Mainnet without a comprehensive review.
-3. **Experimental Features:** Modules like Quadratic Funding and Conviction Voting involve complex math that may have edge cases.
 
 ---
 
 <div align="center">
 <b>Built with ❤️ by NEXTECHARHITECT</b>
 
+
+
+
+
 <i>Senior Smart Contract Developer · Solidity · Foundry · Web3 Security</i>
+
+
+
+
+
+
 
 <a href="https://github.com/NexTechArchitect">GitHub</a> •
 <a href="https://www.google.com/search?q=https://x.com/NexTechArchitect">Twitter</a>
-
 </div>
 
 ```
