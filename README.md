@@ -49,7 +49,7 @@ Sentinel DAO reflects **protocol engineering** rather than simple application de
 
 ## 🏛️ System Architecture
 
-At the center is a **Hybrid Governor** that extends OpenZeppelin’s framework but introduces additional safety. Proposal creation, voting, execution, and treasury control are handled by independent modules that communicate only through clearly defined authority boundaries.
+The system is anchored by a **Hybrid Governor**. While it leverages OpenZeppelin's battle-tested foundation, I engineered it to be strictly modular. Unlike monolithic DAOs, here the **Voting Logic**, **Execution**, and **Treasury Control** are isolated into separate components. This ensures that complex voting strategies cannot accidentally bypass treasury security boundaries.
 
 ```mermaid
 graph TD
@@ -100,7 +100,7 @@ graph TD
     Vault -- Idle Assets --> Yield
     Yield <--> Aave
 
-```
+---
 
 ---
 
