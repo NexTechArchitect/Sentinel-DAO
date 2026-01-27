@@ -13,24 +13,19 @@ contract CastVote is Script {
 
         HybridGovernorDynamic governor = HybridGovernorDynamic(payable(govAddr));
 
-        // Proposal ID from previous step
-        uint256 proposalId = 63100912279725926203215066636664161875071706850575840366514770416229412593965;
+        uint256 proposalId = 0x1b76eb5902ec7a14133b6c1cb06270a4827a1a17b2e679121edc212d5cd05455;
 
-        // Check State before voting
-        // 0=Pending, 1=Active, 2=Canceled, 3=Defeated, 4=Succeeded, 5=Queued, 6=Expired, 7=Executed
         uint8 state = uint8(governor.state(proposalId));
         console.log("Proposal State (Before Voting):", state);
 
-        if (state == 1) { // 1 means Active
+        if (state == 1) { 
             console.log("Voting is OPEN. Casting Vote...");
             
-            // Cast Vote: 0=Against, 1=For, 2=Abstain
             governor.castVote(proposalId, 1);
             
-            console.log(" Vote Cast: FOR");
+            console.log("VOTE CAST SUCCESSFULLY! (For)");
         } else {
-            console.log(" Voting is NOT Active yet. Current State:", state);
-            console.log("Try mining more blocks or increasing time.");
+            console.log("Voting is NOT Active yet. Current State:", state);
         }
 
         vm.stopBroadcast();
