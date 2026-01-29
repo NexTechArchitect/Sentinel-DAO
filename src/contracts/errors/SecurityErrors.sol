@@ -7,6 +7,6 @@ error RoleAlreadyGranted();
 error RoleNotGranted();
 error SignerMismatch();
 error ZeroAddressProvided();
-// --- Pausable ---
+
 error AlreadyPaused();
 error NotPaused();
