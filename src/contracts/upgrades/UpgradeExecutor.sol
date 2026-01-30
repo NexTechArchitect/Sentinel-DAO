@@ -49,7 +49,6 @@ contract UpgradeExecutor {
 
     /**
      * @notice Batch upgrades for multiple contracts in one transaction.
-     * @dev Fixed: Added array length validation.
      */
     function executeBatchUpgrade(
         address[] calldata proxies,
