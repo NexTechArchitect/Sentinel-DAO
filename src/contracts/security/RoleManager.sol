@@ -67,7 +67,9 @@ contract RoleManager is AccessControl {
             unchecked { ++i; }
         }
     }
-
+    ///////////////////////////////////////////////////////////
+    //                    VIEW & RETURNS                    //
+    //////////////////////////////////////////////////////////
     
     function isGuardian(address account) external view returns (bool) {
         return hasRole(GUARDIAN_ROLE, account);
