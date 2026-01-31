@@ -54,7 +54,6 @@ contract VetoCouncil {
         if (hasVetoed[proposalId][msg.sender]) revert AlreadyCastVeto();
 
 
-        // Ensure the proposal is in a state where vetoing is still relevant
         IGovernor.ProposalState s = GOVERNOR.state(proposalId);
         if (
             s == IGovernor.ProposalState.Executed ||
@@ -75,11 +74,6 @@ contract VetoCouncil {
 
         emit VetoCast(proposalId, msg.sender);
 
-
-        /**
-         * If threshold is reached, mark as vetoed. 
-         * The Governor's execution logic will verify this state.
-         */
         if (currentVotes >= VETO_THRESHOLD) {
             isVetoed[proposalId] = true;
             emit ProposalVetoed(proposalId);
