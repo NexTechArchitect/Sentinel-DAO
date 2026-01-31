@@ -8,7 +8,6 @@ import {RoleManager} from "../security/RoleManager.sol";
 
 /**
  * @title QuadraticFunding
- * @author Turtur (FOUNDRY-DAO-F25)
  * @notice Implements a matching pool system where the number of contributors matters more than the amount.
  * @dev Uses the formula: (sum of square roots of contributions)^2 to determine matching weight.
  */
@@ -98,7 +97,6 @@ contract QuadraticFunding is ReentrancyGuard {
 
         FUNDING_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
 
-        // Calculate sqrt with precision scale
         uint256 sqrtContribution = Math.sqrt(_amount * SCALE);
         
         unchecked {
