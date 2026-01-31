@@ -70,7 +70,6 @@ contract RageQuit is ReentrancyGuard {
         }
 
 
-        // Proportional Asset Distribution
         uint256 len = assets.length;
         for (uint256 i = 0; i < len; ) {
             address asset = assets[i];
