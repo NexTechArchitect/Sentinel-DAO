@@ -9,7 +9,6 @@ import {ZeroAddress, Unauthorized} from "../errors/CommonErrors.sol";
 
 /**
  * @title TreasuryYieldStrategy
- * @author Turtur (FOUNDRY-DAO-F25)
  * @notice Connects the DAO Treasury to Aave V3 to generate yield on idle assets.
  * @dev Specifically integrated with Aave V3 Pool on Sepolia: 0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951
  */
