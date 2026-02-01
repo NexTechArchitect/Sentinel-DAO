@@ -16,7 +16,7 @@ import {OnlyAuthorized} from "../errors/TreasuryErrors.sol";
 
 /**
  * @title DAOTreasury
- * @author Turtur (FOUNDRY-DAO-F25)
+ * @author NexTechArchitect
  * @notice Multi-asset vault for DAO funds supporting Governance and Emergency exits.
  */
 contract DAOTreasury is
