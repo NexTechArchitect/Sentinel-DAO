@@ -16,7 +16,6 @@ import {OnlyAuthorized} from "../errors/TreasuryErrors.sol";
 
 /**
  * @title DAOTreasury
- * @author Turtur (FOUNDRY-DAO-F25)
  * @notice Multi-asset vault for DAO funds supporting Governance and Emergency exits.
  */
 contract DAOTreasury is
@@ -111,8 +110,8 @@ contract DAOTreasury is
         if (to == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
 
-        emit FundsSent(to, amount);
         to.sendValue(amount);
+        emit FundsSent(to, amount);
     }
 
 
@@ -124,8 +123,8 @@ contract DAOTreasury is
         if (token == address(0) || to == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
 
-        emit FundsSent(to, amount);
         IERC20(token).safeTransfer(to, amount);
+         emit FundsSent(to, amount);
     }
 
 

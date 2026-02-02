@@ -10,6 +10,7 @@ import {ZeroAddress, Unauthorized} from "../errors/CommonErrors.sol";
  * @notice Central registry and orchestration layer for the DAO ecosystem.
  */
 contract DAOCore {
+    
     RoleManager public immutable ROLE_MANAGER;
     GovernanceToken public immutable TOKEN;
 

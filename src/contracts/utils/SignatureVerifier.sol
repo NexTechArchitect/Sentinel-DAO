@@ -17,12 +17,12 @@ library SignatureVerifier {
      * @param signature The signature bytes.
      * @return bool True if signature is valid.
      */
-    function verify(
+   function verify(
         address signer,
         bytes32 digest,
         bytes memory signature
     ) internal view returns (bool) {
-
+        
         (address recovered, ECDSA.RecoverError error, ) = ECDSA.tryRecover(
             digest,
             signature
@@ -33,11 +33,10 @@ library SignatureVerifier {
         }
 
         if (signer.code.length > 0) {
-            
             try IERC1271(signer).isValidSignature(digest, signature) returns (
-                bytes4 magicValue
+                bytes4 response
             ) {
-                return magicValue == IERC1271.isValidSignature.selector;
+                return response == IERC1271.isValidSignature.selector;
             } catch {
                 return false;
             }

@@ -48,7 +48,9 @@ contract DAOTreasuryTest is Test, ERC1155Holder {
 
         treasury = new DAOTreasury(timelock);
 
-        token.transfer(user, 1000 * 10 ** 18);
+        bool success = token.transfer(user, 1000 * 10 ** 18);
+        assertTrue(success, "Setup transfer failed");
+
         token1155.mint(user, 1, 100);
         nft.transferFrom(address(this), user, 1);
 
@@ -92,7 +94,8 @@ contract DAOTreasuryTest is Test, ERC1155Holder {
         uint256 amount = 100 * 10 ** 18;
         
         vm.startPrank(user);
-        token.transfer(address(treasury), amount);
+        bool s = token.transfer(address(treasury), amount);
+        assertTrue(s, "Transfer to treasury failed");
         vm.stopPrank();
 
         vm.prank(timelock);
@@ -105,7 +108,8 @@ contract DAOTreasuryTest is Test, ERC1155Holder {
         uint256 amount = 100 * 10 ** 18;
         
         vm.startPrank(user);
-        token.transfer(address(treasury), amount);
+        bool s = token.transfer(address(treasury), amount);
+        assertTrue(s, "Transfer to treasury failed");
         vm.stopPrank();
 
         address[] memory recipients = new address[](2);
@@ -199,8 +203,10 @@ contract DAOTreasuryTest is Test, ERC1155Holder {
 
     function test_ViewFunctions() public {
         uint256 amount = 500 * 10 ** 18;
-        token.transfer(address(treasury), amount);
         
+        bool s = token.transfer(address(treasury), amount);
+        assertTrue(s, "Funding failed");
+
         (bool sent, ) = address(treasury).call{value: 2 ether}("");
         assertTrue(sent);
 
@@ -219,7 +225,8 @@ contract DAOTreasuryTest is Test, ERC1155Holder {
     }
 
     function test_ZeroAmountChecks() public {
-        token.transfer(address(treasury), 300);
+        bool s = token.transfer(address(treasury), 300);
+        assertTrue(s, "Funding failed");
 
         vm.startPrank(timelock);
         

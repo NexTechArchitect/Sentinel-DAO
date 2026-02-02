@@ -15,6 +15,7 @@ import {
  * @dev Optimized for gas using storage packing (bool + uint40 in one slot).
  */
 contract EmergencyPause {
+    
     IRoleManager public immutable ROLE_MANAGER;
 
     

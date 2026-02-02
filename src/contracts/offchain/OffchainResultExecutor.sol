@@ -56,8 +56,9 @@ contract OffchainResultExecutor is EIP712 {
      */
     function setSigner(address _signer) external onlyTimelock {
         if (_signer == address(0)) revert ZeroAddress();
-        emit SignerUpdated(signer, _signer);
+        
         signer = _signer;
+        emit SignerUpdated(signer, _signer);
     }
 
     /**

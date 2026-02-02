@@ -77,8 +77,7 @@ contract GovernanceToken is ERC20, ERC20Permit, ERC20Votes, ERC20Burnable {
             success; 
         }
     }
-
-
+    
     function nonces(
         address owner
     ) public view override(ERC20Permit, Nonces) returns (uint256) {

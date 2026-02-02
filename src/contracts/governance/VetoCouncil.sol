@@ -53,8 +53,6 @@ contract VetoCouncil {
         if (isVetoed[proposalId]) revert AlreadyVetoedProposal();
         if (hasVetoed[proposalId][msg.sender]) revert AlreadyCastVeto();
 
-
-        // Ensure the proposal is in a state where vetoing is still relevant
         IGovernor.ProposalState s = GOVERNOR.state(proposalId);
         if (
             s == IGovernor.ProposalState.Executed ||

@@ -58,6 +58,7 @@ contract TreasuryYieldStrategy {
      * @notice Supplies assets from the Treasury to the Aave Pool.
      */
     function depositToAave(address asset, uint256 amount) external onlyTreasury {
+        
         IERC20(asset).forceApprove(address(AAVE_POOL), amount);
 
         try AAVE_POOL.supply(asset, amount, TREASURY, 0) {

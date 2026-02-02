@@ -13,6 +13,7 @@ contract UpgradeExecutor {
     RoleManager public immutable ROLE_MANAGER;
 
     event UpgradeExecuted(address indexed proxy, address indexed newImplementation);
+    
     error UpgradeFailed();
 
     constructor(address _roleManager) {
@@ -49,7 +50,6 @@ contract UpgradeExecutor {
 
     /**
      * @notice Batch upgrades for multiple contracts in one transaction.
-     * @dev Fixed: Added array length validation.
      */
     function executeBatchUpgrade(
         address[] calldata proxies,

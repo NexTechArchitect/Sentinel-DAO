@@ -1,0 +1,2242 @@
+src/contracts/interfaces/IVotingStrategy.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IVotingStrategy.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IVotingStrategy.sol:import {VotingStrategies} from "../governance/VotingStrategies.sol";
+src/contracts/interfaces/IVotingStrategy.sol:/**
+src/contracts/interfaces/IVotingStrategy.sol: * @title IVotingStrategy
+src/contracts/interfaces/IVotingStrategy.sol: * @notice Exposes strategy logic for UI and external integrations.
+src/contracts/interfaces/IVotingStrategy.sol: */
+src/contracts/interfaces/IVotingStrategy.sol:interface IVotingStrategy {
+src/contracts/interfaces/IVotingStrategy.sol:    function calculateVotingPower(
+src/contracts/interfaces/IVotingStrategy.sol:        VotingStrategies.Strategy strategy,
+src/contracts/interfaces/IVotingStrategy.sol:        uint256 balance,
+src/contracts/interfaces/IVotingStrategy.sol:        uint256 holdingDuration
+src/contracts/interfaces/IVotingStrategy.sol:    ) external pure returns (uint256);
+src/contracts/interfaces/IVotingStrategy.sol:    function strategyName(
+src/contracts/interfaces/IVotingStrategy.sol:        VotingStrategies.Strategy strategy
+src/contracts/interfaces/IVotingStrategy.sol:    ) external pure returns (string memory);
+src/contracts/interfaces/IVotingStrategy.sol:}
+src/contracts/interfaces/IVetoCouncil.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IVetoCouncil.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IVetoCouncil.sol:interface IVetoCouncil {
+src/contracts/interfaces/IVetoCouncil.sol:    /**
+src/contracts/interfaces/IVetoCouncil.sol:     * @notice Checks if a specific proposal has been vetoed.
+src/contracts/interfaces/IVetoCouncil.sol:     * @param proposalId The ID of the proposal to check.
+src/contracts/interfaces/IVetoCouncil.sol:     * @return True if the proposal is vetoed, false otherwise.
+src/contracts/interfaces/IVetoCouncil.sol:     */
+src/contracts/interfaces/IVetoCouncil.sol:    function isVetoed(uint256 proposalId) external view returns (bool);
+src/contracts/interfaces/IVetoCouncil.sol:    /**
+src/contracts/interfaces/IVetoCouncil.sol:     * @notice Casts a veto vote against a proposal.
+src/contracts/interfaces/IVetoCouncil.sol:     * @dev Should only be callable by Guardians.
+src/contracts/interfaces/IVetoCouncil.sol:     * @param proposalId The ID of the proposal to veto.
+src/contracts/interfaces/IVetoCouncil.sol:     */
+src/contracts/interfaces/IVetoCouncil.sol:    function castVeto(uint256 proposalId) external;
+src/contracts/interfaces/IVetoCouncil.sol:}
+src/contracts/interfaces/IGovernor.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IGovernor.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IGovernor.sol:import {VotingStrategies} from "../governance/VotingStrategies.sol";
+src/contracts/interfaces/IGovernor.sol:/**
+src/contracts/interfaces/IGovernor.sol: * @title IGovernor (Advanced)
+src/contracts/interfaces/IGovernor.sol: * @notice Interface for the Hybrid Governor with Strategy support.
+src/contracts/interfaces/IGovernor.sol: */
+src/contracts/interfaces/IGovernor.sol:interface IGovernor {
+src/contracts/interfaces/IGovernor.sol:    enum ProposalState {
+src/contracts/interfaces/IGovernor.sol:        Pending,
+src/contracts/interfaces/IGovernor.sol:        Active,
+src/contracts/interfaces/IGovernor.sol:        Canceled,
+src/contracts/interfaces/IGovernor.sol:        Defeated,
+src/contracts/interfaces/IGovernor.sol:        Succeeded,
+src/contracts/interfaces/IGovernor.sol:        Queued,
+src/contracts/interfaces/IGovernor.sol:        Executed
+src/contracts/interfaces/IGovernor.sol:    }
+src/contracts/interfaces/IGovernor.sol:    // --- Events ---
+src/contracts/interfaces/IGovernor.sol:    event VotingStrategyUpdated(
+src/contracts/interfaces/IGovernor.sol:        VotingStrategies.Strategy oldStrategy,
+src/contracts/interfaces/IGovernor.sol:        VotingStrategies.Strategy newStrategy
+src/contracts/interfaces/IGovernor.sol:    );
+src/contracts/interfaces/IGovernor.sol:    event TokenAcquisitionRecorded(address indexed account, uint256 timestamp);
+src/contracts/interfaces/IGovernor.sol:    function state(uint256 proposalId) external view returns (ProposalState);
+src/contracts/interfaces/IGovernor.sol:    function proposalSnapshot(
+src/contracts/interfaces/IGovernor.sol:        uint256 proposalId
+src/contracts/interfaces/IGovernor.sol:    ) external view returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function proposalDeadline(
+src/contracts/interfaces/IGovernor.sol:        uint256 proposalId
+src/contracts/interfaces/IGovernor.sol:    ) external view returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function proposalProposer(
+src/contracts/interfaces/IGovernor.sol:        uint256 proposalId
+src/contracts/interfaces/IGovernor.sol:    ) external view returns (address);
+src/contracts/interfaces/IGovernor.sol:    function proposalThreshold() external view returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function votingDelay() external view returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function votingPeriod() external view returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function quorum(uint256 blockNumber) external view returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function updateVotingStrategy(
+src/contracts/interfaces/IGovernor.sol:        VotingStrategies.Strategy newStrategy
+src/contracts/interfaces/IGovernor.sol:    ) external;
+src/contracts/interfaces/IGovernor.sol:    function getCurrentStrategyName() external view returns (string memory);
+src/contracts/interfaces/IGovernor.sol:    function currentStrategy()
+src/contracts/interfaces/IGovernor.sol:        external
+src/contracts/interfaces/IGovernor.sol:        view
+src/contracts/interfaces/IGovernor.sol:        returns (VotingStrategies.Strategy);
+src/contracts/interfaces/IGovernor.sol:    function recordTokenAcquisition(address account) external;
+src/contracts/interfaces/IGovernor.sol:    function updateQuorumNumerator(uint256 newQuorumNumerator) external;
+src/contracts/interfaces/IGovernor.sol:    function propose(
+src/contracts/interfaces/IGovernor.sol:        address[] calldata targets,
+src/contracts/interfaces/IGovernor.sol:        uint256[] calldata values,
+src/contracts/interfaces/IGovernor.sol:        bytes[] calldata calldatas,
+src/contracts/interfaces/IGovernor.sol:        string calldata description
+src/contracts/interfaces/IGovernor.sol:    ) external returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function castVote(
+src/contracts/interfaces/IGovernor.sol:        uint256 proposalId,
+src/contracts/interfaces/IGovernor.sol:        uint8 support
+src/contracts/interfaces/IGovernor.sol:    ) external returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function castVoteWithReason(
+src/contracts/interfaces/IGovernor.sol:        uint256 proposalId,
+src/contracts/interfaces/IGovernor.sol:        uint8 support,
+src/contracts/interfaces/IGovernor.sol:        string calldata reason
+src/contracts/interfaces/IGovernor.sol:    ) external returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function castVoteBySig(
+src/contracts/interfaces/IGovernor.sol:        uint256 proposalId,
+src/contracts/interfaces/IGovernor.sol:        uint8 support,
+src/contracts/interfaces/IGovernor.sol:        uint8 v,
+src/contracts/interfaces/IGovernor.sol:        bytes32 r,
+src/contracts/interfaces/IGovernor.sol:        bytes32 s
+src/contracts/interfaces/IGovernor.sol:    ) external returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function execute(
+src/contracts/interfaces/IGovernor.sol:        address[] calldata targets,
+src/contracts/interfaces/IGovernor.sol:        uint256[] calldata values,
+src/contracts/interfaces/IGovernor.sol:        bytes[] calldata calldatas,
+src/contracts/interfaces/IGovernor.sol:        bytes32 descriptionHash
+src/contracts/interfaces/IGovernor.sol:    ) external payable returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function cancel(
+src/contracts/interfaces/IGovernor.sol:        address[] calldata targets,
+src/contracts/interfaces/IGovernor.sol:        uint256[] calldata values,
+src/contracts/interfaces/IGovernor.sol:        bytes[] calldata calldatas,
+src/contracts/interfaces/IGovernor.sol:        bytes32 descriptionHash
+src/contracts/interfaces/IGovernor.sol:    ) external returns (uint256);
+src/contracts/interfaces/IGovernor.sol:    function timelock() external view returns (address);
+src/contracts/interfaces/IGovernor.sol:}
+src/contracts/interfaces/IGovernanceAnalytics.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IGovernanceAnalytics.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IGovernanceAnalytics.sol:interface IGovernanceAnalytics {
+src/contracts/interfaces/IGovernanceAnalytics.sol:    /**
+src/contracts/interfaces/IGovernanceAnalytics.sol:     * @notice Updates the analytics stats for a finished proposal.
+src/contracts/interfaces/IGovernanceAnalytics.sol:     * @param proposalId The ID of the proposal.
+src/contracts/interfaces/IGovernanceAnalytics.sol:     * @param success True if executed, false if defeated/canceled.
+src/contracts/interfaces/IGovernanceAnalytics.sol:     */
+src/contracts/interfaces/IGovernanceAnalytics.sol:    function updateAnalytics(uint256 proposalId, bool success) external;
+src/contracts/interfaces/IGovernanceAnalytics.sol:}
+src/contracts/interfaces/IProposalGuard.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IProposalGuard.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IProposalGuard.sol:interface IProposalGuard {
+src/contracts/interfaces/IProposalGuard.sol:    function validate(
+src/contracts/interfaces/IProposalGuard.sol:        address proposer,
+src/contracts/interfaces/IProposalGuard.sol:        string calldata description
+src/contracts/interfaces/IProposalGuard.sol:    ) external view returns (bool);
+src/contracts/interfaces/IProposalGuard.sol:    function recordProposal(address proposer) external;
+src/contracts/interfaces/IProposalGuard.sol:    function updateReputation(address proposer, bool success) external;
+src/contracts/interfaces/IProposalGuard.sol:}
+src/contracts/interfaces/IRageQuit.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IRageQuit.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IRageQuit.sol:interface IRageQuit {
+src/contracts/interfaces/IRageQuit.sol:    event RageQuitExecuted(
+src/contracts/interfaces/IRageQuit.sol:        address indexed user,
+src/contracts/interfaces/IRageQuit.sol:        uint256 indexed proposalId,
+src/contracts/interfaces/IRageQuit.sol:        uint256 tokensBurned,
+src/contracts/interfaces/IRageQuit.sol:        uint256 ethReceived
+src/contracts/interfaces/IRageQuit.sol:    );
+src/contracts/interfaces/IRageQuit.sol:    event RageQuitWindowUpdated(uint256 newWindow);
+src/contracts/interfaces/IRageQuit.sol:    function rageQuit(uint256 proposalId) external;
+src/contracts/interfaces/IRageQuit.sol:    function updateRageQuitWindow(uint256 newWindow) external;
+src/contracts/interfaces/IRageQuit.sol:    function rageQuitWindow() external view returns (uint256);
+src/contracts/interfaces/IRageQuit.sol:    function hasRageQuit(
+src/contracts/interfaces/IRageQuit.sol:        uint256 proposalId,
+src/contracts/interfaces/IRageQuit.sol:        address user
+src/contracts/interfaces/IRageQuit.sol:    ) external view returns (bool);
+src/contracts/interfaces/IRageQuit.sol:    function proposalExecutionTime(
+src/contracts/interfaces/IRageQuit.sol:        uint256 proposalId
+src/contracts/interfaces/IRageQuit.sol:    ) external view returns (uint256);
+src/contracts/interfaces/IRageQuit.sol:}
+src/contracts/interfaces/ITimelock.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/ITimelock.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/ITimelock.sol:interface ITimelock {
+src/contracts/interfaces/ITimelock.sol:    event CallScheduled(
+src/contracts/interfaces/ITimelock.sol:        bytes32 indexed id,
+src/contracts/interfaces/ITimelock.sol:        uint256 indexed index,
+src/contracts/interfaces/ITimelock.sol:        address target,
+src/contracts/interfaces/ITimelock.sol:        uint256 value,
+src/contracts/interfaces/ITimelock.sol:        bytes data,
+src/contracts/interfaces/ITimelock.sol:        bytes32 predecessor,
+src/contracts/interfaces/ITimelock.sol:        uint256 delay
+src/contracts/interfaces/ITimelock.sol:    );
+src/contracts/interfaces/ITimelock.sol:    event CallExecuted(
+src/contracts/interfaces/ITimelock.sol:        bytes32 indexed id,
+src/contracts/interfaces/ITimelock.sol:        uint256 indexed index,
+src/contracts/interfaces/ITimelock.sol:        address target,
+src/contracts/interfaces/ITimelock.sol:        uint256 value,
+src/contracts/interfaces/ITimelock.sol:        bytes data,
+src/contracts/interfaces/ITimelock.sol:        bytes32 predecessor
+src/contracts/interfaces/ITimelock.sol:    );
+src/contracts/interfaces/ITimelock.sol:    event Cancelled(bytes32 indexed id);
+src/contracts/interfaces/ITimelock.sol:    function getMinDelay() external view returns (uint256);
+src/contracts/interfaces/ITimelock.sol:    function isOperationReady(bytes32 id) external view returns (bool);
+src/contracts/interfaces/ITimelock.sol:    function isOperationDone(bytes32 id) external view returns (bool);
+src/contracts/interfaces/ITimelock.sol:    function isOperationPending(bytes32 id) external view returns (bool);
+src/contracts/interfaces/ITimelock.sol:    function schedule(
+src/contracts/interfaces/ITimelock.sol:        address target,
+src/contracts/interfaces/ITimelock.sol:        uint256 value,
+src/contracts/interfaces/ITimelock.sol:        bytes calldata data,
+src/contracts/interfaces/ITimelock.sol:        bytes32 predecessor,
+src/contracts/interfaces/ITimelock.sol:        bytes32 salt,
+src/contracts/interfaces/ITimelock.sol:        uint256 delay
+src/contracts/interfaces/ITimelock.sol:    ) external;
+src/contracts/interfaces/ITimelock.sol:    function scheduleBatch(
+src/contracts/interfaces/ITimelock.sol:        address[] calldata targets,
+src/contracts/interfaces/ITimelock.sol:        uint256[] calldata values,
+src/contracts/interfaces/ITimelock.sol:        bytes[] calldata payloads,
+src/contracts/interfaces/ITimelock.sol:        bytes32 predecessor,
+src/contracts/interfaces/ITimelock.sol:        bytes32 salt,
+src/contracts/interfaces/ITimelock.sol:        uint256 delay
+src/contracts/interfaces/ITimelock.sol:    ) external;
+src/contracts/interfaces/ITimelock.sol:    function execute(
+src/contracts/interfaces/ITimelock.sol:        address target,
+src/contracts/interfaces/ITimelock.sol:        uint256 value,
+src/contracts/interfaces/ITimelock.sol:        bytes calldata data,
+src/contracts/interfaces/ITimelock.sol:        bytes32 predecessor,
+src/contracts/interfaces/ITimelock.sol:        bytes32 salt
+src/contracts/interfaces/ITimelock.sol:    ) external payable;
+src/contracts/interfaces/ITimelock.sol:    function executeBatch(
+src/contracts/interfaces/ITimelock.sol:        address[] calldata targets,
+src/contracts/interfaces/ITimelock.sol:        uint256[] calldata values,
+src/contracts/interfaces/ITimelock.sol:        bytes[] calldata payloads,
+src/contracts/interfaces/ITimelock.sol:        bytes32 predecessor,
+src/contracts/interfaces/ITimelock.sol:        bytes32 salt
+src/contracts/interfaces/ITimelock.sol:    ) external payable;
+src/contracts/interfaces/ITimelock.sol:    function cancel(bytes32 id) external;
+src/contracts/interfaces/ITimelock.sol:}
+src/contracts/interfaces/IUpgradeExecutor.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IUpgradeExecutor.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IUpgradeExecutor.sol:interface IUpgradeExecutor {
+src/contracts/interfaces/IUpgradeExecutor.sol:    event UpgradeExecuted(address indexed proxy, address indexed newImpl);
+src/contracts/interfaces/IUpgradeExecutor.sol:    function executeUpgrade(
+src/contracts/interfaces/IUpgradeExecutor.sol:        address proxy,
+src/contracts/interfaces/IUpgradeExecutor.sol:        address newImplementation,
+src/contracts/interfaces/IUpgradeExecutor.sol:        bytes calldata data
+src/contracts/interfaces/IUpgradeExecutor.sol:    ) external;
+src/contracts/interfaces/IUpgradeExecutor.sol:    function timelock() external view returns (address);
+src/contracts/interfaces/IUpgradeExecutor.sol:}
+src/contracts/interfaces/ITreasury.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/ITreasury.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/ITreasury.sol:/**
+src/contracts/interfaces/ITreasury.sol: * @title ITreasury (Advanced)
+src/contracts/interfaces/ITreasury.sol: * @notice Interface for the DAO Vault with Rage Quit and Batching support.
+src/contracts/interfaces/ITreasury.sol: */
+src/contracts/interfaces/ITreasury.sol:interface ITreasury {
+src/contracts/interfaces/ITreasury.sol:    event FundsReceived(address indexed sender, uint256 amount);
+src/contracts/interfaces/ITreasury.sol:    event FundsSent(address indexed recipient, uint256 amount);
+src/contracts/interfaces/ITreasury.sol:    event RageQuitContractSet(address indexed newAddress);
+src/contracts/interfaces/ITreasury.sol:    
+src/contracts/interfaces/ITreasury.sol:    function setRageQuitContract(address _rageQuit) external;
+src/contracts/interfaces/ITreasury.sol:    function TIMELOCK() external view returns (address);
+src/contracts/interfaces/ITreasury.sol:    function rageQuitContract() external view returns (address);
+src/contracts/interfaces/ITreasury.sol:    
+src/contracts/interfaces/ITreasury.sol:    function transferEth(address payable to, uint256 amount) external;
+src/contracts/interfaces/ITreasury.sol:    function transferERC20(address token, address to, uint256 amount) external;
+src/contracts/interfaces/ITreasury.sol:    function batchTransferERC20(
+src/contracts/interfaces/ITreasury.sol:        address token,
+src/contracts/interfaces/ITreasury.sol:        address[] calldata recipients,
+src/contracts/interfaces/ITreasury.sol:        uint256[] calldata amounts
+src/contracts/interfaces/ITreasury.sol:    ) external;
+src/contracts/interfaces/ITreasury.sol:    function transferERC721(
+src/contracts/interfaces/ITreasury.sol:        address token,
+src/contracts/interfaces/ITreasury.sol:        address to,
+src/contracts/interfaces/ITreasury.sol:        uint256 tokenId
+src/contracts/interfaces/ITreasury.sol:    ) external;
+src/contracts/interfaces/ITreasury.sol:    function transferERC1155(
+src/contracts/interfaces/ITreasury.sol:        address token,
+src/contracts/interfaces/ITreasury.sol:        address to,
+src/contracts/interfaces/ITreasury.sol:        uint256 id,
+src/contracts/interfaces/ITreasury.sol:        uint256 amount,
+src/contracts/interfaces/ITreasury.sol:        bytes calldata data
+src/contracts/interfaces/ITreasury.sol:    ) external;
+src/contracts/interfaces/ITreasury.sol:    function depositEth() external payable;
+src/contracts/interfaces/ITreasury.sol:    function depositERC20(address token, uint256 amount) external;
+src/contracts/interfaces/ITreasury.sol:    function depositERC721(address token, uint256 tokenId) external;
+src/contracts/interfaces/ITreasury.sol:    function depositERC1155(
+src/contracts/interfaces/ITreasury.sol:        address token,
+src/contracts/interfaces/ITreasury.sol:        uint256 id,
+src/contracts/interfaces/ITreasury.sol:        uint256 amount,
+src/contracts/interfaces/ITreasury.sol:        bytes calldata data
+src/contracts/interfaces/ITreasury.sol:    ) external;
+src/contracts/interfaces/ITreasury.sol:    
+src/contracts/interfaces/ITreasury.sol:    function ethBalance() external view returns (uint256);
+src/contracts/interfaces/ITreasury.sol:    function tokenBalance(address token) external view returns (uint256);
+src/contracts/interfaces/ITreasury.sol:}
+src/contracts/interfaces/IRoleManager.sol:// SPDX-License-Identifier: MIT
+src/contracts/interfaces/IRoleManager.sol:pragma solidity ^0.8.30;
+src/contracts/interfaces/IRoleManager.sol:/**
+src/contracts/interfaces/IRoleManager.sol: * @title Role Manager Interface
+src/contracts/interfaces/IRoleManager.sol: * @notice Interface to decouple EmergencyPause from the actual RoleManager logic.
+src/contracts/interfaces/IRoleManager.sol: */
+src/contracts/interfaces/IRoleManager.sol:interface IRoleManager {
+src/contracts/interfaces/IRoleManager.sol:   
+src/contracts/interfaces/IRoleManager.sol:    function GUARDIAN_ROLE() external view returns (bytes32);
+src/contracts/interfaces/IRoleManager.sol:   
+src/contracts/interfaces/IRoleManager.sol:    function hasRole(bytes32 role, address account) external view returns (bool);
+src/contracts/interfaces/IRoleManager.sol:}
+src/contracts/delegation/DelegationRegistry.sol:// SPDX-License-Identifier: MIT
+src/contracts/delegation/DelegationRegistry.sol:pragma solidity ^0.8.30;
+src/contracts/delegation/DelegationRegistry.sol:import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+src/contracts/delegation/DelegationRegistry.sol:import {Checkpoints} from "@openzeppelin/contracts/utils/structs/Checkpoints.sol";
+src/contracts/delegation/DelegationRegistry.sol:import {SignatureVerifier} from "../utils/SignatureVerifier.sol";
+src/contracts/delegation/DelegationRegistry.sol:import {ZeroAddress} from "../errors/CommonErrors.sol";
+src/contracts/delegation/DelegationRegistry.sol:import {InvalidSignature, SignatureExpired} from "../errors/GovernanceErrors.sol";
+src/contracts/delegation/DelegationRegistry.sol:/**
+src/contracts/delegation/DelegationRegistry.sol: * @title DelegationRegistry
+src/contracts/delegation/DelegationRegistry.sol: * @notice Advanced checkpoint-based delegation system supporting EIP-712 off-chain signatures.
+src/contracts/delegation/DelegationRegistry.sol: */
+src/contracts/delegation/DelegationRegistry.sol:contract DelegationRegistry is EIP712 {
+src/contracts/delegation/DelegationRegistry.sol:    using Checkpoints for Checkpoints.Trace208;
+src/contracts/delegation/DelegationRegistry.sol:    bytes32 private constant DELEGATION_TYPEHASH =
+src/contracts/delegation/DelegationRegistry.sol:        keccak256(
+src/contracts/delegation/DelegationRegistry.sol:            "Delegation(address delegator,address delegatee,uint256 nonce,uint256 deadline)"
+src/contracts/delegation/DelegationRegistry.sol:        );
+src/contracts/delegation/DelegationRegistry.sol:    mapping(address => uint256) public nonces;
+src/contracts/delegation/DelegationRegistry.sol:    mapping(address => Checkpoints.Trace208) private _delegateCheckpoints;
+src/contracts/delegation/DelegationRegistry.sol:    event Delegated(address indexed delegator, address indexed delegatee);
+src/contracts/delegation/DelegationRegistry.sol:    constructor(
+src/contracts/delegation/DelegationRegistry.sol:        string memory name,
+src/contracts/delegation/DelegationRegistry.sol:        string memory version
+src/contracts/delegation/DelegationRegistry.sol:    ) EIP712(name, version) {}
+src/contracts/delegation/DelegationRegistry.sol:    function getDelegate(address delegator) external view returns (address) {
+src/contracts/delegation/DelegationRegistry.sol:        return address(uint160(_delegateCheckpoints[delegator].latest()));
+src/contracts/delegation/DelegationRegistry.sol:    }
+src/contracts/delegation/DelegationRegistry.sol:    /**
+src/contracts/delegation/DelegationRegistry.sol:     * @notice Retrieves the delegatee of an address at a specific historical timepoint.
+src/contracts/delegation/DelegationRegistry.sol:     * @param delegator The address that delegated their voting power.
+src/contracts/delegation/DelegationRegistry.sol:     * @param timepoint The block number or timestamp to query.
+src/contracts/delegation/DelegationRegistry.sol:     */
+src/contracts/delegation/DelegationRegistry.sol:    function getDelegateAt(
+src/contracts/delegation/DelegationRegistry.sol:        address delegator,
+src/contracts/delegation/DelegationRegistry.sol:        uint48 timepoint
+src/contracts/delegation/DelegationRegistry.sol:    ) external view returns (address) {
+src/contracts/delegation/DelegationRegistry.sol:        return address(
+src/contracts/delegation/DelegationRegistry.sol:            uint160(_delegateCheckpoints[delegator].upperLookup(timepoint))
+src/contracts/delegation/DelegationRegistry.sol:        );
+src/contracts/delegation/DelegationRegistry.sol:    }
+src/contracts/delegation/DelegationRegistry.sol:    function getDomainSeparator() external view returns (bytes32) {
+src/contracts/delegation/DelegationRegistry.sol:        return _domainSeparatorV4();
+src/contracts/delegation/DelegationRegistry.sol:    }
+src/contracts/delegation/DelegationRegistry.sol:    /**
+src/contracts/delegation/DelegationRegistry.sol:     * @notice Sets a delegatee for the caller.
+src/contracts/delegation/DelegationRegistry.sol:     * @param delegatee The address to receive the voting power.
+src/contracts/delegation/DelegationRegistry.sol:     */
+src/contracts/delegation/DelegationRegistry.sol:    function delegate(address delegatee) external {
+src/contracts/delegation/DelegationRegistry.sol:        if (delegatee == address(0)) revert ZeroAddress();
+src/contracts/delegation/DelegationRegistry.sol:        _delegate(msg.sender, delegatee);
+src/contracts/delegation/DelegationRegistry.sol:    }
+src/contracts/delegation/DelegationRegistry.sol:    /**
+src/contracts/delegation/DelegationRegistry.sol:     * @notice Delegates voting power using an EIP-712 off-chain signature.
+src/contracts/delegation/DelegationRegistry.sol:     * @param delegator The address granting delegation.
+src/contracts/delegation/DelegationRegistry.sol:     * @param delegatee The address receiving delegation.
+src/contracts/delegation/DelegationRegistry.sol:     * @param nonce Current nonce of the delegator for replay protection.
+src/contracts/delegation/DelegationRegistry.sol:     * @param deadline Expiry timestamp for the signature.
+src/contracts/delegation/DelegationRegistry.sol:     * @param signature The 65-byte ECDSA signature.
+src/contracts/delegation/DelegationRegistry.sol:     */
+src/contracts/delegation/DelegationRegistry.sol:    function delegateBySig(
+src/contracts/delegation/DelegationRegistry.sol:        address delegator,
+src/contracts/delegation/DelegationRegistry.sol:        address delegatee,
+src/contracts/delegation/DelegationRegistry.sol:        uint256 nonce,
+src/contracts/delegation/DelegationRegistry.sol:        uint256 deadline,
+src/contracts/delegation/DelegationRegistry.sol:        bytes calldata signature
+src/contracts/delegation/DelegationRegistry.sol:    ) external {
+src/contracts/delegation/DelegationRegistry.sol:        if (block.timestamp > deadline) revert SignatureExpired();
+src/contracts/delegation/DelegationRegistry.sol:        if (delegatee == address(0)) revert ZeroAddress();
+src/contracts/delegation/DelegationRegistry.sol:        if (nonce != nonces[delegator]) revert InvalidSignature();
+src/contracts/delegation/DelegationRegistry.sol:        bytes32 structHash;
+src/contracts/delegation/DelegationRegistry.sol:        bytes32 typeHash = DELEGATION_TYPEHASH;
+src/contracts/delegation/DelegationRegistry.sol:        assembly {
+src/contracts/delegation/DelegationRegistry.sol:            let ptr := mload(0x40)
+src/contracts/delegation/DelegationRegistry.sol:            mstore(ptr, typeHash)
+src/contracts/delegation/DelegationRegistry.sol:            mstore(add(ptr, 0x20), delegator)
+src/contracts/delegation/DelegationRegistry.sol:            mstore(add(ptr, 0x40), delegatee)
+src/contracts/delegation/DelegationRegistry.sol:            mstore(add(ptr, 0x60), nonce)
+src/contracts/delegation/DelegationRegistry.sol:            mstore(add(ptr, 0x80), deadline)
+src/contracts/delegation/DelegationRegistry.sol:            structHash := keccak256(ptr, 0xa0)
+src/contracts/delegation/DelegationRegistry.sol:        }
+src/contracts/delegation/DelegationRegistry.sol:        bytes32 hash = _hashTypedDataV4(structHash);
+src/contracts/delegation/DelegationRegistry.sol:        if (!SignatureVerifier.verify(delegator, hash, signature)) {
+src/contracts/delegation/DelegationRegistry.sol:            revert InvalidSignature();
+src/contracts/delegation/DelegationRegistry.sol:        }
+src/contracts/delegation/DelegationRegistry.sol:        unchecked {
+src/contracts/delegation/DelegationRegistry.sol:            nonces[delegator]++;
+src/contracts/delegation/DelegationRegistry.sol:        }
+src/contracts/delegation/DelegationRegistry.sol:        _delegate(delegator, delegatee);
+src/contracts/delegation/DelegationRegistry.sol:    }
+src/contracts/delegation/DelegationRegistry.sol:    function _delegate(address delegator, address delegatee) internal {
+src/contracts/delegation/DelegationRegistry.sol:        _delegateCheckpoints[delegator].push(
+src/contracts/delegation/DelegationRegistry.sol:            uint48(block.number),
+src/contracts/delegation/DelegationRegistry.sol:            uint208(uint160(delegatee))
+src/contracts/delegation/DelegationRegistry.sol:        );
+src/contracts/delegation/DelegationRegistry.sol:        emit Delegated(delegator, delegatee);
+src/contracts/delegation/DelegationRegistry.sol:    }
+src/contracts/delegation/DelegationRegistry.sol:}
+src/contracts/upgrades/UpgradeExecutor.sol:// SPDX-License-Identifier: MIT
+src/contracts/upgrades/UpgradeExecutor.sol:pragma solidity ^0.8.30;
+src/contracts/upgrades/UpgradeExecutor.sol:import {RoleManager} from "../security/RoleManager.sol";
+src/contracts/upgrades/UpgradeExecutor.sol:import {Unauthorized, ZeroAddress, ArrayLengthMismatch} from "../errors/CommonErrors.sol";
+src/contracts/upgrades/UpgradeExecutor.sol:/**
+src/contracts/upgrades/UpgradeExecutor.sol: * @title Upgrade Executor
+src/contracts/upgrades/UpgradeExecutor.sol: * @notice Centralized handler for performing UUPS upgrades via the DAO.
+src/contracts/upgrades/UpgradeExecutor.sol: * @dev Handles atomic upgrades and batch processing.
+src/contracts/upgrades/UpgradeExecutor.sol: */
+src/contracts/upgrades/UpgradeExecutor.sol:contract UpgradeExecutor {
+src/contracts/upgrades/UpgradeExecutor.sol:    RoleManager public immutable ROLE_MANAGER;
+src/contracts/upgrades/UpgradeExecutor.sol:    event UpgradeExecuted(address indexed proxy, address indexed newImplementation);
+src/contracts/upgrades/UpgradeExecutor.sol:    error UpgradeFailed();
+src/contracts/upgrades/UpgradeExecutor.sol:    constructor(address _roleManager) {
+src/contracts/upgrades/UpgradeExecutor.sol:        if (_roleManager == address(0)) revert ZeroAddress();
+src/contracts/upgrades/UpgradeExecutor.sol:        ROLE_MANAGER = RoleManager(_roleManager);
+src/contracts/upgrades/UpgradeExecutor.sol:    }
+src/contracts/upgrades/UpgradeExecutor.sol:    /**
+src/contracts/upgrades/UpgradeExecutor.sol:     * @notice Executes a single upgrade on a proxy.
+src/contracts/upgrades/UpgradeExecutor.sol:     */
+src/contracts/upgrades/UpgradeExecutor.sol:    function executeUpgrade(
+src/contracts/upgrades/UpgradeExecutor.sol:        address proxy,
+src/contracts/upgrades/UpgradeExecutor.sol:        address newImplementation,
+src/contracts/upgrades/UpgradeExecutor.sol:        bytes calldata data
+src/contracts/upgrades/UpgradeExecutor.sol:    ) external payable {
+src/contracts/upgrades/UpgradeExecutor.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+src/contracts/upgrades/UpgradeExecutor.sol:            revert Unauthorized();
+src/contracts/upgrades/UpgradeExecutor.sol:        
+src/contracts/upgrades/UpgradeExecutor.sol:        if (proxy == address(0) || newImplementation == address(0))
+src/contracts/upgrades/UpgradeExecutor.sol:            revert ZeroAddress();
+src/contracts/upgrades/UpgradeExecutor.sol:        bytes memory callData;
+src/contracts/upgrades/UpgradeExecutor.sol:        if (data.length > 0) {
+src/contracts/upgrades/UpgradeExecutor.sol:            callData = abi.encodeWithSignature("upgradeToAndCall(address,bytes)", newImplementation, data);
+src/contracts/upgrades/UpgradeExecutor.sol:        } else {
+src/contracts/upgrades/UpgradeExecutor.sol:            callData = abi.encodeWithSignature("upgradeTo(address)", newImplementation);
+src/contracts/upgrades/UpgradeExecutor.sol:        }
+src/contracts/upgrades/UpgradeExecutor.sol:        (bool success, ) = proxy.call{value: msg.value}(callData);
+src/contracts/upgrades/UpgradeExecutor.sol:        if (!success) revert UpgradeFailed();
+src/contracts/upgrades/UpgradeExecutor.sol:        emit UpgradeExecuted(proxy, newImplementation);
+src/contracts/upgrades/UpgradeExecutor.sol:    }
+src/contracts/upgrades/UpgradeExecutor.sol:    /**
+src/contracts/upgrades/UpgradeExecutor.sol:     * @notice Batch upgrades for multiple contracts in one transaction.
+src/contracts/upgrades/UpgradeExecutor.sol:     * @dev Fixed: Added array length validation.
+src/contracts/upgrades/UpgradeExecutor.sol:     */
+src/contracts/upgrades/UpgradeExecutor.sol:    function executeBatchUpgrade(
+src/contracts/upgrades/UpgradeExecutor.sol:        address[] calldata proxies,
+src/contracts/upgrades/UpgradeExecutor.sol:        address[] calldata implementations,
+src/contracts/upgrades/UpgradeExecutor.sol:        bytes[] calldata datas
+src/contracts/upgrades/UpgradeExecutor.sol:    ) external {
+src/contracts/upgrades/UpgradeExecutor.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+src/contracts/upgrades/UpgradeExecutor.sol:            revert Unauthorized();
+src/contracts/upgrades/UpgradeExecutor.sol:        uint256 len = proxies.length;
+src/contracts/upgrades/UpgradeExecutor.sol:        if (len != implementations.length || len != datas.length) 
+src/contracts/upgrades/UpgradeExecutor.sol:            revert ArrayLengthMismatch();
+src/contracts/upgrades/UpgradeExecutor.sol:        for (uint256 i = 0; i < len; ) {
+src/contracts/upgrades/UpgradeExecutor.sol:            bytes memory callData = datas[i].length > 0
+src/contracts/upgrades/UpgradeExecutor.sol:                ? abi.encodeWithSignature("upgradeToAndCall(address,bytes)", implementations[i], datas[i])
+src/contracts/upgrades/UpgradeExecutor.sol:                : abi.encodeWithSignature("upgradeTo(address)", implementations[i]);
+src/contracts/upgrades/UpgradeExecutor.sol:            (bool success, ) = proxies[i].call(callData);
+src/contracts/upgrades/UpgradeExecutor.sol:            if (!success) revert UpgradeFailed();
+src/contracts/upgrades/UpgradeExecutor.sol:            emit UpgradeExecuted(proxies[i], implementations[i]);
+src/contracts/upgrades/UpgradeExecutor.sol:            unchecked { ++i; }
+src/contracts/upgrades/UpgradeExecutor.sol:        }
+src/contracts/upgrades/UpgradeExecutor.sol:    }
+src/contracts/upgrades/UpgradeExecutor.sol:}
+src/contracts/upgrades/GovernanceUUPS.sol:// SPDX-License-Identifier: MIT
+src/contracts/upgrades/GovernanceUUPS.sol:pragma solidity ^0.8.30;
+src/contracts/upgrades/GovernanceUUPS.sol:import {UUPSUpgradeable} from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+src/contracts/upgrades/GovernanceUUPS.sol:/**
+src/contracts/upgrades/GovernanceUUPS.sol: * @title Governance UUPS Base
+src/contracts/upgrades/GovernanceUUPS.sol: * @notice Abstract base for UUPS proxies ensuring upgrades are authorized.
+src/contracts/upgrades/GovernanceUUPS.sol: */
+src/contracts/upgrades/GovernanceUUPS.sol:abstract contract GovernanceUUPS is UUPSUpgradeable {
+src/contracts/upgrades/GovernanceUUPS.sol:    error Unauthorized();
+src/contracts/upgrades/GovernanceUUPS.sol:    /**
+src/contracts/upgrades/GovernanceUUPS.sol:     * @dev Authorization check for UUPS upgrades.
+src/contracts/upgrades/GovernanceUUPS.sol:     * Reverts if caller is not the authorized upgrade authority.
+src/contracts/upgrades/GovernanceUUPS.sol:     */
+src/contracts/upgrades/GovernanceUUPS.sol:    function _authorizeUpgrade(address ) internal view override {
+src/contracts/upgrades/GovernanceUUPS.sol:        if (msg.sender != _getUpgradeAuthority()) {
+src/contracts/upgrades/GovernanceUUPS.sol:            revert Unauthorized();
+src/contracts/upgrades/GovernanceUUPS.sol:        }
+src/contracts/upgrades/GovernanceUUPS.sol:    }
+src/contracts/upgrades/GovernanceUUPS.sol:    /**
+src/contracts/upgrades/GovernanceUUPS.sol:     * @dev Returns the address allowed to upgrade this contract (e.g., Timelock).
+src/contracts/upgrades/GovernanceUUPS.sol:     */
+src/contracts/upgrades/GovernanceUUPS.sol:    function _getUpgradeAuthority() internal view virtual returns (address);
+src/contracts/upgrades/GovernanceUUPS.sol:}
+src/contracts/governance/ProposalGuard.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/ProposalGuard.sol:pragma solidity ^0.8.30;
+src/contracts/governance/ProposalGuard.sol:import {IProposalGuard} from "../interfaces/IProposalGuard.sol";
+src/contracts/governance/ProposalGuard.sol:/**
+src/contracts/governance/ProposalGuard.sol: * @title ProposalGuard
+src/contracts/governance/ProposalGuard.sol: * @notice Validates proposal content and tracks proposer statistics for the Governor.
+src/contracts/governance/ProposalGuard.sol: */
+src/contracts/governance/ProposalGuard.sol:contract ProposalGuard is IProposalGuard {
+src/contracts/governance/ProposalGuard.sol:    address public governor;
+src/contracts/governance/ProposalGuard.sol:    mapping(address => uint256) public userProposalCount;
+src/contracts/governance/ProposalGuard.sol:    mapping(address => int256) public externalReputation;
+src/contracts/governance/ProposalGuard.sol:    event ProposalRecorded(address indexed proposer, uint256 count);
+src/contracts/governance/ProposalGuard.sol:    event ReputationUpdated(address indexed proposer, int256 newReputation);
+src/contracts/governance/ProposalGuard.sol:    error Unauthorized();
+src/contracts/governance/ProposalGuard.sol:    error InvalidAddress();
+src/contracts/governance/ProposalGuard.sol:    constructor(address _governor) {
+src/contracts/governance/ProposalGuard.sol:        if (_governor == address(0)) revert InvalidAddress();
+src/contracts/governance/ProposalGuard.sol:        governor = _governor;
+src/contracts/governance/ProposalGuard.sol:    }
+src/contracts/governance/ProposalGuard.sol:    /**
+src/contracts/governance/ProposalGuard.sol:     * @notice Performs content validation on the proposal description.
+src/contracts/governance/ProposalGuard.sol:     * @dev Checks for minimum length and repeated character spam (e.g., "aaaaa").
+src/contracts/governance/ProposalGuard.sol:     * @param description The full text of the proposal.
+src/contracts/governance/ProposalGuard.sol:     * @return bool True if the proposal passes validation.
+src/contracts/governance/ProposalGuard.sol:     */
+src/contracts/governance/ProposalGuard.sol:    function validate(address , string calldata description) external pure override returns (bool) {
+src/contracts/governance/ProposalGuard.sol:        
+src/contracts/governance/ProposalGuard.sol:        bytes memory descBytes = bytes(description);
+src/contracts/governance/ProposalGuard.sol:        
+src/contracts/governance/ProposalGuard.sol:        if (descBytes.length <= 5) return false;
+src/contracts/governance/ProposalGuard.sol:        if (descBytes.length > 0) {
+src/contracts/governance/ProposalGuard.sol:            bool allSame = true;
+src/contracts/governance/ProposalGuard.sol:            bytes1 firstChar = descBytes[0];
+src/contracts/governance/ProposalGuard.sol:            
+src/contracts/governance/ProposalGuard.sol:            uint256 checkLen = descBytes.length < 10 ? descBytes.length : 10;
+src/contracts/governance/ProposalGuard.sol:            
+src/contracts/governance/ProposalGuard.sol:            for (uint256 i = 1; i < checkLen; i++) {
+src/contracts/governance/ProposalGuard.sol:                if (descBytes[i] != firstChar) {
+src/contracts/governance/ProposalGuard.sol:                    allSame = false;
+src/contracts/governance/ProposalGuard.sol:                    break;
+src/contracts/governance/ProposalGuard.sol:                }
+src/contracts/governance/ProposalGuard.sol:            }
+src/contracts/governance/ProposalGuard.sol:            if (allSame) return false;
+src/contracts/governance/ProposalGuard.sol:        }
+src/contracts/governance/ProposalGuard.sol:        return true;
+src/contracts/governance/ProposalGuard.sol:    }
+src/contracts/governance/ProposalGuard.sol:    /**
+src/contracts/governance/ProposalGuard.sol:     * @notice Records the proposal event and increments user stats.
+src/contracts/governance/ProposalGuard.sol:     * @param proposer The address of the account creating the proposal.
+src/contracts/governance/ProposalGuard.sol:     */
+src/contracts/governance/ProposalGuard.sol:    function recordProposal(address proposer) external override {
+src/contracts/governance/ProposalGuard.sol:        if (msg.sender != governor) revert Unauthorized();
+src/contracts/governance/ProposalGuard.sol:        
+src/contracts/governance/ProposalGuard.sol:        userProposalCount[proposer]++;
+src/contracts/governance/ProposalGuard.sol:        emit ProposalRecorded(proposer, userProposalCount[proposer]);
+src/contracts/governance/ProposalGuard.sol:    }
+src/contracts/governance/ProposalGuard.sol:    /**
+src/contracts/governance/ProposalGuard.sol:     * @notice Updates the proposer's reputation based on proposal outcomes.
+src/contracts/governance/ProposalGuard.sol:     * @param proposer The address of the proposer.
+src/contracts/governance/ProposalGuard.sol:     * @param positive Whether the outcome was favorable.
+src/contracts/governance/ProposalGuard.sol:     */
+src/contracts/governance/ProposalGuard.sol:    function updateReputation(address proposer, bool positive) external override {
+src/contracts/governance/ProposalGuard.sol:        if (msg.sender != governor) revert Unauthorized();
+src/contracts/governance/ProposalGuard.sol:        
+src/contracts/governance/ProposalGuard.sol:        if (positive) {
+src/contracts/governance/ProposalGuard.sol:            externalReputation[proposer] += 10;
+src/contracts/governance/ProposalGuard.sol:        } else {
+src/contracts/governance/ProposalGuard.sol:            externalReputation[proposer] -= 5;
+src/contracts/governance/ProposalGuard.sol:        }
+src/contracts/governance/ProposalGuard.sol:        
+src/contracts/governance/ProposalGuard.sol:        emit ReputationUpdated(proposer, externalReputation[proposer]);
+src/contracts/governance/ProposalGuard.sol:    }
+src/contracts/governance/ProposalGuard.sol:}
+src/contracts/governance/QuadraticFunding.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/QuadraticFunding.sol:pragma solidity ^0.8.30;
+src/contracts/governance/QuadraticFunding.sol:import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+src/contracts/governance/QuadraticFunding.sol:import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+src/contracts/governance/QuadraticFunding.sol:import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+src/contracts/governance/QuadraticFunding.sol:import {RoleManager} from "../security/RoleManager.sol";
+src/contracts/governance/QuadraticFunding.sol:/**
+src/contracts/governance/QuadraticFunding.sol: * @title QuadraticFunding
+src/contracts/governance/QuadraticFunding.sol: * @author Turtur (FOUNDRY-DAO-F25)
+src/contracts/governance/QuadraticFunding.sol: * @notice Implements a matching pool system where the number of contributors matters more than the amount.
+src/contracts/governance/QuadraticFunding.sol: * @dev Uses the formula: (sum of square roots of contributions)^2 to determine matching weight.
+src/contracts/governance/QuadraticFunding.sol: */
+src/contracts/governance/QuadraticFunding.sol:contract QuadraticFunding is ReentrancyGuard {
+src/contracts/governance/QuadraticFunding.sol:    using SafeERC20 for IERC20;
+src/contracts/governance/QuadraticFunding.sol:    struct Project {
+src/contracts/governance/QuadraticFunding.sol:        address owner;
+src/contracts/governance/QuadraticFunding.sol:        uint256 totalContributed;
+src/contracts/governance/QuadraticFunding.sol:        uint256 sumOfSqRts;
+src/contracts/governance/QuadraticFunding.sol:        uint256 matchedAmount;
+src/contracts/governance/QuadraticFunding.sol:        bool isActive;
+src/contracts/governance/QuadraticFunding.sol:        bool matchingClaimed;
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    RoleManager public immutable ROLE_MANAGER;
+src/contracts/governance/QuadraticFunding.sol:    IERC20 public immutable FUNDING_TOKEN;
+src/contracts/governance/QuadraticFunding.sol:    
+src/contracts/governance/QuadraticFunding.sol:    uint256 public matchingPool;
+src/contracts/governance/QuadraticFunding.sol:    uint256 public totalWeight;
+src/contracts/governance/QuadraticFunding.sol:    uint256 public projectCount;
+src/contracts/governance/QuadraticFunding.sol:    
+src/contracts/governance/QuadraticFunding.sol:    mapping(uint256 => Project) public projects;
+src/contracts/governance/QuadraticFunding.sol:    mapping(uint256 => mapping(address => uint256)) public contributions;
+src/contracts/governance/QuadraticFunding.sol:    uint256 public constant SCALE = 1e18;
+src/contracts/governance/QuadraticFunding.sol:    event ProjectCreated(uint256 indexed projectId, address indexed owner);
+src/contracts/governance/QuadraticFunding.sol:    event ContributionMade(uint256 indexed projectId, address indexed contributor, uint256 amount);
+src/contracts/governance/QuadraticFunding.sol:    event MatchingPoolFunded(uint256 amount);
+src/contracts/governance/QuadraticFunding.sol:    event MatchingDistributed(uint256 totalDistributed);
+src/contracts/governance/QuadraticFunding.sol:    error Unauthorized();
+src/contracts/governance/QuadraticFunding.sol:    error ProjectNotActive();
+src/contracts/governance/QuadraticFunding.sol:    error InsufficientAmount();
+src/contracts/governance/QuadraticFunding.sol:    error AlreadyClaimed();
+src/contracts/governance/QuadraticFunding.sol:    modifier onlyAdmin() {
+src/contracts/governance/QuadraticFunding.sol:        _checkAdmin();
+src/contracts/governance/QuadraticFunding.sol:        _;
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    function _checkAdmin() internal view {
+src/contracts/governance/QuadraticFunding.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender)) {
+src/contracts/governance/QuadraticFunding.sol:            revert Unauthorized();
+src/contracts/governance/QuadraticFunding.sol:        }
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    constructor(address _roleManager, address _token) {
+src/contracts/governance/QuadraticFunding.sol:        ROLE_MANAGER = RoleManager(_roleManager);
+src/contracts/governance/QuadraticFunding.sol:        FUNDING_TOKEN = IERC20(_token);
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    function createProject(address _owner) external returns (uint256 projectId) {
+src/contracts/governance/QuadraticFunding.sol:        projectId = ++projectCount;
+src/contracts/governance/QuadraticFunding.sol:        projects[projectId] = Project({
+src/contracts/governance/QuadraticFunding.sol:            owner: _owner,
+src/contracts/governance/QuadraticFunding.sol:            totalContributed: 0,
+src/contracts/governance/QuadraticFunding.sol:            sumOfSqRts: 0,
+src/contracts/governance/QuadraticFunding.sol:            matchedAmount: 0,
+src/contracts/governance/QuadraticFunding.sol:            isActive: true,
+src/contracts/governance/QuadraticFunding.sol:            matchingClaimed: false
+src/contracts/governance/QuadraticFunding.sol:        });
+src/contracts/governance/QuadraticFunding.sol:        emit ProjectCreated(projectId, _owner);
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    /**
+src/contracts/governance/QuadraticFunding.sol:     * @notice Allows a user to contribute to a project.
+src/contracts/governance/QuadraticFunding.sol:     * @dev Calculates and updates the sum of square roots for quadratic weight.
+src/contracts/governance/QuadraticFunding.sol:     */
+src/contracts/governance/QuadraticFunding.sol:    function contribute(uint256 _projectId, uint256 _amount) external nonReentrant {
+src/contracts/governance/QuadraticFunding.sol:        Project storage project = projects[_projectId];
+src/contracts/governance/QuadraticFunding.sol:        if (!project.isActive) revert ProjectNotActive();
+src/contracts/governance/QuadraticFunding.sol:        if (_amount == 0) revert InsufficientAmount();
+src/contracts/governance/QuadraticFunding.sol:        FUNDING_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
+src/contracts/governance/QuadraticFunding.sol:        // Calculate sqrt with precision scale
+src/contracts/governance/QuadraticFunding.sol:        uint256 sqrtContribution = Math.sqrt(_amount * SCALE);
+src/contracts/governance/QuadraticFunding.sol:        
+src/contracts/governance/QuadraticFunding.sol:        unchecked {
+src/contracts/governance/QuadraticFunding.sol:            project.totalContributed += _amount;
+src/contracts/governance/QuadraticFunding.sol:            project.sumOfSqRts += sqrtContribution;
+src/contracts/governance/QuadraticFunding.sol:            contributions[_projectId][msg.sender] += _amount;
+src/contracts/governance/QuadraticFunding.sol:        }
+src/contracts/governance/QuadraticFunding.sol:        emit ContributionMade(_projectId, msg.sender, _amount);
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    function fundMatchingPool(uint256 _amount) external onlyAdmin {
+src/contracts/governance/QuadraticFunding.sol:        FUNDING_TOKEN.safeTransferFrom(msg.sender, address(this), _amount);
+src/contracts/governance/QuadraticFunding.sol:        unchecked { matchingPool += _amount; }
+src/contracts/governance/QuadraticFunding.sol:        emit MatchingPoolFunded(_amount);
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    /**
+src/contracts/governance/QuadraticFunding.sol:     * @notice Finalizes the matching calculation for all active projects.
+src/contracts/governance/QuadraticFunding.sol:     * @dev Weight = (Sum of Square Roots)^2. Total matching is distributed proportionally.
+src/contracts/governance/QuadraticFunding.sol:     */
+src/contracts/governance/QuadraticFunding.sol:    function calculateMatching() external onlyAdmin {
+src/contracts/governance/QuadraticFunding.sol:        uint256 _totalWeight = 0;
+src/contracts/governance/QuadraticFunding.sol:        uint256 _projectCount = projectCount;
+src/contracts/governance/QuadraticFunding.sol:        uint256[] memory weights = new uint256[](_projectCount + 1);
+src/contracts/governance/QuadraticFunding.sol:        for (uint256 i = 1; i <= _projectCount; ) {
+src/contracts/governance/QuadraticFunding.sol:            uint256 s = projects[i].sumOfSqRts;
+src/contracts/governance/QuadraticFunding.sol:            if (s > 0) {
+src/contracts/governance/QuadraticFunding.sol:                uint256 weight = (s * s) / SCALE;
+src/contracts/governance/QuadraticFunding.sol:                weights[i] = weight;
+src/contracts/governance/QuadraticFunding.sol:                _totalWeight += weight;
+src/contracts/governance/QuadraticFunding.sol:            }
+src/contracts/governance/QuadraticFunding.sol:            unchecked { ++i; }
+src/contracts/governance/QuadraticFunding.sol:        }
+src/contracts/governance/QuadraticFunding.sol:        if (_totalWeight == 0) return;
+src/contracts/governance/QuadraticFunding.sol:        totalWeight = _totalWeight;
+src/contracts/governance/QuadraticFunding.sol:        for (uint256 i = 1; i <= _projectCount; ) {
+src/contracts/governance/QuadraticFunding.sol:            if (weights[i] > 0) {
+src/contracts/governance/QuadraticFunding.sol:                projects[i].matchedAmount = (matchingPool * weights[i]) / _totalWeight;
+src/contracts/governance/QuadraticFunding.sol:            }
+src/contracts/governance/QuadraticFunding.sol:            unchecked { ++i; }
+src/contracts/governance/QuadraticFunding.sol:        }
+src/contracts/governance/QuadraticFunding.sol:        emit MatchingDistributed(matchingPool);
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    function claimFunds(uint256 _projectId) external nonReentrant {
+src/contracts/governance/QuadraticFunding.sol:        Project storage project = projects[_projectId];
+src/contracts/governance/QuadraticFunding.sol:        if (msg.sender != project.owner) revert Unauthorized();
+src/contracts/governance/QuadraticFunding.sol:        if (project.matchingClaimed) revert AlreadyClaimed();
+src/contracts/governance/QuadraticFunding.sol:        project.matchingClaimed = true;
+src/contracts/governance/QuadraticFunding.sol:        uint256 totalPayout = project.totalContributed + project.matchedAmount;
+src/contracts/governance/QuadraticFunding.sol:        
+src/contracts/governance/QuadraticFunding.sol:        FUNDING_TOKEN.safeTransfer(project.owner, totalPayout);
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:    function setProjectStatus(uint256 _projectId, bool _status) external onlyAdmin {
+src/contracts/governance/QuadraticFunding.sol:        projects[_projectId].isActive = _status;
+src/contracts/governance/QuadraticFunding.sol:    }
+src/contracts/governance/QuadraticFunding.sol:}
+src/contracts/governance/ConvictionStaking.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/ConvictionStaking.sol:pragma solidity ^0.8.30;
+src/contracts/governance/ConvictionStaking.sol:import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+src/contracts/governance/ConvictionStaking.sol:import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+src/contracts/governance/ConvictionStaking.sol:import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+src/contracts/governance/ConvictionStaking.sol:import {ZeroAddress, ZeroAmount} from "../errors/CommonErrors.sol";
+src/contracts/governance/ConvictionStaking.sol:/**
+src/contracts/governance/ConvictionStaking.sol: * @title ConvictionStaking
+src/contracts/governance/ConvictionStaking.sol: * @notice Allows users to lock tokens to gain governance conviction/voting power.
+src/contracts/governance/ConvictionStaking.sol: */
+src/contracts/governance/ConvictionStaking.sol:contract ConvictionStaking is ReentrancyGuard {
+src/contracts/governance/ConvictionStaking.sol:    using SafeERC20 for IERC20;
+src/contracts/governance/ConvictionStaking.sol:    IERC20 public immutable TOKEN;
+src/contracts/governance/ConvictionStaking.sol:    struct Stake {
+src/contracts/governance/ConvictionStaking.sol:        uint256 amount;
+src/contracts/governance/ConvictionStaking.sol:        uint256 startTime;
+src/contracts/governance/ConvictionStaking.sol:        uint256 lockedUntil;
+src/contracts/governance/ConvictionStaking.sol:    }
+src/contracts/governance/ConvictionStaking.sol:    mapping(address => Stake) public userStakes;
+src/contracts/governance/ConvictionStaking.sol:    uint256 public totalStaked;
+src/contracts/governance/ConvictionStaking.sol:    event Staked(address indexed user, uint256 amount, uint256 lockDuration);
+src/contracts/governance/ConvictionStaking.sol:    event Withdrawn(address indexed user, uint256 amount);
+src/contracts/governance/ConvictionStaking.sol:    error StillLocked(uint256 availableAt);
+src/contracts/governance/ConvictionStaking.sol:    error NoActiveStake();
+src/contracts/governance/ConvictionStaking.sol:    constructor(address _token) {
+src/contracts/governance/ConvictionStaking.sol:        if (_token == address(0)) revert ZeroAddress();
+src/contracts/governance/ConvictionStaking.sol:        TOKEN = IERC20(_token);
+src/contracts/governance/ConvictionStaking.sol:    }
+src/contracts/governance/ConvictionStaking.sol:    /**
+src/contracts/governance/ConvictionStaking.sol:     * @notice Deposits tokens into the staking contract with a time-lock.
+src/contracts/governance/ConvictionStaking.sol:     * @param amount The number of tokens to stake.
+src/contracts/governance/ConvictionStaking.sol:     * @param daysToLock The duration in days the tokens will be non-withdrawable.
+src/contracts/governance/ConvictionStaking.sol:     */
+src/contracts/governance/ConvictionStaking.sol:    function stake(uint256 amount, uint256 daysToLock) external nonReentrant {
+src/contracts/governance/ConvictionStaking.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/governance/ConvictionStaking.sol:        TOKEN.safeTransferFrom(msg.sender, address(this), amount);
+src/contracts/governance/ConvictionStaking.sol:        Stake storage s = userStakes[msg.sender];
+src/contracts/governance/ConvictionStaking.sol:        s.amount += amount;
+src/contracts/governance/ConvictionStaking.sol:        s.startTime = block.timestamp;
+src/contracts/governance/ConvictionStaking.sol:        s.lockedUntil = block.timestamp + (daysToLock * 1 days);
+src/contracts/governance/ConvictionStaking.sol:        unchecked {
+src/contracts/governance/ConvictionStaking.sol:            totalStaked += amount;
+src/contracts/governance/ConvictionStaking.sol:        }
+src/contracts/governance/ConvictionStaking.sol:        emit Staked(msg.sender, amount, daysToLock);
+src/contracts/governance/ConvictionStaking.sol:    }
+src/contracts/governance/ConvictionStaking.sol:    /**
+src/contracts/governance/ConvictionStaking.sol:     * @notice Withdraws the full staked balance after the lock period has expired.
+src/contracts/governance/ConvictionStaking.sol:     */
+src/contracts/governance/ConvictionStaking.sol:    function withdraw() external nonReentrant {
+src/contracts/governance/ConvictionStaking.sol:        Stake storage s = userStakes[msg.sender];
+src/contracts/governance/ConvictionStaking.sol:        if (s.amount == 0) revert NoActiveStake();
+src/contracts/governance/ConvictionStaking.sol:        if (block.timestamp < s.lockedUntil) revert StillLocked(s.lockedUntil);
+src/contracts/governance/ConvictionStaking.sol:        uint256 amount = s.amount;
+src/contracts/governance/ConvictionStaking.sol:        delete userStakes[msg.sender];
+src/contracts/governance/ConvictionStaking.sol:        unchecked {
+src/contracts/governance/ConvictionStaking.sol:            totalStaked -= amount;
+src/contracts/governance/ConvictionStaking.sol:        }
+src/contracts/governance/ConvictionStaking.sol:        TOKEN.safeTransfer(msg.sender, amount);
+src/contracts/governance/ConvictionStaking.sol:        emit Withdrawn(msg.sender, amount);
+src/contracts/governance/ConvictionStaking.sol:    }
+src/contracts/governance/ConvictionStaking.sol:    function getStakedBalance(address user) external view returns (uint256) {
+src/contracts/governance/ConvictionStaking.sol:        return userStakes[user].amount;
+src/contracts/governance/ConvictionStaking.sol:    }
+src/contracts/governance/ConvictionStaking.sol:}
+src/contracts/governance/GovernanceToken.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/GovernanceToken.sol:pragma solidity ^0.8.30;
+src/contracts/governance/GovernanceToken.sol:import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+src/contracts/governance/GovernanceToken.sol:import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+src/contracts/governance/GovernanceToken.sol:import {ERC20Votes} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
+src/contracts/governance/GovernanceToken.sol:import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+src/contracts/governance/GovernanceToken.sol:import {Nonces} from "@openzeppelin/contracts/utils/Nonces.sol";
+src/contracts/governance/GovernanceToken.sol:import {ZeroAddress} from "../errors/CommonErrors.sol";
+src/contracts/governance/GovernanceToken.sol:import {NotGovernance, MaxSupplyExceeded} from "../errors/GovernanceErrors.sol";
+src/contracts/governance/GovernanceToken.sol:/**
+src/contracts/governance/GovernanceToken.sol: * @title GovernanceToken (DISO)
+src/contracts/governance/GovernanceToken.sol: * @notice Native voting token with integrated gasless voting and governance acquisition hooks.
+src/contracts/governance/GovernanceToken.sol: */
+src/contracts/governance/GovernanceToken.sol:contract GovernanceToken is ERC20, ERC20Permit, ERC20Votes, ERC20Burnable {
+src/contracts/governance/GovernanceToken.sol:    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
+src/contracts/governance/GovernanceToken.sol:    
+src/contracts/governance/GovernanceToken.sol:    address public immutable GOVERNANCE_EXECUTOR;
+src/contracts/governance/GovernanceToken.sol:    address public governor;
+src/contracts/governance/GovernanceToken.sol:    constructor(
+src/contracts/governance/GovernanceToken.sol:        address initialReceiver,
+src/contracts/governance/GovernanceToken.sol:        address _executor
+src/contracts/governance/GovernanceToken.sol:    ) 
+src/contracts/governance/GovernanceToken.sol:        ERC20("Diso Coin", "DISO") 
+src/contracts/governance/GovernanceToken.sol:        ERC20Permit("Diso Coin") 
+src/contracts/governance/GovernanceToken.sol:    {
+src/contracts/governance/GovernanceToken.sol:        if (_executor == address(0)) revert ZeroAddress();
+src/contracts/governance/GovernanceToken.sol:        GOVERNANCE_EXECUTOR = _executor;
+src/contracts/governance/GovernanceToken.sol:        _mint(initialReceiver, 150_000_000 * 10 ** 18);
+src/contracts/governance/GovernanceToken.sol:    }
+src/contracts/governance/GovernanceToken.sol:    /**
+src/contracts/governance/GovernanceToken.sol:     * @notice Updates the Governor contract address for acquisition hooks.
+src/contracts/governance/GovernanceToken.sol:     * @param _governor The new Governor address.
+src/contracts/governance/GovernanceToken.sol:     */
+src/contracts/governance/GovernanceToken.sol:    function setGovernor(address _governor) external {
+src/contracts/governance/GovernanceToken.sol:        if (msg.sender != GOVERNANCE_EXECUTOR) revert NotGovernance();
+src/contracts/governance/GovernanceToken.sol:        if (_governor == address(0)) revert ZeroAddress();
+src/contracts/governance/GovernanceToken.sol:        governor = _governor;
+src/contracts/governance/GovernanceToken.sol:    }
+src/contracts/governance/GovernanceToken.sol:    /**
+src/contracts/governance/GovernanceToken.sol:     * @notice Mints new DISO tokens within the hard supply cap.
+src/contracts/governance/GovernanceToken.sol:     * @dev Only callable by the Governance Executor (Timelock/DAO).
+src/contracts/governance/GovernanceToken.sol:     */
+src/contracts/governance/GovernanceToken.sol:    function mint(address to, uint256 amount) external {
+src/contracts/governance/GovernanceToken.sol:        if (msg.sender != GOVERNANCE_EXECUTOR) revert NotGovernance();
+src/contracts/governance/GovernanceToken.sol:        if (amount > MAX_SUPPLY - totalSupply()) revert MaxSupplyExceeded();
+src/contracts/governance/GovernanceToken.sol:        _mint(to, amount);
+src/contracts/governance/GovernanceToken.sol:    }
+src/contracts/governance/GovernanceToken.sol:    /**
+src/contracts/governance/GovernanceToken.sol:     * @dev Internal update hook for transfers, minting, and burning. 
+src/contracts/governance/GovernanceToken.sol:     * Triggers a 'recordTokenAcquisition' call to the Governor to track voting age/reputation.
+src/contracts/governance/GovernanceToken.sol:     */
+src/contracts/governance/GovernanceToken.sol:    function _update(
+src/contracts/governance/GovernanceToken.sol:        address from,
+src/contracts/governance/GovernanceToken.sol:        address to,
+src/contracts/governance/GovernanceToken.sol:        uint256 value
+src/contracts/governance/GovernanceToken.sol:    ) internal override(ERC20, ERC20Votes) {
+src/contracts/governance/GovernanceToken.sol:        super._update(from, to, value);
+src/contracts/governance/GovernanceToken.sol:        if (to != address(0) && from != address(0) && governor != address(0)) {
+src/contracts/governance/GovernanceToken.sol:            (bool success, ) = governor.call{gas: 30000}(
+src/contracts/governance/GovernanceToken.sol:                abi.encodeWithSignature("recordTokenAcquisition(address)", to)
+src/contracts/governance/GovernanceToken.sol:            );
+src/contracts/governance/GovernanceToken.sol:            success; 
+src/contracts/governance/GovernanceToken.sol:        }
+src/contracts/governance/GovernanceToken.sol:    }
+src/contracts/governance/GovernanceToken.sol:    function nonces(
+src/contracts/governance/GovernanceToken.sol:        address owner
+src/contracts/governance/GovernanceToken.sol:    ) public view override(ERC20Permit, Nonces) returns (uint256) {
+src/contracts/governance/GovernanceToken.sol:        return super.nonces(owner);
+src/contracts/governance/GovernanceToken.sol:    }
+src/contracts/governance/GovernanceToken.sol:}
+src/contracts/governance/VetoCouncil.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/VetoCouncil.sol:pragma solidity ^0.8.30;
+src/contracts/governance/VetoCouncil.sol:import {IGovernor} from "@openzeppelin/contracts/governance/IGovernor.sol";
+src/contracts/governance/VetoCouncil.sol:import {IRoleManager} from "../interfaces/IRoleManager.sol";
+src/contracts/governance/VetoCouncil.sol:import {Unauthorized, ZeroAddress} from "../errors/CommonErrors.sol";
+src/contracts/governance/VetoCouncil.sol:/**
+src/contracts/governance/VetoCouncil.sol: * @title VetoCouncil
+src/contracts/governance/VetoCouncil.sol: * @notice Provides a secondary safety layer where designated Guardians can veto proposals.
+src/contracts/governance/VetoCouncil.sol: * @dev The Governor checks the veto status of a proposal before final execution.
+src/contracts/governance/VetoCouncil.sol: */
+src/contracts/governance/VetoCouncil.sol:contract VetoCouncil {
+src/contracts/governance/VetoCouncil.sol:    IRoleManager public immutable ROLE_MANAGER;
+src/contracts/governance/VetoCouncil.sol:    IGovernor public immutable GOVERNOR;
+src/contracts/governance/VetoCouncil.sol:    
+src/contracts/governance/VetoCouncil.sol:    uint256 public constant VETO_THRESHOLD = 3;
+src/contracts/governance/VetoCouncil.sol:    mapping(uint256 => uint256) public vetoVotes;
+src/contracts/governance/VetoCouncil.sol:    mapping(uint256 => mapping(address => bool)) public hasVetoed;
+src/contracts/governance/VetoCouncil.sol:    mapping(uint256 => bool) public isVetoed;
+src/contracts/governance/VetoCouncil.sol:    event VetoCast(uint256 indexed proposalId, address indexed councillor);
+src/contracts/governance/VetoCouncil.sol:    event ProposalVetoed(uint256 indexed proposalId);
+src/contracts/governance/VetoCouncil.sol:    error AlreadyVetoedProposal();
+src/contracts/governance/VetoCouncil.sol:    error AlreadyCastVeto();
+src/contracts/governance/VetoCouncil.sol:    error InvalidProposalState();
+src/contracts/governance/VetoCouncil.sol:    constructor(address _roleManager, address _governor) {
+src/contracts/governance/VetoCouncil.sol:        if (_roleManager == address(0) || _governor == address(0)) revert ZeroAddress();
+src/contracts/governance/VetoCouncil.sol:        ROLE_MANAGER = IRoleManager(_roleManager);
+src/contracts/governance/VetoCouncil.sol:        GOVERNOR = IGovernor(_governor);
+src/contracts/governance/VetoCouncil.sol:    }
+src/contracts/governance/VetoCouncil.sol:    /**
+src/contracts/governance/VetoCouncil.sol:     * @notice Casts a veto vote against a specific proposal.
+src/contracts/governance/VetoCouncil.sol:     * @dev Only callable by accounts with the GUARDIAN_ROLE.
+src/contracts/governance/VetoCouncil.sol:     * @param proposalId The ID of the proposal to be vetoed.
+src/contracts/governance/VetoCouncil.sol:     */
+src/contracts/governance/VetoCouncil.sol:    function castVeto(uint256 proposalId) external {
+src/contracts/governance/VetoCouncil.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.GUARDIAN_ROLE(), msg.sender)) {
+src/contracts/governance/VetoCouncil.sol:            revert Unauthorized();
+src/contracts/governance/VetoCouncil.sol:        }
+src/contracts/governance/VetoCouncil.sol:        if (isVetoed[proposalId]) revert AlreadyVetoedProposal();
+src/contracts/governance/VetoCouncil.sol:        if (hasVetoed[proposalId][msg.sender]) revert AlreadyCastVeto();
+src/contracts/governance/VetoCouncil.sol:        // Ensure the proposal is in a state where vetoing is still relevant
+src/contracts/governance/VetoCouncil.sol:        IGovernor.ProposalState s = GOVERNOR.state(proposalId);
+src/contracts/governance/VetoCouncil.sol:        if (
+src/contracts/governance/VetoCouncil.sol:            s == IGovernor.ProposalState.Executed ||
+src/contracts/governance/VetoCouncil.sol:            s == IGovernor.ProposalState.Canceled ||
+src/contracts/governance/VetoCouncil.sol:            s == IGovernor.ProposalState.Expired
+src/contracts/governance/VetoCouncil.sol:        ) {
+src/contracts/governance/VetoCouncil.sol:            revert InvalidProposalState();
+src/contracts/governance/VetoCouncil.sol:        }
+src/contracts/governance/VetoCouncil.sol:        hasVetoed[proposalId][msg.sender] = true;
+src/contracts/governance/VetoCouncil.sol:        
+src/contracts/governance/VetoCouncil.sol:        uint256 currentVotes;
+src/contracts/governance/VetoCouncil.sol:        unchecked {
+src/contracts/governance/VetoCouncil.sol:            currentVotes = vetoVotes[proposalId] + 1;
+src/contracts/governance/VetoCouncil.sol:            vetoVotes[proposalId] = currentVotes;
+src/contracts/governance/VetoCouncil.sol:        }
+src/contracts/governance/VetoCouncil.sol:        emit VetoCast(proposalId, msg.sender);
+src/contracts/governance/VetoCouncil.sol:        /**
+src/contracts/governance/VetoCouncil.sol:         * If threshold is reached, mark as vetoed. 
+src/contracts/governance/VetoCouncil.sol:         * The Governor's execution logic will verify this state.
+src/contracts/governance/VetoCouncil.sol:         */
+src/contracts/governance/VetoCouncil.sol:        if (currentVotes >= VETO_THRESHOLD) {
+src/contracts/governance/VetoCouncil.sol:            isVetoed[proposalId] = true;
+src/contracts/governance/VetoCouncil.sol:            emit ProposalVetoed(proposalId);
+src/contracts/governance/VetoCouncil.sol:        }
+src/contracts/governance/VetoCouncil.sol:    }
+src/contracts/governance/VetoCouncil.sol:}
+src/contracts/governance/RageQuit.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/RageQuit.sol:pragma solidity ^0.8.30;
+src/contracts/governance/RageQuit.sol:import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+src/contracts/governance/RageQuit.sol:import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+src/contracts/governance/RageQuit.sol:import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+src/contracts/governance/RageQuit.sol:import {ITreasury} from "../interfaces/ITreasury.sol";
+src/contracts/governance/RageQuit.sol:import {ZeroAddress, ZeroAmount} from "../errors/CommonErrors.sol";
+src/contracts/governance/RageQuit.sol:interface IBurnable {
+src/contracts/governance/RageQuit.sol:    function burnFrom(address account, uint256 amount) external;
+src/contracts/governance/RageQuit.sol:}
+src/contracts/governance/RageQuit.sol:/**
+src/contracts/governance/RageQuit.sol: * @title RageQuit
+src/contracts/governance/RageQuit.sol: * @notice Allows users to exit the DAO by burning their governance tokens in exchange for 
+src/contracts/governance/RageQuit.sol: * a proportional share of the Treasury's assets.
+src/contracts/governance/RageQuit.sol: */
+src/contracts/governance/RageQuit.sol:contract RageQuit is ReentrancyGuard {
+src/contracts/governance/RageQuit.sol:    using SafeERC20 for IERC20;
+src/contracts/governance/RageQuit.sol:    address public immutable GOVERNANCE_TOKEN;
+src/contracts/governance/RageQuit.sol:    address public immutable TREASURY;
+src/contracts/governance/RageQuit.sol:    address private constant DEAD = 0x000000000000000000000000000000000000dEaD;
+src/contracts/governance/RageQuit.sol:    mapping(address => bool) public hasRageQuit;
+src/contracts/governance/RageQuit.sol:    event RageQuitExecuted(address indexed user, address[] assets, uint256 burnedAmount);
+src/contracts/governance/RageQuit.sol:    error AlreadyRageQuit();
+src/contracts/governance/RageQuit.sol:    constructor(address _token, address _treasury) {
+src/contracts/governance/RageQuit.sol:        if (_token == address(0) || _treasury == address(0)) revert ZeroAddress();
+src/contracts/governance/RageQuit.sol:        GOVERNANCE_TOKEN = _token;
+src/contracts/governance/RageQuit.sol:        TREASURY = _treasury;
+src/contracts/governance/RageQuit.sol:    }
+src/contracts/governance/RageQuit.sol:    /**
+src/contracts/governance/RageQuit.sol:     * @notice Burns user tokens and transfers their proportional share of treasury assets.
+src/contracts/governance/RageQuit.sol:     * @dev Share calculation: (userTokens * treasuryAssetBalance) / totalCirculatingSupply.
+src/contracts/governance/RageQuit.sol:     * @param assets List of asset addresses (ERC20s or address(0) for ETH) to withdraw.
+src/contracts/governance/RageQuit.sol:     * @param amount The amount of Governance tokens the user is burning to exit.
+src/contracts/governance/RageQuit.sol:     */
+src/contracts/governance/RageQuit.sol:    function quit(address[] calldata assets, uint256 amount) external nonReentrant {
+src/contracts/governance/RageQuit.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/governance/RageQuit.sol:        if (hasRageQuit[msg.sender]) revert AlreadyRageQuit();
+src/contracts/governance/RageQuit.sol:        hasRageQuit[msg.sender] = true;
+src/contracts/governance/RageQuit.sol:        // Calculate adjusted supply (Total Supply - Burned/Dead tokens)
+src/contracts/governance/RageQuit.sol:        uint256 supply = IERC20(GOVERNANCE_TOKEN).totalSupply();
+src/contracts/governance/RageQuit.sol:        uint256 deadBalance = IERC20(GOVERNANCE_TOKEN).balanceOf(DEAD);
+src/contracts/governance/RageQuit.sol:        
+src/contracts/governance/RageQuit.sol:        unchecked {
+src/contracts/governance/RageQuit.sol:            supply -= deadBalance;
+src/contracts/governance/RageQuit.sol:        }
+src/contracts/governance/RageQuit.sol:        // Burn tokens or send to Dead address
+src/contracts/governance/RageQuit.sol:        try IBurnable(GOVERNANCE_TOKEN).burnFrom(msg.sender, amount) {} catch {
+src/contracts/governance/RageQuit.sol:            IERC20(GOVERNANCE_TOKEN).safeTransferFrom(msg.sender, DEAD, amount);
+src/contracts/governance/RageQuit.sol:        }
+src/contracts/governance/RageQuit.sol:        // Proportional Asset Distribution
+src/contracts/governance/RageQuit.sol:        uint256 len = assets.length;
+src/contracts/governance/RageQuit.sol:        for (uint256 i = 0; i < len; ) {
+src/contracts/governance/RageQuit.sol:            address asset = assets[i];
+src/contracts/governance/RageQuit.sol:            uint256 treasuryBalance = (asset == address(0)) 
+src/contracts/governance/RageQuit.sol:                ? address(TREASURY).balance 
+src/contracts/governance/RageQuit.sol:                : IERC20(asset).balanceOf(TREASURY);
+src/contracts/governance/RageQuit.sol:            uint256 share;
+src/contracts/governance/RageQuit.sol:            unchecked {
+src/contracts/governance/RageQuit.sol:                share = (amount * treasuryBalance) / supply;
+src/contracts/governance/RageQuit.sol:            }
+src/contracts/governance/RageQuit.sol:            if (share > 0) {
+src/contracts/governance/RageQuit.sol:                if (asset == address(0)) {
+src/contracts/governance/RageQuit.sol:                    ITreasury(TREASURY).transferEth(payable(msg.sender), share);
+src/contracts/governance/RageQuit.sol:                } else {
+src/contracts/governance/RageQuit.sol:                    ITreasury(TREASURY).transferERC20(asset, msg.sender, share);
+src/contracts/governance/RageQuit.sol:                }
+src/contracts/governance/RageQuit.sol:            }
+src/contracts/governance/RageQuit.sol:            unchecked { ++i; }
+src/contracts/governance/RageQuit.sol:        }
+src/contracts/governance/RageQuit.sol:        emit RageQuitExecuted(msg.sender, assets, amount);
+src/contracts/governance/RageQuit.sol:    }
+src/contracts/governance/RageQuit.sol:}
+src/contracts/governance/VotingStrategies.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/VotingStrategies.sol:pragma solidity ^0.8.30;
+src/contracts/governance/VotingStrategies.sol:import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+src/contracts/governance/VotingStrategies.sol:/**
+src/contracts/governance/VotingStrategies.sol: * @title VotingStrategies
+src/contracts/governance/VotingStrategies.sol: * @notice Internal library to calculate voting power based on different DAO strategies.
+src/contracts/governance/VotingStrategies.sol: */
+src/contracts/governance/VotingStrategies.sol:library VotingStrategies {
+src/contracts/governance/VotingStrategies.sol:    enum Strategy {
+src/contracts/governance/VotingStrategies.sol:        TokenWeighted,
+src/contracts/governance/VotingStrategies.sol:        QuadraticWeighted,
+src/contracts/governance/VotingStrategies.sol:        ConvictionWeighted
+src/contracts/governance/VotingStrategies.sol:    }
+src/contracts/governance/VotingStrategies.sol:    /**
+src/contracts/governance/VotingStrategies.sol:     * @notice Calculates the final voting power based on the selected strategy.
+src/contracts/governance/VotingStrategies.sol:     * @param strategy The voting model to be used.
+src/contracts/governance/VotingStrategies.sol:     * @param bal The raw token balance of the voter.
+src/contracts/governance/VotingStrategies.sol:     * @param duration The time tokens have been held or locked (used for conviction).
+src/contracts/governance/VotingStrategies.sol:     * @return uint256 The calculated voting power.
+src/contracts/governance/VotingStrategies.sol:     */
+src/contracts/governance/VotingStrategies.sol:    function calculateVotingPower(
+src/contracts/governance/VotingStrategies.sol:        Strategy strategy,
+src/contracts/governance/VotingStrategies.sol:        uint256 bal,
+src/contracts/governance/VotingStrategies.sol:        uint256 duration
+src/contracts/governance/VotingStrategies.sol:    ) internal pure returns (uint256) {
+src/contracts/governance/VotingStrategies.sol:        if (strategy == Strategy.TokenWeighted) return bal;
+src/contracts/governance/VotingStrategies.sol:        if (strategy == Strategy.QuadraticWeighted) return Math.sqrt(bal);
+src/contracts/governance/VotingStrategies.sol:        if (strategy == Strategy.ConvictionWeighted) return applyTimeWeight(bal, duration);
+src/contracts/governance/VotingStrategies.sol:        return bal;
+src/contracts/governance/VotingStrategies.sol:    }
+src/contracts/governance/VotingStrategies.sol:    /**
+src/contracts/governance/VotingStrategies.sol:     * @dev Calculates time-based bonus: +10% per month, capped at 100% (2x power).
+src/contracts/governance/VotingStrategies.sol:     */
+src/contracts/governance/VotingStrategies.sol:    function applyTimeWeight(uint256 bal, uint256 duration) internal pure returns (uint256) {
+src/contracts/governance/VotingStrategies.sol:        unchecked {
+src/contracts/governance/VotingStrategies.sol:            uint256 months = duration / 30 days;
+src/contracts/governance/VotingStrategies.sol:            uint256 bonus = months * 10;
+src/contracts/governance/VotingStrategies.sol:            if (bonus > 100) bonus = 100;
+src/contracts/governance/VotingStrategies.sol:            return (bal * (100 + bonus)) / 100;
+src/contracts/governance/VotingStrategies.sol:        }
+src/contracts/governance/VotingStrategies.sol:    }
+src/contracts/governance/VotingStrategies.sol:    function strategyName(Strategy s) internal pure returns (string memory) {
+src/contracts/governance/VotingStrategies.sol:        if (s == Strategy.TokenWeighted) return "Token-Weighted";
+src/contracts/governance/VotingStrategies.sol:        if (s == Strategy.QuadraticWeighted) return "Quadratic";
+src/contracts/governance/VotingStrategies.sol:        if (s == Strategy.ConvictionWeighted) return "Conviction";
+src/contracts/governance/VotingStrategies.sol:        return "Unknown";
+src/contracts/governance/VotingStrategies.sol:    }
+src/contracts/governance/VotingStrategies.sol:}
+src/contracts/governance/ConvictionVoting.sol:// SPDX-License-Identifier: MIT
+src/contracts/governance/ConvictionVoting.sol:pragma solidity ^0.8.30;
+src/contracts/governance/ConvictionVoting.sol:import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+src/contracts/governance/ConvictionVoting.sol:import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+src/contracts/governance/ConvictionVoting.sol:import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+src/contracts/governance/ConvictionVoting.sol:import {ZeroAddress, ZeroAmount} from "../errors/CommonErrors.sol";
+src/contracts/governance/ConvictionVoting.sol:/**
+src/contracts/governance/ConvictionVoting.sol: * @title ConvictionVoting
+src/contracts/governance/ConvictionVoting.sol: * @notice Implements time-weighted voting power (ve-logic) where longer locks grant higher multipliers.
+src/contracts/governance/ConvictionVoting.sol: */
+src/contracts/governance/ConvictionVoting.sol:contract ConvictionVoting is ReentrancyGuard {
+src/contracts/governance/ConvictionVoting.sol:    using SafeERC20 for IERC20;
+src/contracts/governance/ConvictionVoting.sol:    struct Proposal {
+src/contracts/governance/ConvictionVoting.sol:        uint128 totalConviction; 
+src/contracts/governance/ConvictionVoting.sol:        uint48 startTime;        
+src/contracts/governance/ConvictionVoting.sol:        bool executed;           
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:    struct VoterState {
+src/contracts/governance/ConvictionVoting.sol:        uint128 stakedAmount;    
+src/contracts/governance/ConvictionVoting.sol:        uint128 votingPower;     
+src/contracts/governance/ConvictionVoting.sol:        uint48 lockedUntil;      
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:    IERC20 public immutable TOKEN;
+src/contracts/governance/ConvictionVoting.sol:    address public immutable ROLE_MANAGER; 
+src/contracts/governance/ConvictionVoting.sol:    mapping(uint256 => Proposal) public proposals;
+src/contracts/governance/ConvictionVoting.sol:    mapping(uint256 => mapping(address => VoterState)) public voterStates;
+src/contracts/governance/ConvictionVoting.sol:    uint256 public constant MAX_LOCK_DAYS = 365 * 4; 
+src/contracts/governance/ConvictionVoting.sol:    uint256 public constant BASE_MULTIPLIER = 100;   
+src/contracts/governance/ConvictionVoting.sol:    uint256 public constant MAX_MULTIPLIER = 400;    
+src/contracts/governance/ConvictionVoting.sol:    event VoteCast(uint256 indexed proposalId, address indexed voter, uint256 amount, uint256 power);
+src/contracts/governance/ConvictionVoting.sol:    event VoteWithdrawn(uint256 indexed proposalId, address indexed voter, uint256 amount);
+src/contracts/governance/ConvictionVoting.sol:    error LockActive(uint48 lockedUntil);
+src/contracts/governance/ConvictionVoting.sol:    error AlreadyExecuted();
+src/contracts/governance/ConvictionVoting.sol:    error NoStakeFound();
+src/contracts/governance/ConvictionVoting.sol:    error InvalidLockDuration();
+src/contracts/governance/ConvictionVoting.sol:    constructor(address _token, address _roleManager) {
+src/contracts/governance/ConvictionVoting.sol:        if (_token == address(0) || _roleManager == address(0)) revert ZeroAddress();
+src/contracts/governance/ConvictionVoting.sol:        TOKEN = IERC20(_token);
+src/contracts/governance/ConvictionVoting.sol:        ROLE_MANAGER = _roleManager;
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:    /**
+src/contracts/governance/ConvictionVoting.sol:     * @notice Locks tokens to cast a weighted vote. Power scales linearly with lock duration.
+src/contracts/governance/ConvictionVoting.sol:     * @param proposalId The unique identifier of the proposal.
+src/contracts/governance/ConvictionVoting.sol:     * @param amount The amount of tokens to stake for this vote.
+src/contracts/governance/ConvictionVoting.sol:     * @param lockDays The number of days to lock (max 1460 days for 4x power).
+src/contracts/governance/ConvictionVoting.sol:     */
+src/contracts/governance/ConvictionVoting.sol:    function castVote(
+src/contracts/governance/ConvictionVoting.sol:        uint256 proposalId,
+src/contracts/governance/ConvictionVoting.sol:        uint128 amount,
+src/contracts/governance/ConvictionVoting.sol:        uint256 lockDays
+src/contracts/governance/ConvictionVoting.sol:    ) external nonReentrant {
+src/contracts/governance/ConvictionVoting.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/governance/ConvictionVoting.sol:        if (lockDays > MAX_LOCK_DAYS) revert InvalidLockDuration();
+src/contracts/governance/ConvictionVoting.sol:        Proposal storage p = proposals[proposalId];
+src/contracts/governance/ConvictionVoting.sol:        if (p.executed) revert AlreadyExecuted();
+src/contracts/governance/ConvictionVoting.sol:        // Calculate Power: 1x + (3x * (lockDays / MAX_LOCK_DAYS))
+src/contracts/governance/ConvictionVoting.sol:        uint256 multiplier = BASE_MULTIPLIER + ((lockDays * (MAX_MULTIPLIER - BASE_MULTIPLIER)) / MAX_LOCK_DAYS);
+src/contracts/governance/ConvictionVoting.sol:        uint128 votingPower = uint128((uint256(amount) * multiplier) / 100);
+src/contracts/governance/ConvictionVoting.sol:        VoterState storage vs = voterStates[proposalId][msg.sender];
+src/contracts/governance/ConvictionVoting.sol:        uint48 newLockExpiry = uint48(block.timestamp + (lockDays * 1 days));
+src/contracts/governance/ConvictionVoting.sol:        if (newLockExpiry < vs.lockedUntil) {
+src/contracts/governance/ConvictionVoting.sol:            newLockExpiry = vs.lockedUntil; 
+src/contracts/governance/ConvictionVoting.sol:        }
+src/contracts/governance/ConvictionVoting.sol:        unchecked {
+src/contracts/governance/ConvictionVoting.sol:            vs.stakedAmount += amount;
+src/contracts/governance/ConvictionVoting.sol:            vs.votingPower += votingPower;
+src/contracts/governance/ConvictionVoting.sol:            vs.lockedUntil = newLockExpiry;
+src/contracts/governance/ConvictionVoting.sol:            p.totalConviction += votingPower;
+src/contracts/governance/ConvictionVoting.sol:        }
+src/contracts/governance/ConvictionVoting.sol:        TOKEN.safeTransferFrom(msg.sender, address(this), amount);
+src/contracts/governance/ConvictionVoting.sol:        emit VoteCast(proposalId, msg.sender, amount, votingPower);
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:    /**
+src/contracts/governance/ConvictionVoting.sol:     * @notice Withdraws staked tokens only after the specific lock period has expired.
+src/contracts/governance/ConvictionVoting.sol:     */
+src/contracts/governance/ConvictionVoting.sol:    function withdrawVote(uint256 proposalId) external nonReentrant {
+src/contracts/governance/ConvictionVoting.sol:        VoterState storage vs = voterStates[proposalId][msg.sender];
+src/contracts/governance/ConvictionVoting.sol:        
+src/contracts/governance/ConvictionVoting.sol:        if (vs.stakedAmount == 0) revert NoStakeFound();
+src/contracts/governance/ConvictionVoting.sol:        if (block.timestamp < vs.lockedUntil) revert LockActive(vs.lockedUntil);
+src/contracts/governance/ConvictionVoting.sol:        uint128 amount = vs.stakedAmount;
+src/contracts/governance/ConvictionVoting.sol:        uint128 power = vs.votingPower;
+src/contracts/governance/ConvictionVoting.sol:        delete voterStates[proposalId][msg.sender];
+src/contracts/governance/ConvictionVoting.sol:        unchecked {
+src/contracts/governance/ConvictionVoting.sol:            if (proposals[proposalId].totalConviction >= power) {
+src/contracts/governance/ConvictionVoting.sol:                proposals[proposalId].totalConviction -= power;
+src/contracts/governance/ConvictionVoting.sol:            } else {
+src/contracts/governance/ConvictionVoting.sol:                proposals[proposalId].totalConviction = 0; 
+src/contracts/governance/ConvictionVoting.sol:            }
+src/contracts/governance/ConvictionVoting.sol:        }
+src/contracts/governance/ConvictionVoting.sol:        TOKEN.safeTransfer(msg.sender, amount);
+src/contracts/governance/ConvictionVoting.sol:        emit VoteWithdrawn(proposalId, msg.sender, amount);
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:    function getProposalConviction(uint256 proposalId) external view returns (uint256) {
+src/contracts/governance/ConvictionVoting.sol:        return proposals[proposalId].totalConviction;
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:    function getVoterState(uint256 proposalId, address voter) external view returns (uint128, uint128, uint48) {
+src/contracts/governance/ConvictionVoting.sol:        VoterState memory vs = voterStates[proposalId][voter];
+src/contracts/governance/ConvictionVoting.sol:        return (vs.stakedAmount, vs.votingPower, vs.lockedUntil);
+src/contracts/governance/ConvictionVoting.sol:    }
+src/contracts/governance/ConvictionVoting.sol:}
+src/contracts/config/DAOConfig.sol:// SPDX-License-Identifier: MIT
+src/contracts/config/DAOConfig.sol:pragma solidity ^0.8.30;
+src/contracts/config/DAOConfig.sol:import {InvalidValue, SameValue} from "../errors/CommonErrors.sol";
+src/contracts/config/DAOConfig.sol:import {OnlyTimelock} from "../errors/GovernanceErrors.sol";
+src/contracts/config/DAOConfig.sol:/**
+src/contracts/config/DAOConfig.sol: * @title DAOConfig
+src/contracts/config/DAOConfig.sol: * @notice Manages decentralized governance parameters for the DAO system.
+src/contracts/config/DAOConfig.sol: * @dev Authority is restricted to the Timelock contract to prevent central points of failure.
+src/contracts/config/DAOConfig.sol: */
+src/contracts/config/DAOConfig.sol:contract DAOConfig {
+src/contracts/config/DAOConfig.sol:    address public immutable TIMELOCK;
+src/contracts/config/DAOConfig.sol:    uint256 public votingDelay;
+src/contracts/config/DAOConfig.sol:    uint256 public votingPeriod;
+src/contracts/config/DAOConfig.sol:    uint256 public proposalThreshold;
+src/contracts/config/DAOConfig.sol:    uint256 public quorumPercentage;
+src/contracts/config/DAOConfig.sol:    uint256 public constant MIN_VOTING_DELAY = 1 hours;
+src/contracts/config/DAOConfig.sol:    uint256 public constant MAX_VOTING_DELAY = 30 days;
+src/contracts/config/DAOConfig.sol:    uint256 public constant MIN_VOTING_PERIOD = 1 days;
+src/contracts/config/DAOConfig.sol:    uint256 public constant MAX_VOTING_PERIOD = 365 days;
+src/contracts/config/DAOConfig.sol:    uint256 public constant MIN_QUORUM = 0; 
+src/contracts/config/DAOConfig.sol:    uint256 public constant MAX_QUORUM = 100;
+src/contracts/config/DAOConfig.sol:    /**
+src/contracts/config/DAOConfig.sol:     * @notice Emitted when a parameter is updated by the Timelock
+src/contracts/config/DAOConfig.sol:     */
+src/contracts/config/DAOConfig.sol:    event ConfigUpdated(string indexed param, uint256 newValue);
+src/contracts/config/DAOConfig.sol:    modifier onlyTimelock() {
+src/contracts/config/DAOConfig.sol:        _checkTimelock();
+src/contracts/config/DAOConfig.sol:        _;
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:    function _checkTimelock() internal view {
+src/contracts/config/DAOConfig.sol:        if (msg.sender != TIMELOCK) revert OnlyTimelock();
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:    /**
+src/contracts/config/DAOConfig.sol:     * @param _timelock Address of the DAO Timelock
+src/contracts/config/DAOConfig.sol:     * @param _delay Initial delay before voting starts
+src/contracts/config/DAOConfig.sol:     * @param _period Duration of the voting phase
+src/contracts/config/DAOConfig.sol:     * @param _threshold Minimum tokens required to create a proposal
+src/contracts/config/DAOConfig.sol:     * @param _quorum Percentage of total supply required for quorum
+src/contracts/config/DAOConfig.sol:     */
+src/contracts/config/DAOConfig.sol:    constructor(
+src/contracts/config/DAOConfig.sol:        address _timelock,
+src/contracts/config/DAOConfig.sol:        uint256 _delay,
+src/contracts/config/DAOConfig.sol:        uint256 _period,
+src/contracts/config/DAOConfig.sol:        uint256 _threshold,
+src/contracts/config/DAOConfig.sol:        uint256 _quorum
+src/contracts/config/DAOConfig.sol:    ) {
+src/contracts/config/DAOConfig.sol:        if (_timelock == address(0)) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        if (_delay < MIN_VOTING_DELAY || _delay > MAX_VOTING_DELAY) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        if (_period < MIN_VOTING_PERIOD || _period > MAX_VOTING_PERIOD) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        if (_quorum > MAX_QUORUM) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        TIMELOCK = _timelock;
+src/contracts/config/DAOConfig.sol:        votingDelay = _delay;
+src/contracts/config/DAOConfig.sol:        votingPeriod = _period;
+src/contracts/config/DAOConfig.sol:        proposalThreshold = _threshold;
+src/contracts/config/DAOConfig.sol:        quorumPercentage = _quorum;
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:    /**
+src/contracts/config/DAOConfig.sol:     * @notice Updates the voting delay (time between proposal and voting start)
+src/contracts/config/DAOConfig.sol:     */
+src/contracts/config/DAOConfig.sol:    function setVotingDelay(uint256 newDelay) external onlyTimelock {
+src/contracts/config/DAOConfig.sol:        if (newDelay == votingDelay) revert SameValue();
+src/contracts/config/DAOConfig.sol:        if (newDelay < MIN_VOTING_DELAY || newDelay > MAX_VOTING_DELAY) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        
+src/contracts/config/DAOConfig.sol:        votingDelay = newDelay;
+src/contracts/config/DAOConfig.sol:        emit ConfigUpdated("votingDelay", newDelay);
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:    /**
+src/contracts/config/DAOConfig.sol:     * @notice Updates the voting period (duration of active voting)
+src/contracts/config/DAOConfig.sol:     */
+src/contracts/config/DAOConfig.sol:    function setVotingPeriod(uint256 newPeriod) external onlyTimelock {
+src/contracts/config/DAOConfig.sol:        if (newPeriod == votingPeriod) revert SameValue();
+src/contracts/config/DAOConfig.sol:        if (newPeriod < MIN_VOTING_PERIOD || newPeriod > MAX_VOTING_PERIOD) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        
+src/contracts/config/DAOConfig.sol:        votingPeriod = newPeriod;
+src/contracts/config/DAOConfig.sol:        emit ConfigUpdated("votingPeriod", newPeriod);
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:    /**
+src/contracts/config/DAOConfig.sol:     * @notice Updates the token threshold required to submit a proposal
+src/contracts/config/DAOConfig.sol:     */
+src/contracts/config/DAOConfig.sol:    function setProposalThreshold(uint256 newThreshold) external onlyTimelock {
+src/contracts/config/DAOConfig.sol:        if (newThreshold == proposalThreshold) revert SameValue();
+src/contracts/config/DAOConfig.sol:        
+src/contracts/config/DAOConfig.sol:        proposalThreshold = newThreshold;
+src/contracts/config/DAOConfig.sol:        emit ConfigUpdated("proposalThreshold", newThreshold);
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:    /**
+src/contracts/config/DAOConfig.sol:     * @notice Updates the percentage of votes required for a quorum
+src/contracts/config/DAOConfig.sol:     */
+src/contracts/config/DAOConfig.sol:    function setQuorumPercentage(uint256 newQuorum) external onlyTimelock {
+src/contracts/config/DAOConfig.sol:        if (newQuorum > MAX_QUORUM) revert InvalidValue();
+src/contracts/config/DAOConfig.sol:        if (newQuorum == quorumPercentage) revert SameValue();
+src/contracts/config/DAOConfig.sol:        
+src/contracts/config/DAOConfig.sol:        quorumPercentage = newQuorum;
+src/contracts/config/DAOConfig.sol:        emit ConfigUpdated("quorumPercentage", newQuorum);
+src/contracts/config/DAOConfig.sol:    }
+src/contracts/config/DAOConfig.sol:}
+src/contracts/utils/SignatureVerifier.sol:// SPDX-License-Identifier: MIT
+src/contracts/utils/SignatureVerifier.sol:pragma solidity ^0.8.30;
+src/contracts/utils/SignatureVerifier.sol:import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+src/contracts/utils/SignatureVerifier.sol:import {IERC1271} from "@openzeppelin/contracts/interfaces/IERC1271.sol";
+src/contracts/utils/SignatureVerifier.sol:/**
+src/contracts/utils/SignatureVerifier.sol: * @title Universal Signature Verifier
+src/contracts/utils/SignatureVerifier.sol: * @notice Gas-optimized library to validate signatures from EOAs and Smart Contracts (EIP-1271).
+src/contracts/utils/SignatureVerifier.sol: * @author NexTechArchitect
+src/contracts/utils/SignatureVerifier.sol: */
+src/contracts/utils/SignatureVerifier.sol:library SignatureVerifier {
+src/contracts/utils/SignatureVerifier.sol:    /**
+src/contracts/utils/SignatureVerifier.sol:     * @notice Verifies that a signature belongs to a specific signer.
+src/contracts/utils/SignatureVerifier.sol:     * @param signer The address claiming to have signed.
+src/contracts/utils/SignatureVerifier.sol:     * @param digest The hash of the data signed.
+src/contracts/utils/SignatureVerifier.sol:     * @param signature The signature bytes.
+src/contracts/utils/SignatureVerifier.sol:     * @return bool True if signature is valid.
+src/contracts/utils/SignatureVerifier.sol:     */
+src/contracts/utils/SignatureVerifier.sol:    function verify(
+src/contracts/utils/SignatureVerifier.sol:        address signer,
+src/contracts/utils/SignatureVerifier.sol:        bytes32 digest,
+src/contracts/utils/SignatureVerifier.sol:        bytes memory signature
+src/contracts/utils/SignatureVerifier.sol:    ) internal view returns (bool) {
+src/contracts/utils/SignatureVerifier.sol:        (address recovered, ECDSA.RecoverError error, ) = ECDSA.tryRecover(
+src/contracts/utils/SignatureVerifier.sol:            digest,
+src/contracts/utils/SignatureVerifier.sol:            signature
+src/contracts/utils/SignatureVerifier.sol:        );
+src/contracts/utils/SignatureVerifier.sol:        if (error == ECDSA.RecoverError.NoError && recovered == signer) {
+src/contracts/utils/SignatureVerifier.sol:            return true;
+src/contracts/utils/SignatureVerifier.sol:        }
+src/contracts/utils/SignatureVerifier.sol:        if (signer.code.length > 0) {
+src/contracts/utils/SignatureVerifier.sol:            
+src/contracts/utils/SignatureVerifier.sol:            try IERC1271(signer).isValidSignature(digest, signature) returns (
+src/contracts/utils/SignatureVerifier.sol:                bytes4 magicValue
+src/contracts/utils/SignatureVerifier.sol:            ) {
+src/contracts/utils/SignatureVerifier.sol:                return magicValue == IERC1271.isValidSignature.selector;
+src/contracts/utils/SignatureVerifier.sol:            } catch {
+src/contracts/utils/SignatureVerifier.sol:                return false;
+src/contracts/utils/SignatureVerifier.sol:            }
+src/contracts/utils/SignatureVerifier.sol:        }
+src/contracts/utils/SignatureVerifier.sol:        return false;
+src/contracts/utils/SignatureVerifier.sol:    }
+src/contracts/utils/SignatureVerifier.sol:}
+src/contracts/errors/GovernanceErrors.sol:// SPDX-License-Identifier: MIT
+src/contracts/errors/GovernanceErrors.sol:pragma solidity ^0.8.30;
+src/contracts/errors/GovernanceErrors.sol:error OnlyTimelock();
+src/contracts/errors/GovernanceErrors.sol:error ModuleAlreadyExists();
+src/contracts/errors/GovernanceErrors.sol:error ModuleNotFound();
+src/contracts/errors/GovernanceErrors.sol:error SameAddress();
+src/contracts/errors/GovernanceErrors.sol:error AlreadyLocked();
+src/contracts/errors/GovernanceErrors.sol:// --- Governor & Voting ---
+src/contracts/errors/GovernanceErrors.sol:error InvalidProposalId();
+src/contracts/errors/GovernanceErrors.sol:error ProposalNotActive();
+src/contracts/errors/GovernanceErrors.sol:error VotingNotStarted();
+src/contracts/errors/GovernanceErrors.sol:error VotingEnded();
+src/contracts/errors/GovernanceErrors.sol:error InvalidSupport(); // For vote type (0,1,2)
+src/contracts/errors/GovernanceErrors.sol:error AlreadyVoted();
+src/contracts/errors/GovernanceErrors.sol:// --- Governance Token ---
+src/contracts/errors/GovernanceErrors.sol:error NotGovernance();
+src/contracts/errors/GovernanceErrors.sol:error MaxSupplyExceeded();
+src/contracts/errors/GovernanceErrors.sol:// --- Strategies & Snapshots ---
+src/contracts/errors/GovernanceErrors.sol:error InvalidStrategy();
+src/contracts/errors/GovernanceErrors.sol:error SameStrategy();
+src/contracts/errors/GovernanceErrors.sol:error SnapshotAlreadyExists(uint256 proposalId);
+src/contracts/errors/GovernanceErrors.sol:error SnapshotNotFound(uint256 proposalId);
+src/contracts/errors/GovernanceErrors.sol:// --- Offchain Execution ---
+src/contracts/errors/GovernanceErrors.sol:error ResultAlreadyExecuted();
+src/contracts/errors/GovernanceErrors.sol:error InvalidSignature();
+src/contracts/errors/GovernanceErrors.sol:error SignatureExpired();
+src/contracts/errors/GovernanceErrors.sol:error Unauthorized();
+src/contracts/errors/GovernanceErrors.sol:  
+src/contracts/errors/GovernanceErrors.sol:  // --- Timelock ---
+src/contracts/errors/GovernanceErrors.sol: error InvalidMinDelay(uint256 provided, uint256 min, uint256 max);
+src/contracts/errors/GovernanceErrors.sol:    error EmptyProposers();
+src/contracts/errors/GovernanceErrors.sol:    error EmptyExecutors();
+src/contracts/errors/GovernanceErrors.sol:    error ZeroAddressInArray();
+src/contracts/errors/GovernanceErrors.sol:    error AdminMustBeZero();
+src/contracts/errors/SecurityErrors.sol:// SPDX-License-Identifier: MIT
+src/contracts/errors/SecurityErrors.sol:pragma solidity ^0.8.30;
+src/contracts/errors/SecurityErrors.sol:error OnlyAdmin();
+src/contracts/errors/SecurityErrors.sol:error OnlyGuardian();
+src/contracts/errors/SecurityErrors.sol:error RoleAlreadyGranted();
+src/contracts/errors/SecurityErrors.sol:error RoleNotGranted();
+src/contracts/errors/SecurityErrors.sol:error SignerMismatch();
+src/contracts/errors/SecurityErrors.sol:error ZeroAddressProvided();
+src/contracts/errors/SecurityErrors.sol:// --- Pausable ---
+src/contracts/errors/SecurityErrors.sol:error AlreadyPaused();
+src/contracts/errors/SecurityErrors.sol:error NotPaused();
+src/contracts/errors/TreasuryErrors.sol:// SPDX-License-Identifier: MIT
+src/contracts/errors/TreasuryErrors.sol:pragma solidity ^0.8.30;
+src/contracts/errors/TreasuryErrors.sol:error InsufficientBalance();
+src/contracts/errors/TreasuryErrors.sol:error TransferFailed();
+src/contracts/errors/TreasuryErrors.sol:error InvalidToken();
+src/contracts/errors/TreasuryErrors.sol:error OnlyAuthorized(); // Used for RageQuit + Timelock checks
+src/contracts/errors/TreasuryErrors.sol:// --- Rage Quit ---
+src/contracts/errors/TreasuryErrors.sol:error ProposalNotExecuted();
+src/contracts/errors/TreasuryErrors.sol:error RageQuitWindowExpired();
+src/contracts/errors/TreasuryErrors.sol:error AlreadyRageQuit();
+src/contracts/errors/TreasuryErrors.sol:error DidNotVoteAgainst();
+src/contracts/errors/CommonErrors.sol:// SPDX-License-Identifier: MIT
+src/contracts/errors/CommonErrors.sol:pragma solidity ^0.8.30;
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when an input address is address(0)
+src/contracts/errors/CommonErrors.sol:error ZeroAddress();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when an input amount is 0
+src/contracts/errors/CommonErrors.sol:error ZeroAmount();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when two array lengths do not match
+src/contracts/errors/CommonErrors.sol:error ArrayLengthMismatch();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when a caller is not authorized to perform an action
+src/contracts/errors/CommonErrors.sol:error Unauthorized();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when an input value is invalid (generic)
+src/contracts/errors/CommonErrors.sol:error InvalidValue();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when updating a variable to the same value
+src/contracts/errors/CommonErrors.sol:error SameValue();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when a low-level call (transfer/execution) fails
+src/contracts/errors/CommonErrors.sol:error CallFailed();
+src/contracts/errors/CommonErrors.sol:/// @notice Thrown when an input address is invalid (e.g., not a contract)
+src/contracts/errors/CommonErrors.sol:error InvalidAddress();
+src/contracts/errors/CommonErrors.sol:error LengthMismatch();
+src/contracts/security/GovernanceAnalytics.sol:// SPDX-License-Identifier: MIT
+src/contracts/security/GovernanceAnalytics.sol:pragma solidity ^0.8.30;
+src/contracts/security/GovernanceAnalytics.sol:/// @title GovernanceAnalytics
+src/contracts/security/GovernanceAnalytics.sol:/// @notice Tracks governance proposal outcomes for analytics
+src/contracts/security/GovernanceAnalytics.sol:contract GovernanceAnalytics {
+src/contracts/security/GovernanceAnalytics.sol:  
+src/contracts/security/GovernanceAnalytics.sol:    event AnalyticsUpdated(uint256 indexed proposalId, bool success);
+src/contracts/security/GovernanceAnalytics.sol:    error Unauthorized();
+src/contracts/security/GovernanceAnalytics.sol:    error InvalidAddress();
+src/contracts/security/GovernanceAnalytics.sol:    address public immutable GOVERNOR;
+src/contracts/security/GovernanceAnalytics.sol:    address public immutable TOKEN;
+src/contracts/security/GovernanceAnalytics.sol:    uint256 public successfulProposals;
+src/contracts/security/GovernanceAnalytics.sol:    uint256 public failedProposals;
+src/contracts/security/GovernanceAnalytics.sol:    uint256 public totalProposals;
+src/contracts/security/GovernanceAnalytics.sol:    constructor(address _governor, address _token) {
+src/contracts/security/GovernanceAnalytics.sol:        if (_governor == address(0) || _token == address(0)) revert InvalidAddress();
+src/contracts/security/GovernanceAnalytics.sol:        GOVERNOR = _governor;
+src/contracts/security/GovernanceAnalytics.sol:        TOKEN = _token;
+src/contracts/security/GovernanceAnalytics.sol:    }
+src/contracts/security/GovernanceAnalytics.sol:     /* @notice Records proposal outcome
+src/contracts/security/GovernanceAnalytics.sol:      * @param proposalId The proposal ID
+src/contracts/security/GovernanceAnalytics.sol:      * @param success Whether the proposal succeeded
+src/contracts/security/GovernanceAnalytics.sol:     */
+src/contracts/security/GovernanceAnalytics.sol:    
+src/contracts/security/GovernanceAnalytics.sol:    function updateAnalytics(uint256 proposalId, bool success) external {
+src/contracts/security/GovernanceAnalytics.sol:       
+src/contracts/security/GovernanceAnalytics.sol:        if (msg.sender != GOVERNOR) revert Unauthorized();
+src/contracts/security/GovernanceAnalytics.sol:        
+src/contracts/security/GovernanceAnalytics.sol:        totalProposals++;
+src/contracts/security/GovernanceAnalytics.sol:        
+src/contracts/security/GovernanceAnalytics.sol:        if (success) {
+src/contracts/security/GovernanceAnalytics.sol:            successfulProposals++;
+src/contracts/security/GovernanceAnalytics.sol:        } else {
+src/contracts/security/GovernanceAnalytics.sol:            failedProposals++;
+src/contracts/security/GovernanceAnalytics.sol:        }
+src/contracts/security/GovernanceAnalytics.sol:        
+src/contracts/security/GovernanceAnalytics.sol:        emit AnalyticsUpdated(proposalId, success);
+src/contracts/security/GovernanceAnalytics.sol:    }
+src/contracts/security/GovernanceAnalytics.sol:    function getSuccessRate() external view returns (uint256) {
+src/contracts/security/GovernanceAnalytics.sol:        if (totalProposals == 0) return 0;
+src/contracts/security/GovernanceAnalytics.sol:        return (successfulProposals * 10000) / totalProposals;
+src/contracts/security/GovernanceAnalytics.sol:    }
+src/contracts/security/GovernanceAnalytics.sol:    function getStats() external view returns (
+src/contracts/security/GovernanceAnalytics.sol:        uint256 total,
+src/contracts/security/GovernanceAnalytics.sol:        uint256 successful,
+src/contracts/security/GovernanceAnalytics.sol:        uint256 failed
+src/contracts/security/GovernanceAnalytics.sol:    ) {
+src/contracts/security/GovernanceAnalytics.sol:        return (totalProposals, successfulProposals, failedProposals);
+src/contracts/security/GovernanceAnalytics.sol:    }
+src/contracts/security/GovernanceAnalytics.sol:}
+src/contracts/security/RoleManager.sol:// SPDX-License-Identifier: MIT
+src/contracts/security/RoleManager.sol:pragma solidity ^0.8.30;
+src/contracts/security/RoleManager.sol:import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+src/contracts/security/RoleManager.sol:import {ZeroAddress, ArrayLengthMismatch} from "../errors/CommonErrors.sol";
+src/contracts/security/RoleManager.sol:/**
+src/contracts/security/RoleManager.sol: * @title Role Manager (RBAC)
+src/contracts/security/RoleManager.sol: * @notice Centralized Role-Based Access Control for the DAO.
+src/contracts/security/RoleManager.sol: * @dev Optimized by removing Enumerable extensions to save gas on permission updates.
+src/contracts/security/RoleManager.sol: * @author NexTechArchitect
+src/contracts/security/RoleManager.sol: */
+src/contracts/security/RoleManager.sol:contract RoleManager is AccessControl {
+src/contracts/security/RoleManager.sol:    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+src/contracts/security/RoleManager.sol:    bytes32 public constant GUARDIAN_ROLE = keccak256("GUARDIAN_ROLE");
+src/contracts/security/RoleManager.sol:    bytes32 public constant EXECUTOR_ROLE = keccak256("EXECUTOR_ROLE");
+src/contracts/security/RoleManager.sol:    constructor(address rootAdmin) {
+src/contracts/security/RoleManager.sol:        if (rootAdmin == address(0)) revert ZeroAddress();
+src/contracts/security/RoleManager.sol:        
+src/contracts/security/RoleManager.sol:        _grantRole(DEFAULT_ADMIN_ROLE, rootAdmin);
+src/contracts/security/RoleManager.sol:        _grantRole(ADMIN_ROLE, rootAdmin);
+src/contracts/security/RoleManager.sol:        _setRoleAdmin(GUARDIAN_ROLE, ADMIN_ROLE);
+src/contracts/security/RoleManager.sol:        _setRoleAdmin(EXECUTOR_ROLE, ADMIN_ROLE);
+src/contracts/security/RoleManager.sol:    }
+src/contracts/security/RoleManager.sol:    /**
+src/contracts/security/RoleManager.sol:     * @notice Grants multiple roles to multiple accounts in one transaction.
+src/contracts/security/RoleManager.sol:     */
+src/contracts/security/RoleManager.sol:    function grantRoleBatch(
+src/contracts/security/RoleManager.sol:        bytes32[] calldata rolesList,
+src/contracts/security/RoleManager.sol:        address[] calldata accounts
+src/contracts/security/RoleManager.sol:    ) external onlyRole(ADMIN_ROLE) {
+src/contracts/security/RoleManager.sol:        
+src/contracts/security/RoleManager.sol:        uint256 len = rolesList.length;
+src/contracts/security/RoleManager.sol:        if (len != accounts.length) revert ArrayLengthMismatch();
+src/contracts/security/RoleManager.sol:        for (uint256 i = 0; i < len; ) {
+src/contracts/security/RoleManager.sol:            if (accounts[i] == address(0)) revert ZeroAddress();
+src/contracts/security/RoleManager.sol:            _grantRole(rolesList[i], accounts[i]);
+src/contracts/security/RoleManager.sol:            unchecked { ++i; }
+src/contracts/security/RoleManager.sol:        }
+src/contracts/security/RoleManager.sol:    }
+src/contracts/security/RoleManager.sol:    /**
+src/contracts/security/RoleManager.sol:     * @notice Revokes multiple roles from multiple accounts in one transaction.
+src/contracts/security/RoleManager.sol:     * @dev Crucial for emergency response (stripping hacked wallets of access).
+src/contracts/security/RoleManager.sol:     */
+src/contracts/security/RoleManager.sol:    function revokeRoleBatch(
+src/contracts/security/RoleManager.sol:        bytes32[] calldata rolesList,
+src/contracts/security/RoleManager.sol:        address[] calldata accounts
+src/contracts/security/RoleManager.sol:    
+src/contracts/security/RoleManager.sol:    ) external onlyRole(ADMIN_ROLE) {
+src/contracts/security/RoleManager.sol:    
+src/contracts/security/RoleManager.sol:        uint256 len = rolesList.length;
+src/contracts/security/RoleManager.sol:        if (len != accounts.length) revert ArrayLengthMismatch();
+src/contracts/security/RoleManager.sol:        for (uint256 i = 0; i < len; ) {
+src/contracts/security/RoleManager.sol:            _revokeRole(rolesList[i], accounts[i]);
+src/contracts/security/RoleManager.sol:            unchecked { ++i; }
+src/contracts/security/RoleManager.sol:        }
+src/contracts/security/RoleManager.sol:    }
+src/contracts/security/RoleManager.sol:    
+src/contracts/security/RoleManager.sol:    function isGuardian(address account) external view returns (bool) {
+src/contracts/security/RoleManager.sol:        return hasRole(GUARDIAN_ROLE, account);
+src/contracts/security/RoleManager.sol:    }
+src/contracts/security/RoleManager.sol:    function isExecutor(address account) external view returns (bool) {
+src/contracts/security/RoleManager.sol:        return hasRole(EXECUTOR_ROLE, account);
+src/contracts/security/RoleManager.sol:    }
+src/contracts/security/RoleManager.sol:    function isAdmin(address account) external view returns (bool) {
+src/contracts/security/RoleManager.sol:        return hasRole(ADMIN_ROLE, account);
+src/contracts/security/RoleManager.sol:    }
+src/contracts/security/RoleManager.sol:}
+src/contracts/security/EmergencyPause.sol:// SPDX-License-Identifier: MIT
+src/contracts/security/EmergencyPause.sol:pragma solidity ^0.8.30;
+src/contracts/security/EmergencyPause.sol:import {IRoleManager} from "../interfaces/IRoleManager.sol";
+src/contracts/security/EmergencyPause.sol:import {ZeroAddress} from "../errors/CommonErrors.sol";
+src/contracts/security/EmergencyPause.sol:import {
+src/contracts/security/EmergencyPause.sol:    OnlyGuardian,
+src/contracts/security/EmergencyPause.sol:    AlreadyPaused,
+src/contracts/security/EmergencyPause.sol:    NotPaused
+src/contracts/security/EmergencyPause.sol:} from "../errors/SecurityErrors.sol";
+src/contracts/security/EmergencyPause.sol:/**
+src/contracts/security/EmergencyPause.sol: * @title Emergency Pause Mechanism
+src/contracts/security/EmergencyPause.sol: * @notice Provides a safety breaker that auto-resets after 7 days.
+src/contracts/security/EmergencyPause.sol: * @dev Optimized for gas using storage packing (bool + uint40 in one slot).
+src/contracts/security/EmergencyPause.sol: */
+src/contracts/security/EmergencyPause.sol:contract EmergencyPause {
+src/contracts/security/EmergencyPause.sol:    IRoleManager public immutable ROLE_MANAGER;
+src/contracts/security/EmergencyPause.sol:    
+src/contracts/security/EmergencyPause.sol:    bool private _paused;
+src/contracts/security/EmergencyPause.sol:    uint40 public lastPauseTime;
+src/contracts/security/EmergencyPause.sol:    
+src/contracts/security/EmergencyPause.sol:    uint40 public constant MAX_PAUSE_DURATION = 7 days;
+src/contracts/security/EmergencyPause.sol:    event Paused(address indexed guardian, uint256 timestamp);
+src/contracts/security/EmergencyPause.sol:    event Unpaused(address indexed guardian, uint256 timestamp);
+src/contracts/security/EmergencyPause.sol:    constructor(address _roleManager) {
+src/contracts/security/EmergencyPause.sol:        if (_roleManager == address(0)) revert ZeroAddress();
+src/contracts/security/EmergencyPause.sol:        ROLE_MANAGER = IRoleManager(_roleManager);
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    /**
+src/contracts/security/EmergencyPause.sol:     * @notice Checks if the contract is currently paused.
+src/contracts/security/EmergencyPause.sol:     * @return bool True if paused and within the 7-day window.
+src/contracts/security/EmergencyPause.sol:     */
+src/contracts/security/EmergencyPause.sol:    function isPaused() public view returns (bool) {
+src/contracts/security/EmergencyPause.sol:        if (_paused) {
+src/contracts/security/EmergencyPause.sol:           
+src/contracts/security/EmergencyPause.sol:            if (block.timestamp > uint256(lastPauseTime) + MAX_PAUSE_DURATION) {
+src/contracts/security/EmergencyPause.sol:                return false; 
+src/contracts/security/EmergencyPause.sol:            }
+src/contracts/security/EmergencyPause.sol:            return true;
+src/contracts/security/EmergencyPause.sol:        }
+src/contracts/security/EmergencyPause.sol:        return false;
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    function _checkGuardian() internal view {
+src/contracts/security/EmergencyPause.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.GUARDIAN_ROLE(), msg.sender)) {
+src/contracts/security/EmergencyPause.sol:            revert OnlyGuardian();
+src/contracts/security/EmergencyPause.sol:        }
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    function _checkNotPaused() internal view {
+src/contracts/security/EmergencyPause.sol:        if (isPaused()) revert AlreadyPaused();
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    modifier onlyGuardian() {
+src/contracts/security/EmergencyPause.sol:        _checkGuardian();
+src/contracts/security/EmergencyPause.sol:        _;
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    modifier whenNotPaused() {
+src/contracts/security/EmergencyPause.sol:        _checkNotPaused();
+src/contracts/security/EmergencyPause.sol:        _;
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    function pause() external onlyGuardian whenNotPaused {
+src/contracts/security/EmergencyPause.sol:        _paused = true;
+src/contracts/security/EmergencyPause.sol:        lastPauseTime = uint40(block.timestamp);
+src/contracts/security/EmergencyPause.sol:        emit Paused(msg.sender, block.timestamp);
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:    function unpause() external onlyGuardian {
+src/contracts/security/EmergencyPause.sol:    
+src/contracts/security/EmergencyPause.sol:        if (!_paused) revert NotPaused();
+src/contracts/security/EmergencyPause.sol:        
+src/contracts/security/EmergencyPause.sol:        _paused = false;
+src/contracts/security/EmergencyPause.sol:        lastPauseTime = 0; 
+src/contracts/security/EmergencyPause.sol:        
+src/contracts/security/EmergencyPause.sol:        emit Unpaused(msg.sender, block.timestamp);
+src/contracts/security/EmergencyPause.sol:    }
+src/contracts/security/EmergencyPause.sol:}
+src/contracts/offchain/VotingPowerSnapshot.sol:// SPDX-License-Identifier: MIT
+src/contracts/offchain/VotingPowerSnapshot.sol:pragma solidity ^0.8.30;
+src/contracts/offchain/VotingPowerSnapshot.sol:import {ZeroAddress} from "../errors/CommonErrors.sol";
+src/contracts/offchain/VotingPowerSnapshot.sol:import {Unauthorized} from "../errors/GovernanceErrors.sol";
+src/contracts/offchain/VotingPowerSnapshot.sol:/**
+src/contracts/offchain/VotingPowerSnapshot.sol: * @title Voting Power Snapshot
+src/contracts/offchain/VotingPowerSnapshot.sol: * @notice Emits a distinct event to signal off-chain indexers to snapshot voting power.
+src/contracts/offchain/VotingPowerSnapshot.sol: * @dev Restricted to Governor and Timelock to ensure signal integrity.
+src/contracts/offchain/VotingPowerSnapshot.sol: * @author NexTechArchitect
+src/contracts/offchain/VotingPowerSnapshot.sol: */
+src/contracts/offchain/VotingPowerSnapshot.sol:contract VotingPowerSnapshot {
+src/contracts/offchain/VotingPowerSnapshot.sol:    address public immutable GOVERNOR;
+src/contracts/offchain/VotingPowerSnapshot.sol:    address public immutable TIMELOCK;
+src/contracts/offchain/VotingPowerSnapshot.sol:    event SnapshotTaken(uint256 indexed proposalId, uint256 timestamp);
+src/contracts/offchain/VotingPowerSnapshot.sol:    constructor(address _governor, address _timelock) {
+src/contracts/offchain/VotingPowerSnapshot.sol:        if (_governor == address(0) || _timelock == address(0)) {
+src/contracts/offchain/VotingPowerSnapshot.sol:            revert ZeroAddress();
+src/contracts/offchain/VotingPowerSnapshot.sol:        }
+src/contracts/offchain/VotingPowerSnapshot.sol:        GOVERNOR = _governor;
+src/contracts/offchain/VotingPowerSnapshot.sol:        TIMELOCK = _timelock;
+src/contracts/offchain/VotingPowerSnapshot.sol:    }
+src/contracts/offchain/VotingPowerSnapshot.sol:    /**
+src/contracts/offchain/VotingPowerSnapshot.sol:     * @notice Emits the snapshot signal.
+src/contracts/offchain/VotingPowerSnapshot.sol:     * @param proposalId The ID of the proposal triggering the snapshot.
+src/contracts/offchain/VotingPowerSnapshot.sol:     */
+src/contracts/offchain/VotingPowerSnapshot.sol:    function createSnapshot(uint256 proposalId) external {
+src/contracts/offchain/VotingPowerSnapshot.sol:        
+src/contracts/offchain/VotingPowerSnapshot.sol:        if (msg.sender != GOVERNOR && msg.sender != TIMELOCK) {
+src/contracts/offchain/VotingPowerSnapshot.sol:            revert Unauthorized();
+src/contracts/offchain/VotingPowerSnapshot.sol:        }
+src/contracts/offchain/VotingPowerSnapshot.sol:        emit SnapshotTaken(proposalId, block.timestamp);
+src/contracts/offchain/VotingPowerSnapshot.sol:    }
+src/contracts/offchain/VotingPowerSnapshot.sol:}
+src/contracts/offchain/OffchainResultExecutor.sol:// SPDX-License-Identifier: MIT
+src/contracts/offchain/OffchainResultExecutor.sol:pragma solidity ^0.8.30;
+src/contracts/offchain/OffchainResultExecutor.sol:import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+src/contracts/offchain/OffchainResultExecutor.sol:import {SignatureVerifier} from "../utils/SignatureVerifier.sol";
+src/contracts/offchain/OffchainResultExecutor.sol:import {ZeroAddress} from "../errors/CommonErrors.sol";
+src/contracts/offchain/OffchainResultExecutor.sol:import {
+src/contracts/offchain/OffchainResultExecutor.sol:    OnlyTimelock,
+src/contracts/offchain/OffchainResultExecutor.sol:    InvalidSignature,
+src/contracts/offchain/OffchainResultExecutor.sol:    ResultAlreadyExecuted
+src/contracts/offchain/OffchainResultExecutor.sol:} from "../errors/GovernanceErrors.sol";
+src/contracts/offchain/OffchainResultExecutor.sol:/**
+src/contracts/offchain/OffchainResultExecutor.sol: * @title Offchain Result Executor
+src/contracts/offchain/OffchainResultExecutor.sol: * @notice Validates off-chain voting results via EIP-712 signatures for Snapshot X integration.
+src/contracts/offchain/OffchainResultExecutor.sol: * @dev Optimized with assembly hashing and centralized signature verification.
+src/contracts/offchain/OffchainResultExecutor.sol: * @author NexTechArchitect
+src/contracts/offchain/OffchainResultExecutor.sol: */
+src/contracts/offchain/OffchainResultExecutor.sol:contract OffchainResultExecutor is EIP712 {
+src/contracts/offchain/OffchainResultExecutor.sol:    address public immutable TIMELOCK;
+src/contracts/offchain/OffchainResultExecutor.sol:    address public signer;
+src/contracts/offchain/OffchainResultExecutor.sol:    bytes32 private constant RESULT_TYPEHASH =
+src/contracts/offchain/OffchainResultExecutor.sol:        keccak256("OffchainResult(uint256 proposalId,bytes32 resultHash)");
+src/contracts/offchain/OffchainResultExecutor.sol:    mapping(uint256 => bool) public executedResults;
+src/contracts/offchain/OffchainResultExecutor.sol:    event ResultExecuted(uint256 indexed proposalId, bytes32 resultHash);
+src/contracts/offchain/OffchainResultExecutor.sol:    event SignerUpdated(address oldSigner, address newSigner);
+src/contracts/offchain/OffchainResultExecutor.sol:    modifier onlyTimelock() {
+src/contracts/offchain/OffchainResultExecutor.sol:        _checkTimelock();
+src/contracts/offchain/OffchainResultExecutor.sol:        _;
+src/contracts/offchain/OffchainResultExecutor.sol:    }
+src/contracts/offchain/OffchainResultExecutor.sol:    function _checkTimelock() internal view {
+src/contracts/offchain/OffchainResultExecutor.sol:        if (msg.sender != TIMELOCK) revert OnlyTimelock();
+src/contracts/offchain/OffchainResultExecutor.sol:    }
+src/contracts/offchain/OffchainResultExecutor.sol:    constructor(
+src/contracts/offchain/OffchainResultExecutor.sol:        address _timelock,
+src/contracts/offchain/OffchainResultExecutor.sol:        address _signer,
+src/contracts/offchain/OffchainResultExecutor.sol:        string memory name,
+src/contracts/offchain/OffchainResultExecutor.sol:        string memory version
+src/contracts/offchain/OffchainResultExecutor.sol:    ) EIP712(name, version) {
+src/contracts/offchain/OffchainResultExecutor.sol:        if (_timelock == address(0) || _signer == address(0))
+src/contracts/offchain/OffchainResultExecutor.sol:            revert ZeroAddress();
+src/contracts/offchain/OffchainResultExecutor.sol:        TIMELOCK = _timelock;
+src/contracts/offchain/OffchainResultExecutor.sol:        signer = _signer;
+src/contracts/offchain/OffchainResultExecutor.sol:    }
+src/contracts/offchain/OffchainResultExecutor.sol:    /**
+src/contracts/offchain/OffchainResultExecutor.sol:     * @notice Updates the authorized signer address.
+src/contracts/offchain/OffchainResultExecutor.sol:     * @dev Only callable by the Timelock DAO.
+src/contracts/offchain/OffchainResultExecutor.sol:     */
+src/contracts/offchain/OffchainResultExecutor.sol:    function setSigner(address _signer) external onlyTimelock {
+src/contracts/offchain/OffchainResultExecutor.sol:        if (_signer == address(0)) revert ZeroAddress();
+src/contracts/offchain/OffchainResultExecutor.sol:        emit SignerUpdated(signer, _signer);
+src/contracts/offchain/OffchainResultExecutor.sol:        signer = _signer;
+src/contracts/offchain/OffchainResultExecutor.sol:    }
+src/contracts/offchain/OffchainResultExecutor.sol:    /**
+src/contracts/offchain/OffchainResultExecutor.sol:     * @notice Returns the EIP-712 Domain Separator.
+src/contracts/offchain/OffchainResultExecutor.sol:     * @dev Crucial for generating valid signatures in Tests and Frontends.
+src/contracts/offchain/OffchainResultExecutor.sol:     */
+src/contracts/offchain/OffchainResultExecutor.sol:    function getDomainSeparator() external view returns (bytes32) {
+src/contracts/offchain/OffchainResultExecutor.sol:        return _domainSeparatorV4();
+src/contracts/offchain/OffchainResultExecutor.sol:    }
+src/contracts/offchain/OffchainResultExecutor.sol:    /**
+src/contracts/offchain/OffchainResultExecutor.sol:     * @notice Executes a proposal result if the signature is valid and not replayed.
+src/contracts/offchain/OffchainResultExecutor.sol:     * @param proposalId The ID of the off-chain proposal.
+src/contracts/offchain/OffchainResultExecutor.sol:     * @param resultHash The hash of the voting result (e.g., Merkle Root).
+src/contracts/offchain/OffchainResultExecutor.sol:     * @param signature The EIP-712 signature from the authorized signer.
+src/contracts/offchain/OffchainResultExecutor.sol:     */
+src/contracts/offchain/OffchainResultExecutor.sol:    function executeResult(
+src/contracts/offchain/OffchainResultExecutor.sol:        uint256 proposalId,
+src/contracts/offchain/OffchainResultExecutor.sol:        bytes32 resultHash,
+src/contracts/offchain/OffchainResultExecutor.sol:        bytes calldata signature
+src/contracts/offchain/OffchainResultExecutor.sol:    ) external {
+src/contracts/offchain/OffchainResultExecutor.sol:        if (executedResults[proposalId]) revert ResultAlreadyExecuted();
+src/contracts/offchain/OffchainResultExecutor.sol:        bytes32 structHash;
+src/contracts/offchain/OffchainResultExecutor.sol:        bytes32 typeHash = RESULT_TYPEHASH;
+src/contracts/offchain/OffchainResultExecutor.sol:        assembly {
+src/contracts/offchain/OffchainResultExecutor.sol:            let ptr := mload(0x40)
+src/contracts/offchain/OffchainResultExecutor.sol:            mstore(ptr, typeHash)
+src/contracts/offchain/OffchainResultExecutor.sol:            mstore(add(ptr, 0x20), proposalId)
+src/contracts/offchain/OffchainResultExecutor.sol:            mstore(add(ptr, 0x40), resultHash)
+src/contracts/offchain/OffchainResultExecutor.sol:            structHash := keccak256(ptr, 0x60) 
+src/contracts/offchain/OffchainResultExecutor.sol:        }
+src/contracts/offchain/OffchainResultExecutor.sol:        bytes32 hash = _hashTypedDataV4(structHash);
+src/contracts/offchain/OffchainResultExecutor.sol:        if (!SignatureVerifier.verify(signer, hash, signature)) {
+src/contracts/offchain/OffchainResultExecutor.sol:            revert InvalidSignature();
+src/contracts/offchain/OffchainResultExecutor.sol:        }
+src/contracts/offchain/OffchainResultExecutor.sol:        executedResults[proposalId] = true;
+src/contracts/offchain/OffchainResultExecutor.sol:        emit ResultExecuted(proposalId, resultHash);
+src/contracts/offchain/OffchainResultExecutor.sol:    }
+src/contracts/offchain/OffchainResultExecutor.sol:}
+src/contracts/core/DAOTreasury.sol:// SPDX-License-Identifier: MIT
+src/contracts/core/DAOTreasury.sol:pragma solidity ^0.8.30;
+src/contracts/core/DAOTreasury.sol:import {Address} from "@openzeppelin/contracts/utils/Address.sol";
+src/contracts/core/DAOTreasury.sol:import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+src/contracts/core/DAOTreasury.sol:import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+src/contracts/core/DAOTreasury.sol:import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+src/contracts/core/DAOTreasury.sol:import {IERC721Receiver} from "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+src/contracts/core/DAOTreasury.sol:import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+src/contracts/core/DAOTreasury.sol:import {IERC1155Receiver} from "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
+src/contracts/core/DAOTreasury.sol:import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+src/contracts/core/DAOTreasury.sol:import {ITreasury} from "../interfaces/ITreasury.sol";
+src/contracts/core/DAOTreasury.sol:import {ZeroAddress, ZeroAmount, ArrayLengthMismatch} from "../errors/CommonErrors.sol";
+src/contracts/core/DAOTreasury.sol:import {OnlyTimelock} from "../errors/GovernanceErrors.sol";
+src/contracts/core/DAOTreasury.sol:import {OnlyAuthorized} from "../errors/TreasuryErrors.sol";
+src/contracts/core/DAOTreasury.sol:/**
+src/contracts/core/DAOTreasury.sol: * @title DAOTreasury
+src/contracts/core/DAOTreasury.sol: * @author Turtur (FOUNDRY-DAO-F25)
+src/contracts/core/DAOTreasury.sol: * @notice Multi-asset vault for DAO funds supporting Governance and Emergency exits.
+src/contracts/core/DAOTreasury.sol: */
+src/contracts/core/DAOTreasury.sol:contract DAOTreasury is
+src/contracts/core/DAOTreasury.sol:    ITreasury,
+src/contracts/core/DAOTreasury.sol:    ReentrancyGuard,
+src/contracts/core/DAOTreasury.sol:    IERC721Receiver,
+src/contracts/core/DAOTreasury.sol:    IERC1155Receiver
+src/contracts/core/DAOTreasury.sol:{
+src/contracts/core/DAOTreasury.sol:    using Address for address payable;
+src/contracts/core/DAOTreasury.sol:    using SafeERC20 for IERC20;
+src/contracts/core/DAOTreasury.sol:    address public immutable TIMELOCK;
+src/contracts/core/DAOTreasury.sol:    address public rageQuitContract;
+src/contracts/core/DAOTreasury.sol:    modifier onlyAuthorized() {
+src/contracts/core/DAOTreasury.sol:        _checkAuthorized();
+src/contracts/core/DAOTreasury.sol:        _;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function _checkAuthorized() internal view {
+src/contracts/core/DAOTreasury.sol:        if (msg.sender != TIMELOCK && msg.sender != rageQuitContract) {
+src/contracts/core/DAOTreasury.sol:            revert OnlyAuthorized();
+src/contracts/core/DAOTreasury.sol:        }
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    modifier onlyTimelock() {
+src/contracts/core/DAOTreasury.sol:        _checkTimelock();
+src/contracts/core/DAOTreasury.sol:        _;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function _checkTimelock() internal view {
+src/contracts/core/DAOTreasury.sol:        if (msg.sender != TIMELOCK) revert OnlyTimelock();
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    constructor(address timelock) {
+src/contracts/core/DAOTreasury.sol:        if (timelock == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        TIMELOCK = timelock;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function setRageQuitContract(address _rageQuit) external onlyTimelock {
+src/contracts/core/DAOTreasury.sol:        if (_rageQuit == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        rageQuitContract = _rageQuit;
+src/contracts/core/DAOTreasury.sol:        emit RageQuitContractSet(_rageQuit);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    receive() external payable {
+src/contracts/core/DAOTreasury.sol:        emit FundsReceived(msg.sender, msg.value);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function depositEth() external payable override {
+src/contracts/core/DAOTreasury.sol:        emit FundsReceived(msg.sender, msg.value);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function depositERC20(address token, uint256 amount) external override {
+src/contracts/core/DAOTreasury.sol:        if (token == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/core/DAOTreasury.sol:        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function depositERC721(address token, uint256 tokenId) external override {
+src/contracts/core/DAOTreasury.sol:        if (token == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        IERC721(token).safeTransferFrom(msg.sender, address(this), tokenId);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function depositERC1155(
+src/contracts/core/DAOTreasury.sol:        address token,
+src/contracts/core/DAOTreasury.sol:        uint256 id,
+src/contracts/core/DAOTreasury.sol:        uint256 amount,
+src/contracts/core/DAOTreasury.sol:        bytes calldata data
+src/contracts/core/DAOTreasury.sol:    ) external override {
+src/contracts/core/DAOTreasury.sol:        if (token == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/core/DAOTreasury.sol:        IERC1155(token).safeTransferFrom(msg.sender, address(this), id, amount, data);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function transferEth(
+src/contracts/core/DAOTreasury.sol:        address payable to,
+src/contracts/core/DAOTreasury.sol:        uint256 amount
+src/contracts/core/DAOTreasury.sol:    ) external override nonReentrant onlyAuthorized {
+src/contracts/core/DAOTreasury.sol:        if (to == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/core/DAOTreasury.sol:        emit FundsSent(to, amount);
+src/contracts/core/DAOTreasury.sol:        to.sendValue(amount);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function transferERC20(
+src/contracts/core/DAOTreasury.sol:        address token,
+src/contracts/core/DAOTreasury.sol:        address to,
+src/contracts/core/DAOTreasury.sol:        uint256 amount
+src/contracts/core/DAOTreasury.sol:    ) external override nonReentrant onlyAuthorized {
+src/contracts/core/DAOTreasury.sol:        if (token == address(0) || to == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/core/DAOTreasury.sol:        emit FundsSent(to, amount);
+src/contracts/core/DAOTreasury.sol:        IERC20(token).safeTransfer(to, amount);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function batchTransferERC20(
+src/contracts/core/DAOTreasury.sol:        address token,
+src/contracts/core/DAOTreasury.sol:        address[] calldata recipients,
+src/contracts/core/DAOTreasury.sol:        uint256[] calldata amounts
+src/contracts/core/DAOTreasury.sol:    ) external override onlyTimelock nonReentrant {
+src/contracts/core/DAOTreasury.sol:        if (recipients.length != amounts.length) revert ArrayLengthMismatch();
+src/contracts/core/DAOTreasury.sol:        uint256 len = recipients.length;
+src/contracts/core/DAOTreasury.sol:        for (uint256 i; i < len; ) {
+src/contracts/core/DAOTreasury.sol:            if (recipients[i] == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:            if (amounts[i] == 0) revert ZeroAmount();
+src/contracts/core/DAOTreasury.sol:            IERC20(token).safeTransfer(recipients[i], amounts[i]);
+src/contracts/core/DAOTreasury.sol:            unchecked { ++i; }
+src/contracts/core/DAOTreasury.sol:        }
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function transferERC721(address token, address to, uint256 tokenId) external override onlyTimelock {
+src/contracts/core/DAOTreasury.sol:        if (token == address(0) || to == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        IERC721(token).safeTransferFrom(address(this), to, tokenId);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function transferERC1155(
+src/contracts/core/DAOTreasury.sol:        address token,
+src/contracts/core/DAOTreasury.sol:        address to,
+src/contracts/core/DAOTreasury.sol:        uint256 id,
+src/contracts/core/DAOTreasury.sol:        uint256 amount,
+src/contracts/core/DAOTreasury.sol:        bytes calldata data
+src/contracts/core/DAOTreasury.sol:    ) external override onlyTimelock {
+src/contracts/core/DAOTreasury.sol:        if (token == address(0) || to == address(0)) revert ZeroAddress();
+src/contracts/core/DAOTreasury.sol:        if (amount == 0) revert ZeroAmount();
+src/contracts/core/DAOTreasury.sol:        IERC1155(token).safeTransferFrom(address(this), to, id, amount, data);
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function onERC721Received(address, address, uint256, bytes calldata) external pure override returns (bytes4) {
+src/contracts/core/DAOTreasury.sol:        return this.onERC721Received.selector;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function onERC1155Received(address, address, uint256, uint256, bytes calldata) external pure override returns (bytes4) {
+src/contracts/core/DAOTreasury.sol:        return this.onERC1155Received.selector;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function onERC1155BatchReceived(address, address, uint256[] calldata, uint256[] calldata, bytes calldata) external pure override returns (bytes4) {
+src/contracts/core/DAOTreasury.sol:        return this.onERC1155BatchReceived.selector;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function supportsInterface(bytes4 interfaceId) external pure override returns (bool) {
+src/contracts/core/DAOTreasury.sol:        return interfaceId == type(IERC721Receiver).interfaceId || interfaceId == type(IERC1155Receiver).interfaceId;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function ethBalance() external view override returns (uint256) {
+src/contracts/core/DAOTreasury.sol:        return address(this).balance;
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:    function tokenBalance(address token) external view override returns (uint256) {
+src/contracts/core/DAOTreasury.sol:        return IERC20(token).balanceOf(address(this));
+src/contracts/core/DAOTreasury.sol:    }
+src/contracts/core/DAOTreasury.sol:}
+src/contracts/core/HybridGovernorDynamic.sol:// SPDX-License-Identifier: MIT
+src/contracts/core/HybridGovernorDynamic.sol:pragma solidity ^0.8.30;
+src/contracts/core/HybridGovernorDynamic.sol:import {Governor} from "@openzeppelin/contracts/governance/Governor.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {GovernorSettings} from "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {GovernorCountingSimple} from "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {GovernorVotes} from "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {GovernorVotesQuorumFraction} from "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {GovernorTimelockControl} from "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {IVotes} from "@openzeppelin/contracts/governance/utils/IVotes.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {DAOConfig} from "../config/DAOConfig.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {IProposalGuard} from "../interfaces/IProposalGuard.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {IGovernanceAnalytics} from "../interfaces/IGovernanceAnalytics.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {IVetoCouncil} from "../interfaces/IVetoCouncil.sol";
+src/contracts/core/HybridGovernorDynamic.sol:import {VotingStrategies} from "../governance/VotingStrategies.sol";
+src/contracts/core/HybridGovernorDynamic.sol:/**
+src/contracts/core/HybridGovernorDynamic.sol: * @title HybridGovernorDynamic
+src/contracts/core/HybridGovernorDynamic.sol: * @author NexTechArchitect
+src/contracts/core/HybridGovernorDynamic.sol: * @notice Central governance engine with reputation-based voting and anti-spam protection.
+src/contracts/core/HybridGovernorDynamic.sol: */
+src/contracts/core/HybridGovernorDynamic.sol:contract HybridGovernorDynamic is
+src/contracts/core/HybridGovernorDynamic.sol:    Governor,
+src/contracts/core/HybridGovernorDynamic.sol:    GovernorSettings,
+src/contracts/core/HybridGovernorDynamic.sol:    GovernorCountingSimple,
+src/contracts/core/HybridGovernorDynamic.sol:    GovernorVotes,
+src/contracts/core/HybridGovernorDynamic.sol:    GovernorVotesQuorumFraction,
+src/contracts/core/HybridGovernorDynamic.sol:    GovernorTimelockControl,
+src/contracts/core/HybridGovernorDynamic.sol:    ReentrancyGuard
+src/contracts/core/HybridGovernorDynamic.sol:{
+src/contracts/core/HybridGovernorDynamic.sol:    // --- Governance States ---
+src/contracts/core/HybridGovernorDynamic.sol:    
+src/contracts/core/HybridGovernorDynamic.sol:    DAOConfig public daoConfig;
+src/contracts/core/HybridGovernorDynamic.sol:    address public vetoCouncil;
+src/contracts/core/HybridGovernorDynamic.sol:    address public proposalGuard;
+src/contracts/core/HybridGovernorDynamic.sol:    address public analytics;
+src/contracts/core/HybridGovernorDynamic.sol:    VotingStrategies.Strategy public currentStrategy;
+src/contracts/core/HybridGovernorDynamic.sol:    
+src/contracts/core/HybridGovernorDynamic.sol:    // --- Reputation & Anti-Spam Mappings ---
+src/contracts/core/HybridGovernorDynamic.sol:    mapping(address => int256) public proposerReputation;
+src/contracts/core/HybridGovernorDynamic.sol:    mapping(address => uint256) public tokenAcquisitionTime;
+src/contracts/core/HybridGovernorDynamic.sol:    mapping(uint256 => address) private _proposalProposers;
+src/contracts/core/HybridGovernorDynamic.sol:    mapping(address => uint256) public lastProposalTime;
+src/contracts/core/HybridGovernorDynamic.sol:    mapping(address => uint256[]) private _userActiveProposals;
+src/contracts/core/HybridGovernorDynamic.sol:    mapping(uint256 => VotingStrategies.Strategy) public proposalStrategy;
+src/contracts/core/HybridGovernorDynamic.sol:    // --- Governance Constants ---
+src/contracts/core/HybridGovernorDynamic.sol:    uint256 public constant MAX_ACTIVE_PROPOSALS = 10;
+src/contracts/core/HybridGovernorDynamic.sol:    uint256 public constant MIN_COOLDOWN = 1 hours;
+src/contracts/core/HybridGovernorDynamic.sol:    uint256 public constant MIN_DESCRIPTION_LENGTH = 100;
+src/contracts/core/HybridGovernorDynamic.sol:    int256 public constant MIN_REPUTATION = -1000;
+src/contracts/core/HybridGovernorDynamic.sol:    int256 public constant MAX_REPUTATION = 10000;
+src/contracts/core/HybridGovernorDynamic.sol:    uint256 public constant PROPOSAL_COOLDOWN = 1 days;
+src/contracts/core/HybridGovernorDynamic.sol:    uint256 public spamThresholdTokens;
+src/contracts/core/HybridGovernorDynamic.sol:    uint256 private constant MAX_CLEANUP_ITERATIONS = 50;
+src/contracts/core/HybridGovernorDynamic.sol:    // --- Events & Errors ---
+src/contracts/core/HybridGovernorDynamic.sol:    event ReputationUpdated(address indexed user, int256 newReputation);
+src/contracts/core/HybridGovernorDynamic.sol:    event StrategyUpdated(VotingStrategies.Strategy newStrategy);
+src/contracts/core/HybridGovernorDynamic.sol:    event ProposalVetoed(uint256 proposalId);
+src/contracts/core/HybridGovernorDynamic.sol:    event ModulesUpdated(address indexed guard, address indexed analytics);
+src/contracts/core/HybridGovernorDynamic.sol:    event TokenAcquisitionRecorded(address indexed account, uint256 timestamp);
+src/contracts/core/HybridGovernorDynamic.sol:    event ProposalStrategyLocked(uint256 indexed proposalId, VotingStrategies.Strategy strategy);
+src/contracts/core/HybridGovernorDynamic.sol:    event GuardRecordFailed(address indexed proposer, string reason);
+src/contracts/core/HybridGovernorDynamic.sol:    event AnalyticsUpdated(address indexed oldAnalytics, address indexed newAnalytics);
+src/contracts/core/HybridGovernorDynamic.sol:    event ProposalGuardUpdated(address indexed oldGuard, address indexed newGuard);
+src/contracts/core/HybridGovernorDynamic.sol:    error ProposalIsVetoed(); 
+src/contracts/core/HybridGovernorDynamic.sol:    error ZeroAddress();
+src/contracts/core/HybridGovernorDynamic.sol:    error ProposalCooldownActive(uint256 remaining);
+src/contracts/core/HybridGovernorDynamic.sol:    error DescriptionTooShort(uint256 provided, uint256 required);
+src/contracts/core/HybridGovernorDynamic.sol:    error LowReputation(int256 current, int256 required);
+src/contracts/core/HybridGovernorDynamic.sol:    error MaxProposalsReached();
+src/contracts/core/HybridGovernorDynamic.sol:    error ArrayLengthMismatch();
+src/contracts/core/HybridGovernorDynamic.sol:    constructor(
+src/contracts/core/HybridGovernorDynamic.sol:        IVotes _token,
+src/contracts/core/HybridGovernorDynamic.sol:        TimelockController _timelock,
+src/contracts/core/HybridGovernorDynamic.sol:        DAOConfig _config,
+src/contracts/core/HybridGovernorDynamic.sol:        address _vetoCouncil,
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 _quorum
+src/contracts/core/HybridGovernorDynamic.sol:    )
+src/contracts/core/HybridGovernorDynamic.sol:        Governor("HybridDAO")
+src/contracts/core/HybridGovernorDynamic.sol:        GovernorSettings(1 days, 1 days, 0)
+src/contracts/core/HybridGovernorDynamic.sol:        GovernorVotes(_token)
+src/contracts/core/HybridGovernorDynamic.sol:        GovernorVotesQuorumFraction(_quorum)
+src/contracts/core/HybridGovernorDynamic.sol:        GovernorTimelockControl(_timelock)
+src/contracts/core/HybridGovernorDynamic.sol:    {
+src/contracts/core/HybridGovernorDynamic.sol:        if (address(_config) == address(0) || _vetoCouncil == address(0)) revert ZeroAddress();
+src/contracts/core/HybridGovernorDynamic.sol:        daoConfig = _config;
+src/contracts/core/HybridGovernorDynamic.sol:        vetoCouncil = _vetoCouncil;
+src/contracts/core/HybridGovernorDynamic.sol:        spamThresholdTokens = 10000 * 10**18;
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    /**
+src/contracts/core/HybridGovernorDynamic.sol:     * @notice Submits a proposal for voting. Includes cleanup of stale proposals and reputation checks.
+src/contracts/core/HybridGovernorDynamic.sol:     * @param targets Target addresses for the proposal actions.
+src/contracts/core/HybridGovernorDynamic.sol:     * @param values ETH values to be sent with each action.
+src/contracts/core/HybridGovernorDynamic.sol:     * @param calldatas Encoded function calls for each action.
+src/contracts/core/HybridGovernorDynamic.sol:     * @param description A string description of the proposal's intent.
+src/contracts/core/HybridGovernorDynamic.sol:     */
+src/contracts/core/HybridGovernorDynamic.sol:    function propose(
+src/contracts/core/HybridGovernorDynamic.sol:        address[] memory targets,
+src/contracts/core/HybridGovernorDynamic.sol:        uint256[] memory values,
+src/contracts/core/HybridGovernorDynamic.sol:        bytes[] memory calldatas,
+src/contracts/core/HybridGovernorDynamic.sol:        string memory description
+src/contracts/core/HybridGovernorDynamic.sol:    ) public override(Governor) returns (uint256) {
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        address proposer = msg.sender;
+src/contracts/core/HybridGovernorDynamic.sol:        if (targets.length != values.length || targets.length != calldatas.length) {
+src/contracts/core/HybridGovernorDynamic.sol:            revert ArrayLengthMismatch();
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        _cleanupUserProposals(proposer);
+src/contracts/core/HybridGovernorDynamic.sol:        if (_userActiveProposals[proposer].length >= MAX_ACTIVE_PROPOSALS) {
+src/contracts/core/HybridGovernorDynamic.sol:            revert MaxProposalsReached();
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        if (proposalGuard != address(0)) {
+src/contracts/core/HybridGovernorDynamic.sol:            try IProposalGuard(proposalGuard).recordProposal(proposer) {} catch {
+src/contracts/core/HybridGovernorDynamic.sol:                emit GuardRecordFailed(proposer, "recordProposal failed");
+src/contracts/core/HybridGovernorDynamic.sol:            }
+src/contracts/core/HybridGovernorDynamic.sol:            require(IProposalGuard(proposalGuard).validate(proposer, description), "Guard Check Failed");
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        _internalProposalValidation(proposer, description);
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 proposalId = super.propose(targets, values, calldatas, description);
+src/contracts/core/HybridGovernorDynamic.sol:        _proposalProposers[proposalId] = proposer;
+src/contracts/core/HybridGovernorDynamic.sol:        _userActiveProposals[proposer].push(proposalId);
+src/contracts/core/HybridGovernorDynamic.sol:        proposalStrategy[proposalId] = currentStrategy;
+src/contracts/core/HybridGovernorDynamic.sol:        emit ProposalStrategyLocked(proposalId, currentStrategy);
+src/contracts/core/HybridGovernorDynamic.sol:        return proposalId;
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    /**
+src/contracts/core/HybridGovernorDynamic.sol:     * @notice Executes a successful proposal and rewards the proposer with reputation.
+src/contracts/core/HybridGovernorDynamic.sol:     * @dev Checks against VetoCouncil and analytics modules during execution.
+src/contracts/core/HybridGovernorDynamic.sol:     */
+src/contracts/core/HybridGovernorDynamic.sol:    function _executeOperations(
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 proposalId,
+src/contracts/core/HybridGovernorDynamic.sol:        address[] memory targets,
+src/contracts/core/HybridGovernorDynamic.sol:        uint256[] memory values,
+src/contracts/core/HybridGovernorDynamic.sol:        bytes[] memory calldatas,
+src/contracts/core/HybridGovernorDynamic.sol:        bytes32 descriptionHash
+src/contracts/core/HybridGovernorDynamic.sol:    ) internal override(Governor, GovernorTimelockControl) nonReentrant {
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        if (IVetoCouncil(vetoCouncil).isVetoed(proposalId)) revert ProposalIsVetoed();
+src/contracts/core/HybridGovernorDynamic.sol:        super._executeOperations(proposalId, targets, values, calldatas, descriptionHash);
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        address proposer = _proposalProposers[proposalId];
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        if (proposer != address(0)) {
+src/contracts/core/HybridGovernorDynamic.sol:            int256 newReputation = proposerReputation[proposer] + 10;
+src/contracts/core/HybridGovernorDynamic.sol:            if (newReputation > MAX_REPUTATION) newReputation = MAX_REPUTATION;
+src/contracts/core/HybridGovernorDynamic.sol:            
+src/contracts/core/HybridGovernorDynamic.sol:            proposerReputation[proposer] = newReputation;
+src/contracts/core/HybridGovernorDynamic.sol:            emit ReputationUpdated(proposer, newReputation);
+src/contracts/core/HybridGovernorDynamic.sol:            
+src/contracts/core/HybridGovernorDynamic.sol:            _cleanupUserProposals(proposer);
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        if (analytics != address(0)) {
+src/contracts/core/HybridGovernorDynamic.sol:            try IGovernanceAnalytics(analytics).updateAnalytics(proposalId, true) {} catch {}
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function _cancel(
+src/contracts/core/HybridGovernorDynamic.sol:        address[] memory targets,
+src/contracts/core/HybridGovernorDynamic.sol:        uint256[] memory values,
+src/contracts/core/HybridGovernorDynamic.sol:        bytes[] memory calldatas,
+src/contracts/core/HybridGovernorDynamic.sol:        bytes32 descriptionHash
+src/contracts/core/HybridGovernorDynamic.sol:    ) internal override(Governor, GovernorTimelockControl) returns (uint256) {
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 pid = super._cancel(targets, values, calldatas, descriptionHash);
+src/contracts/core/HybridGovernorDynamic.sol:        address proposer = _proposalProposers[pid];
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        if (proposer != address(0)) {
+src/contracts/core/HybridGovernorDynamic.sol:            int256 newReputation = proposerReputation[proposer] - 50;
+src/contracts/core/HybridGovernorDynamic.sol:            if (newReputation < MIN_REPUTATION) newReputation = MIN_REPUTATION;
+src/contracts/core/HybridGovernorDynamic.sol:            
+src/contracts/core/HybridGovernorDynamic.sol:            proposerReputation[proposer] = newReputation;
+src/contracts/core/HybridGovernorDynamic.sol:            emit ReputationUpdated(proposer, newReputation);
+src/contracts/core/HybridGovernorDynamic.sol:            
+src/contracts/core/HybridGovernorDynamic.sol:            _cleanupUserProposals(proposer);
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        return pid;
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function _internalProposalValidation(address proposer, string memory description) internal {
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 balance = token().getVotes(proposer);
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 lastTime = lastProposalTime[proposer];
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        if (lastTime != 0) {
+src/contracts/core/HybridGovernorDynamic.sol:            uint256 cooldown = (balance >= spamThresholdTokens) ? MIN_COOLDOWN : PROPOSAL_COOLDOWN;
+src/contracts/core/HybridGovernorDynamic.sol:            uint256 elapsed = block.timestamp - lastTime;
+src/contracts/core/HybridGovernorDynamic.sol:            
+src/contracts/core/HybridGovernorDynamic.sol:            if (elapsed < cooldown) revert ProposalCooldownActive(cooldown - elapsed);
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        if (bytes(description).length < MIN_DESCRIPTION_LENGTH) {
+src/contracts/core/HybridGovernorDynamic.sol:            revert DescriptionTooShort(bytes(description).length, MIN_DESCRIPTION_LENGTH);
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        if (proposerReputation[proposer] < MIN_REPUTATION) {
+src/contracts/core/HybridGovernorDynamic.sol:            revert LowReputation(proposerReputation[proposer], MIN_REPUTATION);
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        lastProposalTime[proposer] = block.timestamp;
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function _cleanupUserProposals(address user) internal {
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        uint256[] storage userProposals = _userActiveProposals[user];
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 length = userProposals.length;
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        if (length == 0) return;
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        uint256 writeIndex = 0;
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        for (uint256 i = 0; i < length && i < MAX_CLEANUP_ITERATIONS; ) {
+src/contracts/core/HybridGovernorDynamic.sol:            uint256 proposalId = userProposals[i];
+src/contracts/core/HybridGovernorDynamic.sol:            ProposalState currentState = state(proposalId);
+src/contracts/core/HybridGovernorDynamic.sol:            
+src/contracts/core/HybridGovernorDynamic.sol:            if (currentState != ProposalState.Canceled && 
+src/contracts/core/HybridGovernorDynamic.sol:                currentState != ProposalState.Executed && 
+src/contracts/core/HybridGovernorDynamic.sol:                currentState != ProposalState.Defeated && 
+src/contracts/core/HybridGovernorDynamic.sol:                currentState != ProposalState.Expired) {
+src/contracts/core/HybridGovernorDynamic.sol:                
+src/contracts/core/HybridGovernorDynamic.sol:                if (writeIndex != i) {
+src/contracts/core/HybridGovernorDynamic.sol:                    userProposals[writeIndex] = proposalId;
+src/contracts/core/HybridGovernorDynamic.sol:                }
+src/contracts/core/HybridGovernorDynamic.sol:                unchecked { ++writeIndex; }
+src/contracts/core/HybridGovernorDynamic.sol:            }
+src/contracts/core/HybridGovernorDynamic.sol:            unchecked { ++i; }
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        while (userProposals.length > writeIndex) {
+src/contracts/core/HybridGovernorDynamic.sol:            userProposals.pop();
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function setProposalGuard(address _guard) external onlyGovernance {
+src/contracts/core/HybridGovernorDynamic.sol:        if (_guard == address(0)) revert ZeroAddress();
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        address old = proposalGuard;
+src/contracts/core/HybridGovernorDynamic.sol:        proposalGuard = _guard;
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        emit ProposalGuardUpdated(old, _guard);
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function setAnalytics(address _analytics) external onlyGovernance {
+src/contracts/core/HybridGovernorDynamic.sol:        if (_analytics == address(0)) revert ZeroAddress();
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        address old = analytics;
+src/contracts/core/HybridGovernorDynamic.sol:        analytics = _analytics;
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        emit AnalyticsUpdated(old, _analytics);
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function updateVotingStrategy(VotingStrategies.Strategy _strategy) external onlyGovernance {
+src/contracts/core/HybridGovernorDynamic.sol:        currentStrategy = _strategy;
+src/contracts/core/HybridGovernorDynamic.sol:        emit StrategyUpdated(_strategy);
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function state(uint256 proposalId) public view override(Governor, GovernorTimelockControl) returns (ProposalState) {
+src/contracts/core/HybridGovernorDynamic.sol:        if (IVetoCouncil(vetoCouncil).isVetoed(proposalId)) return ProposalState.Defeated; 
+src/contracts/core/HybridGovernorDynamic.sol:        
+src/contracts/core/HybridGovernorDynamic.sol:        return super.state(proposalId);
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function recordTokenAcquisition(address user) external {
+src/contracts/core/HybridGovernorDynamic.sol:        if (msg.sender == address(token())) {
+src/contracts/core/HybridGovernorDynamic.sol:            tokenAcquisitionTime[user] = block.timestamp;
+src/contracts/core/HybridGovernorDynamic.sol:            emit TokenAcquisitionRecorded(user, block.timestamp);
+src/contracts/core/HybridGovernorDynamic.sol:        }
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    // --- Governance Overrides ---
+src/contracts/core/HybridGovernorDynamic.sol:    function proposalProposer(uint256 proposalId) public view override returns (address) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return _proposalProposers[proposalId]; 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function proposalNeedsQueuing(uint256 proposalId) public view override(Governor, GovernorTimelockControl) returns (bool) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return super.proposalNeedsQueuing(proposalId); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function _queueOperations(uint256 proposalId, address[] memory t, uint256[] memory v, bytes[] memory c, bytes32 h) internal override(Governor, GovernorTimelockControl) returns (uint48) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return super._queueOperations(proposalId, t, v, c, h); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function _executor() internal view override(Governor, GovernorTimelockControl) returns (address) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return super._executor(); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function supportsInterface(bytes4 id) public view override(Governor) returns (bool) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return super.supportsInterface(id); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function votingDelay() public view override(Governor, GovernorSettings) returns (uint256) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return daoConfig.votingDelay(); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function votingPeriod() public view override(Governor, GovernorSettings) returns (uint256) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return daoConfig.votingPeriod(); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:    function proposalThreshold() public view override(Governor, GovernorSettings) returns (uint256) { 
+src/contracts/core/HybridGovernorDynamic.sol:        return daoConfig.proposalThreshold(); 
+src/contracts/core/HybridGovernorDynamic.sol:    }
+src/contracts/core/HybridGovernorDynamic.sol:}
+src/contracts/core/DAOTimelock.sol:// SPDX-License-Identifier: MIT
+src/contracts/core/DAOTimelock.sol:pragma solidity ^0.8.30;
+src/contracts/core/DAOTimelock.sol:import {TimelockController} from "@openzeppelin/contracts/governance/TimelockController.sol";
+src/contracts/core/DAOTimelock.sol:/**
+src/contracts/core/DAOTimelock.sol: * @title DAOTimelock
+src/contracts/core/DAOTimelock.sol: * @notice A time-delay enforcer for DAO governance proposals.
+src/contracts/core/DAOTimelock.sol: * @dev Extends OpenZeppelin's TimelockController with strict validation for initial roles and delays.
+src/contracts/core/DAOTimelock.sol: */
+src/contracts/core/DAOTimelock.sol:contract DAOTimelock is TimelockController {
+src/contracts/core/DAOTimelock.sol:    error InvalidMinDelay(uint256 provided, uint256 min, uint256 max);
+src/contracts/core/DAOTimelock.sol:    error EmptyProposers();
+src/contracts/core/DAOTimelock.sol:    error EmptyExecutors();
+src/contracts/core/DAOTimelock.sol:    error ZeroAddressInArray();
+src/contracts/core/DAOTimelock.sol:    event TimelockDeployed(uint256 minDelay, address[] proposers, address[] executors);
+src/contracts/core/DAOTimelock.sol:    uint256 public constant MIN_DELAY_LIMIT = 0; 
+src/contracts/core/DAOTimelock.sol:    uint256 public constant MAX_DELAY_LIMIT = 30 days;
+src/contracts/core/DAOTimelock.sol:    /**
+src/contracts/core/DAOTimelock.sol:     * @notice Initializes the Timelock with specific delay limits and role assignments.
+src/contracts/core/DAOTimelock.sol:     * @param minDelay The minimum time (in seconds) that must pass before a proposal is executed.
+src/contracts/core/DAOTimelock.sol:     * @param proposers List of addresses allowed to submit proposals.
+src/contracts/core/DAOTimelock.sol:     * @param executors List of addresses allowed to execute successful proposals.
+src/contracts/core/DAOTimelock.sol:     * @param admin Address to be granted the admin role (set to address(0) for DAO self-governance).
+src/contracts/core/DAOTimelock.sol:     */
+src/contracts/core/DAOTimelock.sol:    constructor(
+src/contracts/core/DAOTimelock.sol:        uint256 minDelay,
+src/contracts/core/DAOTimelock.sol:        address[] memory proposers,
+src/contracts/core/DAOTimelock.sol:        address[] memory executors,
+src/contracts/core/DAOTimelock.sol:        address admin
+src/contracts/core/DAOTimelock.sol:    ) TimelockController(minDelay, proposers, executors, admin) {
+src/contracts/core/DAOTimelock.sol:        
+src/contracts/core/DAOTimelock.sol:        if (minDelay < MIN_DELAY_LIMIT || minDelay > MAX_DELAY_LIMIT) {
+src/contracts/core/DAOTimelock.sol:            revert InvalidMinDelay(minDelay, MIN_DELAY_LIMIT, MAX_DELAY_LIMIT);
+src/contracts/core/DAOTimelock.sol:        }
+src/contracts/core/DAOTimelock.sol:        if (proposers.length == 0) revert EmptyProposers();
+src/contracts/core/DAOTimelock.sol:        if (executors.length == 0) revert EmptyExecutors();
+src/contracts/core/DAOTimelock.sol:        
+src/contracts/core/DAOTimelock.sol:        for (uint256 i = 0; i < proposers.length; ) {
+src/contracts/core/DAOTimelock.sol:            if (proposers[i] == address(0)) revert ZeroAddressInArray();
+src/contracts/core/DAOTimelock.sol:            unchecked { ++i; }
+src/contracts/core/DAOTimelock.sol:        }
+src/contracts/core/DAOTimelock.sol:        for (uint256 i = 0; i < executors.length; ) {
+src/contracts/core/DAOTimelock.sol:            if (executors[i] == address(0)) revert ZeroAddressInArray();
+src/contracts/core/DAOTimelock.sol:            unchecked { ++i; }
+src/contracts/core/DAOTimelock.sol:        }
+src/contracts/core/DAOTimelock.sol:        
+src/contracts/core/DAOTimelock.sol:        emit TimelockDeployed(minDelay, proposers, executors);
+src/contracts/core/DAOTimelock.sol:    }
+src/contracts/core/DAOTimelock.sol:}
+src/contracts/core/DAOCore.sol:// SPDX-License-Identifier: MIT
+src/contracts/core/DAOCore.sol:pragma solidity ^0.8.30;
+src/contracts/core/DAOCore.sol:import {RoleManager} from "../security/RoleManager.sol";
+src/contracts/core/DAOCore.sol:import {GovernanceToken} from "../governance/GovernanceToken.sol";
+src/contracts/core/DAOCore.sol:import {ZeroAddress, Unauthorized} from "../errors/CommonErrors.sol";
+src/contracts/core/DAOCore.sol:/**
+src/contracts/core/DAOCore.sol: * @title DAOCore
+src/contracts/core/DAOCore.sol: * @notice Central registry and orchestration layer for the DAO ecosystem.
+src/contracts/core/DAOCore.sol: */
+src/contracts/core/DAOCore.sol:contract DAOCore {
+src/contracts/core/DAOCore.sol:    RoleManager public immutable ROLE_MANAGER;
+src/contracts/core/DAOCore.sol:    GovernanceToken public immutable TOKEN;
+src/contracts/core/DAOCore.sol:    error AlreadyLocked();
+src/contracts/core/DAOCore.sol:    error ModuleAlreadyExists();
+src/contracts/core/DAOCore.sol:    address public governor;
+src/contracts/core/DAOCore.sol:    address public treasury;
+src/contracts/core/DAOCore.sol:    address public timelock;
+src/contracts/core/DAOCore.sol:    mapping(bytes32 => address) public modules;
+src/contracts/core/DAOCore.sol:    event ModuleLinked(bytes32 indexed moduleKey, address indexed moduleAddress);
+src/contracts/core/DAOCore.sol:    event SystemLinked(address governor, address treasury, address timelock);
+src/contracts/core/DAOCore.sol:    event SetupLocked(address indexed admin, uint256 timestamp);
+src/contracts/core/DAOCore.sol:    bool private _locked;
+src/contracts/core/DAOCore.sol:    constructor(address _roleManager, address _token) {
+src/contracts/core/DAOCore.sol:        if (_roleManager == address(0)) revert ZeroAddress();
+src/contracts/core/DAOCore.sol:        if (_token == address(0)) revert ZeroAddress();
+src/contracts/core/DAOCore.sol:        ROLE_MANAGER = RoleManager(_roleManager);
+src/contracts/core/DAOCore.sol:        TOKEN = GovernanceToken(_token);
+src/contracts/core/DAOCore.sol:    }
+src/contracts/core/DAOCore.sol:    function linkCoreModules(
+src/contracts/core/DAOCore.sol:        address _governor,
+src/contracts/core/DAOCore.sol:        address _treasury,
+src/contracts/core/DAOCore.sol:        address _timelock
+src/contracts/core/DAOCore.sol:    ) external {
+src/contracts/core/DAOCore.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+src/contracts/core/DAOCore.sol:            revert Unauthorized();
+src/contracts/core/DAOCore.sol:        if (_locked) revert AlreadyLocked();
+src/contracts/core/DAOCore.sol:        if (_governor == address(0)) revert ZeroAddress();
+src/contracts/core/DAOCore.sol:        if (_treasury == address(0)) revert ZeroAddress();
+src/contracts/core/DAOCore.sol:        if (_timelock == address(0)) revert ZeroAddress();
+src/contracts/core/DAOCore.sol:        governor = _governor;
+src/contracts/core/DAOCore.sol:        treasury = _treasury;
+src/contracts/core/DAOCore.sol:        timelock = _timelock;
+src/contracts/core/DAOCore.sol:        emit SystemLinked(_governor, _treasury, _timelock);
+src/contracts/core/DAOCore.sol:    }
+src/contracts/core/DAOCore.sol:    /**
+src/contracts/core/DAOCore.sol:     * @notice Allows the admin to add additional functional modules to the DAO registry.
+src/contracts/core/DAOCore.sol:     * @param moduleKey Keccak256 hash or bytes32 identifier of the module.
+src/contracts/core/DAOCore.sol:     * @param moduleAddress Contract address of the module.
+src/contracts/core/DAOCore.sol:     */
+src/contracts/core/DAOCore.sol:    function registerModule(bytes32 moduleKey, address moduleAddress) external {
+src/contracts/core/DAOCore.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+src/contracts/core/DAOCore.sol:            revert Unauthorized();
+src/contracts/core/DAOCore.sol:        if (moduleAddress == address(0)) revert ZeroAddress();
+src/contracts/core/DAOCore.sol:        if (modules[moduleKey] != address(0)) revert ModuleAlreadyExists();
+src/contracts/core/DAOCore.sol:        modules[moduleKey] = moduleAddress;
+src/contracts/core/DAOCore.sol:        emit ModuleLinked(moduleKey, moduleAddress);
+src/contracts/core/DAOCore.sol:    }
+src/contracts/core/DAOCore.sol:    /**
+src/contracts/core/DAOCore.sol:     * @notice Permanently locks the core system addresses to prevent further changes.
+src/contracts/core/DAOCore.sol:     * @dev Use with caution as this action is irreversible.
+src/contracts/core/DAOCore.sol:     */
+src/contracts/core/DAOCore.sol:    function lockSetup() external {
+src/contracts/core/DAOCore.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+src/contracts/core/DAOCore.sol:            revert Unauthorized();
+src/contracts/core/DAOCore.sol:        _locked = true;
+src/contracts/core/DAOCore.sol:        emit SetupLocked(msg.sender, block.timestamp);
+src/contracts/core/DAOCore.sol:    }
+src/contracts/core/DAOCore.sol:    function getModule(bytes32 moduleKey) external view returns (address) {
+src/contracts/core/DAOCore.sol:        return modules[moduleKey];
+src/contracts/core/DAOCore.sol:    }
+src/contracts/core/DAOCore.sol:}
+src/contracts/core/TreasuryYieldStrategy.sol:// SPDX-License-Identifier: MIT
+src/contracts/core/TreasuryYieldStrategy.sol:pragma solidity ^0.8.30;
+src/contracts/core/TreasuryYieldStrategy.sol:import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+src/contracts/core/TreasuryYieldStrategy.sol:import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+src/contracts/core/TreasuryYieldStrategy.sol:import {IPool} from "@aave/core-v3/contracts/interfaces/IPool.sol";
+src/contracts/core/TreasuryYieldStrategy.sol:import {RoleManager} from "../security/RoleManager.sol";
+src/contracts/core/TreasuryYieldStrategy.sol:import {ZeroAddress, Unauthorized} from "../errors/CommonErrors.sol";
+src/contracts/core/TreasuryYieldStrategy.sol:/**
+src/contracts/core/TreasuryYieldStrategy.sol: * @title TreasuryYieldStrategy
+src/contracts/core/TreasuryYieldStrategy.sol: * @author Turtur (FOUNDRY-DAO-F25)
+src/contracts/core/TreasuryYieldStrategy.sol: * @notice Connects the DAO Treasury to Aave V3 to generate yield on idle assets.
+src/contracts/core/TreasuryYieldStrategy.sol: * @dev Specifically integrated with Aave V3 Pool on Sepolia: 0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951
+src/contracts/core/TreasuryYieldStrategy.sol: */
+src/contracts/core/TreasuryYieldStrategy.sol:contract TreasuryYieldStrategy {
+src/contracts/core/TreasuryYieldStrategy.sol:    using SafeERC20 for IERC20;
+src/contracts/core/TreasuryYieldStrategy.sol:    IPool public immutable AAVE_POOL;
+src/contracts/core/TreasuryYieldStrategy.sol:    RoleManager public immutable ROLE_MANAGER;
+src/contracts/core/TreasuryYieldStrategy.sol:    address public immutable TREASURY;
+src/contracts/core/TreasuryYieldStrategy.sol:    event FundsDeposited(address indexed asset, uint256 amount);
+src/contracts/core/TreasuryYieldStrategy.sol:    event FundsWithdrawn(address indexed asset, uint256 amount);
+src/contracts/core/TreasuryYieldStrategy.sol:    error DepositFailed();
+src/contracts/core/TreasuryYieldStrategy.sol:    error WithdrawFailed();
+src/contracts/core/TreasuryYieldStrategy.sol:    modifier onlyTreasury() {
+src/contracts/core/TreasuryYieldStrategy.sol:        _checkTreasury();
+src/contracts/core/TreasuryYieldStrategy.sol:        _;
+src/contracts/core/TreasuryYieldStrategy.sol:    }
+src/contracts/core/TreasuryYieldStrategy.sol:    function _checkTreasury() internal view {
+src/contracts/core/TreasuryYieldStrategy.sol:        if (msg.sender != TREASURY) revert Unauthorized();
+src/contracts/core/TreasuryYieldStrategy.sol:    }
+src/contracts/core/TreasuryYieldStrategy.sol:    /**
+src/contracts/core/TreasuryYieldStrategy.sol:     * @param _aavePool Address of the Aave V3 Lending Pool
+src/contracts/core/TreasuryYieldStrategy.sol:     * @param _roleManager Address of the DAO RoleManager for security checks
+src/contracts/core/TreasuryYieldStrategy.sol:     * @param _treasury Address of the DAO Treasury vault
+src/contracts/core/TreasuryYieldStrategy.sol:     */
+src/contracts/core/TreasuryYieldStrategy.sol:    constructor(address _aavePool, address _roleManager, address _treasury) {
+src/contracts/core/TreasuryYieldStrategy.sol:        if (_aavePool == address(0)) revert ZeroAddress();
+src/contracts/core/TreasuryYieldStrategy.sol:        if (_roleManager == address(0)) revert ZeroAddress();
+src/contracts/core/TreasuryYieldStrategy.sol:        if (_treasury == address(0)) revert ZeroAddress();
+src/contracts/core/TreasuryYieldStrategy.sol:        AAVE_POOL = IPool(_aavePool);
+src/contracts/core/TreasuryYieldStrategy.sol:        ROLE_MANAGER = RoleManager(_roleManager);
+src/contracts/core/TreasuryYieldStrategy.sol:        TREASURY = _treasury;
+src/contracts/core/TreasuryYieldStrategy.sol:    }
+src/contracts/core/TreasuryYieldStrategy.sol:    /**
+src/contracts/core/TreasuryYieldStrategy.sol:     * @notice Supplies assets from the Treasury to the Aave Pool.
+src/contracts/core/TreasuryYieldStrategy.sol:     */
+src/contracts/core/TreasuryYieldStrategy.sol:    function depositToAave(address asset, uint256 amount) external onlyTreasury {
+src/contracts/core/TreasuryYieldStrategy.sol:        IERC20(asset).forceApprove(address(AAVE_POOL), amount);
+src/contracts/core/TreasuryYieldStrategy.sol:        try AAVE_POOL.supply(asset, amount, TREASURY, 0) {
+src/contracts/core/TreasuryYieldStrategy.sol:            emit FundsDeposited(asset, amount);
+src/contracts/core/TreasuryYieldStrategy.sol:        } catch {
+src/contracts/core/TreasuryYieldStrategy.sol:            revert DepositFailed();
+src/contracts/core/TreasuryYieldStrategy.sol:        }
+src/contracts/core/TreasuryYieldStrategy.sol:    }
+src/contracts/core/TreasuryYieldStrategy.sol:    /**
+src/contracts/core/TreasuryYieldStrategy.sol:     * @notice Withdraws assets from Aave and sends them to a designated receiver.
+src/contracts/core/TreasuryYieldStrategy.sol:     */
+src/contracts/core/TreasuryYieldStrategy.sol:    function withdrawFromAave(
+src/contracts/core/TreasuryYieldStrategy.sol:        address asset, 
+src/contracts/core/TreasuryYieldStrategy.sol:        uint256 amount, 
+src/contracts/core/TreasuryYieldStrategy.sol:        address receiver
+src/contracts/core/TreasuryYieldStrategy.sol:    ) external onlyTreasury {
+src/contracts/core/TreasuryYieldStrategy.sol:        try AAVE_POOL.withdraw(asset, amount, receiver) {
+src/contracts/core/TreasuryYieldStrategy.sol:            emit FundsWithdrawn(asset, amount);
+src/contracts/core/TreasuryYieldStrategy.sol:        } catch {
+src/contracts/core/TreasuryYieldStrategy.sol:            revert WithdrawFailed();
+src/contracts/core/TreasuryYieldStrategy.sol:        }
+src/contracts/core/TreasuryYieldStrategy.sol:    }
+src/contracts/core/TreasuryYieldStrategy.sol:    /**
+src/contracts/core/TreasuryYieldStrategy.sol:     * @notice Emergency function to recover stuck tokens in the strategy contract.
+src/contracts/core/TreasuryYieldStrategy.sol:     * @dev Only callable by the DAO Admin.
+src/contracts/core/TreasuryYieldStrategy.sol:     */
+src/contracts/core/TreasuryYieldStrategy.sol:    function emergencyWithdraw(address asset) external {
+src/contracts/core/TreasuryYieldStrategy.sol:        if (!ROLE_MANAGER.hasRole(ROLE_MANAGER.ADMIN_ROLE(), msg.sender))
+src/contracts/core/TreasuryYieldStrategy.sol:            revert Unauthorized();
+src/contracts/core/TreasuryYieldStrategy.sol:            
+src/contracts/core/TreasuryYieldStrategy.sol:        uint256 balance = IERC20(asset).balanceOf(address(this));
+src/contracts/core/TreasuryYieldStrategy.sol:        if (balance > 0) {
+src/contracts/core/TreasuryYieldStrategy.sol:            IERC20(asset).safeTransfer(TREASURY, balance);
+src/contracts/core/TreasuryYieldStrategy.sol:        }
+src/contracts/core/TreasuryYieldStrategy.sol:    }
+src/contracts/core/TreasuryYieldStrategy.sol:}

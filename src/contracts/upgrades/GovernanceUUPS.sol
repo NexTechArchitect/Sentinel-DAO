@@ -8,9 +8,15 @@ import {UUPSUpgradeable} from "@openzeppelin/contracts/proxy/utils/UUPSUpgradeab
  * @notice Abstract base for UUPS proxies ensuring upgrades are authorized.
  */
 abstract contract GovernanceUUPS is UUPSUpgradeable {
+
     error Unauthorized();
 
     /**
+     * @dev Returns the address allowed to upgrade this contract (e.g., Timelock).
+     */
+    function _getUpgradeAuthority() internal view virtual returns (address);
+
+     /**
      * @dev Authorization check for UUPS upgrades.
      * Reverts if caller is not the authorized upgrade authority.
      */
@@ -19,9 +25,4 @@ abstract contract GovernanceUUPS is UUPSUpgradeable {
             revert Unauthorized();
         }
     }
-
-    /**
-     * @dev Returns the address allowed to upgrade this contract (e.g., Timelock).
-     */
-    function _getUpgradeAuthority() internal view virtual returns (address);
 }
