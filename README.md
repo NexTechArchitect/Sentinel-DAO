@@ -3,13 +3,13 @@
 
 <p align="center">
   <a href="https://getfoundry.sh/">
-    <img src="https://img.shields.io/badge/Built%20with-Foundry-orange" alt="Foundry">
+    <img src="https://img.shields.io/badge/Built%20with-Foundry-orange.svg" alt="Foundry">
   </a>
   <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-blue" alt="License">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License">
   </a>
   <a href="https://sepolia.etherscan.io/">
-    <img src="https://img.shields.io/badge/Network-Sepolia-grey" alt="Network">
+    <img src="https://img.shields.io/badge/Network-Sepolia-grey.svg" alt="Network">
   </a>
   <a href="https://twitter.com/itZ_AmiT0">
     <img src="https://img.shields.io/twitter/follow/itZ_AmiT0?style=social" alt="Twitter">
@@ -21,6 +21,34 @@
 </p>
 
 ---
+
+**Sentinel DAO** is not a UI-driven product; it is a rigorous governance framework. It is engineered to control treasury assets, protocol upgrades, and system parameters through enforced execution rules. The architecture strictly separates state from logic, ensuring that complex voting strategies cannot compromise the security of the treasury.
+
+Recently upgraded to include **Account Abstraction (ERC-4337)**, Sentinel DAO now supports frictionless, gasless participation while maintaining immutable on-chain security.
+
+[View Deployed Contracts](#deployed-contracts) • [System Architecture](#system-architecture) • [Educational Resources](#educational-resources)
+
+---
+
+## 📑 Table of Contents
+
+1.  [**Architecture Overview**](#architecture-overview)
+2.  [**Design Philosophy**](#design-philosophy)
+3.  [**System Architecture**](#system-architecture)
+4.  [**Architectural Topology**](#architectural-topology)
+5.  [**Core Modules & Functionality**](#core-modules)
+6.  [**Testing & Quality Assurance**](#testing)
+7.  [**Deployed Contracts**](#deployed-contracts)
+8.  [**Engineering Standards**](#engineering-standards)
+9.  [**Installation & Setup**](#installation)
+10. [**Educational Resources**](#educational-resources)
+11. [**Disclaimer**](#disclaimer)
+
+---
+
+## <a id="architecture-overview"></a>🏛️ Architecture Overview
+
+The following diagram illustrates the high-level data flow within the Sentinel DAO protocol, showing how user actions flow through the Account Abstraction layer into the Governance Core.
 
 ```mermaid
 graph TD
@@ -43,27 +71,6 @@ graph TD
 
 ```
 
-**Sentinel DAO** is not a UI-driven product; it is a rigorous governance framework. It is engineered to control treasury assets, protocol upgrades, and system parameters through enforced execution rules. The architecture strictly separates state from logic, ensuring that complex voting strategies cannot compromise the security of the treasury.
-
-Recently upgraded to include **Account Abstraction (ERC-4337)**, Sentinel DAO now supports frictionless, gasless participation while maintaining immutable on-chain security.
-
-[View Deployed Contracts](https://www.google.com/search?q=%23deployed-contracts) • [System Architecture](https://www.google.com/search?q=%23system-architecture) • [Educational Resources](https://www.google.com/search?q=%23educational-resources)
-
----
-
-## 📑 Table of Contents
-
-1. **[Design Philosophy](https://www.google.com/search?q=%23design-philosophy)**
-2. **[System Architecture](https://www.google.com/search?q=%23system-architecture)**
-3. **[Architectural Topology](https://www.google.com/search?q=%23architectural-topology)**
-4. **[Core Modules & Functionality](https://www.google.com/search?q=%23core-modules)**
-5. **[Testing & Quality Assurance](https://www.google.com/search?q=%23testing)**
-6. **[Deployed Contracts](https://www.google.com/search?q=%23deployed-contracts)**
-7. **[Engineering Standards](https://www.google.com/search?q=%23engineering-standards)**
-8. **[Installation & Setup](https://www.google.com/search?q=%23installation)**
-9. **[Educational Resources](https://www.google.com/search?q=%23educational-resources)**
-10. **[Disclaimer](https://www.google.com/search?q=%23disclaimer)**
-
 ---
 
 ## <a id="design-philosophy"></a>🧠 Design Philosophy
@@ -78,7 +85,7 @@ Sentinel DAO approaches governance as "Critical Infrastructure Engineering." It 
 
 ## <a id="system-architecture"></a>🏛️ System Architecture
 
-The system is anchored by a **Hybrid Governor**. It leverages OpenZeppelin's battle-tested foundation but is strictly modular. The diagram above illustrates the high-level data flow, showing how User actions flow through the AA Layer into the Governance Core.
+The system is anchored by a **Hybrid Governor**. While it leverages OpenZeppelin's battle-tested foundation, it is strictly modular. Unlike monolithic DAOs, the Voting Logic, Execution, Treasury Control, and User Onboarding (AA) are isolated into separate components. This ensures that complex voting strategies cannot accidentally bypass treasury security boundaries.
 
 ---
 
@@ -108,7 +115,7 @@ src/contracts
 
 The "Brain" of the DAO. These contracts manage permissions and system parameters.
 
-* **`DAOCore` (Registry):** Acts as the central source of truth. It maintains the registry of all active modules.
+* **`DAOCore` (Registry):** Acts as the central source of truth. It maintains the registry of all active modules. If a contract is not registered here, it is not part of the DAO.
 * **`RoleManager` (RBAC):** Implements granular Access Control (e.g., `PROPOSER_ROLE`, `GUARDIAN_ROLE`).
 * **`DAOConfig`:** Allows the DAO to adjust critical parameters (Voting Period, Quorums) without requiring a full contract upgrade.
 
@@ -223,11 +230,11 @@ forge test
 
 If you are new to Protocol Engineering, DAOs, or Account Abstraction, these resources are essential reading to understand the architecture of Sentinel DAO:
 
-* **Foundry Framework:** [The Foundry Book](https://www.google.com/search?q=https://book.getfoundry.sh/) - The bible for Foundry development.
-* **Account Abstraction:** [EIP-4337 Documentation](https://www.google.com/search?q=https://eips.ethereum.org/EIPS/eip-4337) - Understanding Gasless transactions and Smart Accounts.
-* **Governance Logic:** [OpenZeppelin Governor](https://www.google.com/search?q=https://docs.openzeppelin.com/contracts/4.x/governance) - The foundational logic behind the voting mechanism.
-* **Security:** [Smart Contract Security Best Practices](https://www.google.com/search?q=https://consensys.github.io/smart-contract-best-practices/) - Essential for understanding the security patterns used here.
-* **Solidity:** [Solidity by Example](https://www.google.com/search?q=https://solidity-by-example.org/) - Great for understanding syntax and patterns.
+* **Foundry Framework:** [The Foundry Book](https://book.getfoundry.sh/) - The bible for Foundry development.
+* **Account Abstraction:** [EIP-4337 Documentation](https://eips.ethereum.org/EIPS/eip-4337) - Understanding Gasless transactions and Smart Accounts.
+* **Governance Logic:** [OpenZeppelin Governor](https://docs.openzeppelin.com/contracts/4.x/governance) - The foundational logic behind the voting mechanism.
+* **Security:** [Smart Contract Security Best Practices](https://consensys.github.io/smart-contract-best-practices/) - Essential for understanding the security patterns used here.
+* **Solidity:** [Solidity by Example](https://solidity-by-example.org/) - Great for understanding syntax and patterns.
 
 ---
 
