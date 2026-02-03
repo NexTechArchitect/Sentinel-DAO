@@ -1,5 +1,5 @@
 
-# <h1 align="center"> Sentinel DAO</h1>
+# <h1 align="center">Sentinel DAO</h1>
 
 <p align="center">
   <a href="https://getfoundry.sh/">
@@ -52,49 +52,43 @@ The following diagram illustrates the vertical data flow within the Sentinel DAO
 
 ```mermaid
 graph TD
-    %% Actors
     User((User / Voter))
 
-    %% Account Abstraction Layer
-    subgraph "Layer 1: Onboarding (ERC-4337)"
+    subgraph "Account Abstraction Layer"
         direction TB
         Paymaster[Gasless Paymaster]
         AA[Smart Account]
     end
 
-    %% Governance Layer
-    subgraph "Layer 2: Consensus"
+    subgraph "Governance Layer"
         direction TB
         Governor[Hybrid Governor]
         Veto[Veto Council]
     end
 
-    %% Execution Layer
-    subgraph "Layer 3: Execution Core"
+    subgraph "Execution Layer"
         direction TB
         Timelock[Timelock Controller]
         Core[DAO Core Registry]
     end
 
-    %% Asset Layer
-    subgraph "Layer 4: Treasury & Yield"
+    subgraph "Treasury Layer"
         direction TB
         Treasury[DAO Treasury]
         Aave[Aave V3 Protocol]
     end
 
-    %% Connections
     User -->|Sign Tx| Paymaster
     Paymaster -->|Validate| AA
-    AA -->|Cast Vote| Governor
+    AA -->|Vote| Governor
     
-    Governor -->|Queue Proposal| Timelock
-    Veto -.->|Emergency Cancel| Governor
+    Governor -->|Queue| Timelock
+    Veto -.->|Cancel| Governor
     
     Timelock -->|Execute| Treasury
     Timelock -->|Upgrade| Core
     
-    Treasury -->|Auto-Invest| Aave
+    Treasury -->|Yield| Aave
 
 ```
 
@@ -104,9 +98,9 @@ graph TD
 
 Sentinel DAO approaches governance as "Critical Infrastructure Engineering." It addresses specific failure modes observed in earlier DAO generations:
 
-* **No Implicit Power:** The architecture follows a strict separation of concerns. No contract possesses implicit power over another, and no privileged role (including Admins) can bypass the Timelock.
-* **Enforced Delays:** All state-changing proposals execute exclusively through a Timelock. This creates a transparent delay window, ensuring no governance decision is applied instantly, giving stakeholders time to react.
-* **Governance as an OS:** The system is designed to be the "Operating System" for an organization. Modules (like Voting Strategies or Yield Engines) can be swapped or upgraded without migrating the underlying asset-holding contracts.
+* **No Implicit Power:** The architecture follows a strict separation of concerns. No contract possesses implicit power over another, and no privileged role (including Admins) can bypass the `Timelock`.
+* **Enforced Delays:** All state-changing proposals execute exclusively through a `Timelock`, ensuring a transparent delay window before execution.
+* **Governance as an OS:** Modules such as Voting Strategies, Treasury Logic, and Yield Engines can be upgraded independently without changing the core asset contracts.
 
 ---
 
@@ -192,23 +186,27 @@ The system has undergone a rigorous multi-layered testing strategy using the Fou
 
 ---
 
-| Module | Contract Name       | Explorer Link                                                                                                                                                      |
-| ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Core   | DAO Registry        | [https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6](https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6) |
-| Core   | Timelock Controller | [https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd](https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd) |
-| Core   | Treasury Vault      | [https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E](https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E) |
-| Gov    | Hybrid Governor     | [https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3](https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3) |
-| Gov    | Governance Token    | [https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB](https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB) |
-| Gov    | Proposal Guard      | [https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE](https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE) |
-| Sec    | Veto Council        | [https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278](https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278) |
-| Sec    | Emergency Pause     | [https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96](https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96) |
-| Sec    | Rage Quit           | [https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2](https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2) |
-| Fi     | Yield Strategy      | [https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524](https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524) |
-| AA     | Account Factory     | [https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e](https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e) |
-| AA     | Gasless Paymaster   | [https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD](https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD) |
-| Off    | Offchain Executor   | [https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F](https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F) |
-| Off    | Delegation Registry | [https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68](https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68) |
-| Adv    | Quadratic Funding   | [https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198](https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198) |
+## <a id="deployed-contracts"></a>Deployed Contracts (Verified on Sepolia)
+
+All contracts have been deployed and verified on the **Sepolia Testnet**.
+
+| Module | Contract Name | Explorer Link |
+| --- | --- | --- |
+| **Core** | DAO Registry | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6) |
+| **Core** | Timelock Controller | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd) |
+| **Core** | Treasury Vault | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E) |
+| **Gov** | Hybrid Governor | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3) |
+| **Gov** | Governance Token | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB) |
+| **Gov** | Proposal Guard | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE) |
+| **Sec** | Veto Council | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278) |
+| **Sec** | Emergency Pause | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96) |
+| **Sec** | Rage Quit | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2) |
+| **Fi** | Yield Strategy | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524) |
+| **AA** | Account Factory | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e) |
+| **AA** | Gasless Paymaster | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD) |
+| **Off** | Offchain Executor | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F) |
+| **Off** | Delegation Registry | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68) |
+| **Adv** | Quadratic Funding | [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198) |
 
 ---
 
@@ -271,7 +269,7 @@ This repository serves as a reference implementation for advanced DAO patterns. 
 **Built by NEXTECHARHITECT**
 *Senior Smart Contract Developer · Solidity · Foundry · Web3 Engineer*
 
-[GitHub](https://github.com/NexTechArchitect) • [X (Twitter)](https://x.com/itZ_AmiT0)
+[GitHub](https://github.com/NexTechArchitect) • [Twitter](https://x.com/itZ_AmiT0)
 
 ```
 
