@@ -4,13 +4,16 @@
 
 <p align="center">
 <a href="[https://getfoundry.sh/](https://getfoundry.sh/)">
-<img src="[https://img.shields.io/badge/Built%20with-Foundry-orange](https://img.shields.io/badge/Built%20with-Foundry-orange)" alt="Foundry">
+<img src="[https://img.shields.io/badge/Built%20with-Foundry-orange.svg](https://www.google.com/search?q=https://img.shields.io/badge/Built%2520with-Foundry-orange.svg)" alt="Foundry">
 </a>
 <a href="[https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)">
-<img src="[https://img.shields.io/badge/License-MIT-blue](https://img.shields.io/badge/License-MIT-blue)" alt="License">
+<img src="[https://img.shields.io/badge/License-MIT-blue.svg](https://www.google.com/search?q=https://img.shields.io/badge/License-MIT-blue.svg)" alt="License">
 </a>
-<a href="">
-<img src="[https://img.shields.io/badge/Network-Sepolia-grey](https://img.shields.io/badge/Network-Sepolia-grey)" alt="Network">
+<a href="[https://sepolia.etherscan.io/](https://www.google.com/search?q=https://sepolia.etherscan.io/)">
+<img src="[https://img.shields.io/badge/Network-Sepolia-grey.svg](https://www.google.com/search?q=https://img.shields.io/badge/Network-Sepolia-grey.svg)" alt="Network">
+</a>
+<a href="[https://twitter.com/itZ_AmiT0](https://www.google.com/search?q=https://twitter.com/itZ_AmiT0)">
+<img src="[https://img.shields.io/twitter/follow/itZ_AmiT0?style=social](https://www.google.com/search?q=https://img.shields.io/twitter/follow/itZ_AmiT0%3Fstyle%3Dsocial)" alt="Twitter">
 </a>
 </p>
 
@@ -24,25 +27,26 @@
 
 Recently upgraded to include **Account Abstraction (ERC-4337)**, Sentinel DAO now supports frictionless, gasless participation while maintaining immutable on-chain security.
 
-[View Deployed Contracts](https://www.google.com/search?q=%23-deployed-contracts-verified) • [System Architecture](https://www.google.com/search?q=%23-system-architecture) • [Testing Report](https://www.google.com/search?q=%23-testing--quality-assurance)
+[View Deployed Contracts](https://www.google.com/search?q=%23deployed-contracts) • [System Architecture](https://www.google.com/search?q=%23system-architecture) • [Educational Resources](https://www.google.com/search?q=%23educational-resources)
 
 ---
 
 ## 📑 Table of Contents
 
-1. **[Design Philosophy](https://www.google.com/search?q=%23-design-philosophy)**
-2. **[System Architecture](https://www.google.com/search?q=%23-system-architecture)**
-3. **[Architectural Topology](https://www.google.com/search?q=%23-architectural-topology)**
-4. **[Core Modules & Functionality](https://www.google.com/search?q=%23-core-modules--functionality)**
-5. **[Testing & Quality Assurance](https://www.google.com/search?q=%23-testing--quality-assurance)**
-6. **[Deployed Contracts](https://www.google.com/search?q=%23-deployed-contracts-verified)**
-7. **[Engineering Standards](https://www.google.com/search?q=%23-engineering-standards)**
-8. **[Installation & Setup](https://www.google.com/search?q=%23-installation--setup)**
-9. **[Disclaimer](https://www.google.com/search?q=%23-disclaimer)**
+1. **[Design Philosophy](https://www.google.com/search?q=%23design-philosophy)**
+2. **[System Architecture](https://www.google.com/search?q=%23system-architecture)**
+3. **[Architectural Topology](https://www.google.com/search?q=%23architectural-topology)**
+4. **[Core Modules & Functionality](https://www.google.com/search?q=%23core-modules)**
+5. **[Testing & Quality Assurance](https://www.google.com/search?q=%23testing)**
+6. **[Deployed Contracts](https://www.google.com/search?q=%23deployed-contracts)**
+7. **[Engineering Standards](https://www.google.com/search?q=%23engineering-standards)**
+8. **[Installation & Setup](https://www.google.com/search?q=%23installation)**
+9. **[Educational Resources](https://www.google.com/search?q=%23educational-resources)**
+10. **[Disclaimer](https://www.google.com/search?q=%23disclaimer)**
 
 ---
 
-## 🧠 Design Philosophy
+## <a id="design-philosophy"></a>🧠 Design Philosophy
 
 Sentinel DAO approaches governance as "Critical Infrastructure Engineering." It addresses specific failure modes observed in earlier DAO generations:
 
@@ -52,13 +56,34 @@ Sentinel DAO approaches governance as "Critical Infrastructure Engineering." It 
 
 ---
 
-## 🏛️ System Architecture
+## <a id="system-architecture"></a>🏛️ System Architecture
 
-The system is anchored by a **Hybrid Governor**. While it leverages OpenZeppelin's battle-tested foundation, it is strictly modular. Unlike monolithic DAOs, the Voting Logic, Execution, Treasury Control, and User Onboarding (AA) are isolated into separate components. This ensures that complex voting strategies cannot accidentally bypass treasury security boundaries.
+The system is anchored by a **Hybrid Governor**. It leverages OpenZeppelin's battle-tested foundation but is strictly modular. Below is the high-level data flow of the protocol:
+
+```mermaid
+graph TD
+    User((User/Voter)) -->|Gasless Tx| Paymaster[AA Paymaster]
+    Paymaster -->|Validate| AA[Smart Account]
+    AA -->|Vote| Governor[Hybrid Governor]
+    
+    subgraph "Governance Core"
+    Governor -->|Queue Proposal| Timelock[Timelock Controller]
+    Timelock -->|Execute| Treasury[DAO Treasury]
+    Timelock -->|Upgrade| Core[DAO Core Registry]
+    end
+    
+    subgraph "Security Layer"
+    Veto[Veto Council] -.->|Cancel Malicious Proposal| Governor
+    Pause[Emergency Pause] -.->|Freeze| Timelock
+    end
+    
+    Treasury -->|Yield Strategy| Aave[Aave V3 Protocol]
+
+```
 
 ---
 
-## 📂 Architectural Topology
+## <a id="architectural-topology"></a>📂 Architectural Topology
 
 The codebase is organized into logical domains. Instead of a monolithic structure, we separate the **Kernel** (State) from the **Plugins** (Logic).
 
@@ -78,67 +103,67 @@ src/contracts
 
 ---
 
-## 🧩 Core Modules & Functionality
+## <a id="core-modules"></a>🧩 Core Modules & Functionality
 
 ### 1. Kernel & Configuration
 
 The "Brain" of the DAO. These contracts manage permissions and system parameters.
 
-* **`DAOCore` (Registry):** Acts as the central source of truth. It maintains the registry of all active modules. If a contract is not registered here, it is not part of the DAO.
-* **`RoleManager` (RBAC):** Implements granular Access Control. Unlike simple `Ownable` contracts, this allows for specific roles (e.g., `PROPOSER_ROLE`, `EXECUTOR_ROLE`, `GUARDIAN_ROLE`).
-* **`DAOConfig`:** A dedicated contract for dynamic tuning. It allows the DAO to adjust critical parameters (like Voting Period, Quorum Percentage, or Proposal Thresholds) without requiring a full contract upgrade.
+* **`DAOCore` (Registry):** Acts as the central source of truth. It maintains the registry of all active modules.
+* **`RoleManager` (RBAC):** Implements granular Access Control (e.g., `PROPOSER_ROLE`, `GUARDIAN_ROLE`).
+* **`DAOConfig`:** Allows the DAO to adjust critical parameters (Voting Period, Quorums) without requiring a full contract upgrade.
 
 ### 2. Governance Engines
 
 The system moves beyond simple "1 Token = 1 Vote" mechanics.
 
-* **`HybridGovernorDynamic`:** The central voting engine. It supports modular voting strategies, allowing proposals to use different counting mechanisms based on their category.
-* **`VotingStrategies`:** Pluggable logic for calculating voting power. Includes **Quadratic Voting** (to reduce whale dominance) and **Conviction Voting** (time-weighted voting).
-* **`ProposalGuard`:** An anti-spam middleware. It enforces reputation checks and cooldown periods before a user can submit a proposal, preventing "Governance Griefing" attacks.
+* **`HybridGovernorDynamic`:** The central voting engine supporting modular voting strategies.
+* **`VotingStrategies`:** Pluggable logic including **Quadratic Voting** (reducing whale dominance) and **Conviction Voting**.
+* **`ProposalGuard`:** Anti-spam middleware enforcing reputation checks and cooldown periods.
 
 ### 3. Autonomous Treasury
 
-The financial engine is designed for active management, not just passive storage.
+The financial engine designed for active management.
 
-* **`DAOTreasury`:** The main vault. It supports ETH, ERC-20, ERC-721, and ERC-1155 assets. It features "Pull-Payment" architecture to prevent reentrancy attacks during transfers.
-* **`TreasuryYieldStrategy`:** An automated module that integrates with **Aave V3**. Idle treasury assets are programmatically deposited into lending pools to generate yield, ensuring the treasury grows over time.
+* **`DAOTreasury`:** Supports ETH, ERC-20, ERC-721, and ERC-1155 assets with "Pull-Payment" architecture.
+* **`TreasuryYieldStrategy`:** Automatically deposits idle assets into **Aave V3** to generate yield.
 
 ### 4. Account Abstraction (ERC-4337)
 
-A newly integrated layer designed to abstract blockchain complexity from the end-user.
+A newly integrated layer for abstracting blockchain complexity.
 
-* **`DAOAccountFactory`:** Deploys deterministic Smart Accounts for users. This allows for social recovery and advanced permission handling at the user level.
-* **`DAOPayMaster`:** A protocol-funded contract that sponsors gas fees. This enables a "Gasless Voting" experience where the DAO covers the transaction costs for its members.
-* **`SessionKeyModule`:** Implements temporary, scoped permissions (e.g., "Valid for 12 hours"). Users sign once to start a session and can perform multiple governance actions without repeated wallet popups.
+* **`DAOAccountFactory`:** Deploys deterministic Smart Accounts for users.
+* **`DAOPayMaster`:** Sponsors gas fees, enabling a **Gasless Voting** experience.
+* **`SessionKeyModule`:** Implements temporary, scoped permissions (e.g., "Valid for 12 hours") for a frictionless UX.
 
 ### 5. Sentinel Security Layer
 
-Active defense mechanisms to protect against malicious governance captures.
+Active defense mechanisms.
 
-* **`VetoCouncil`:** A specialized multisig of trusted guardians who can cancel malicious proposals *before* they execute. This power is limited to vetoing, not creating proposals.
-* **`EmergencyPause`:** A circuit breaker that freezes the protocol in the event of a zero-day exploit. It has a hardcoded time expiry to prevent permanent lockouts.
-* **`RageQuit`:** The ultimate minority protection. If a malicious proposal passes, dissenters can burn their governance tokens to withdraw their proportional share of the treasury assets before the proposal executes.
+* **`VetoCouncil`:** A specialized multisig that can cancel malicious proposals *before* execution.
+* **`EmergencyPause`:** A circuit breaker that freezes the protocol in case of an exploit.
+* **`RageQuit`:** Allows dissenters to burn tokens and withdraw their share of assets if a malicious proposal passes.
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## <a id="testing"></a>🧪 Testing & Quality Assurance
 
 The system has undergone a rigorous multi-layered testing strategy using the Foundry framework, executing over **160+ tests** with zero failures.
 
 ### 🛠️ Test Methodology
 
-1. **Unit Tests:** Isolated testing of individual functions (e.g., `test_DepositERC20`, `test_GrantRoleBatch`) to ensure atomic logic correctness.
+1. **Unit Tests:** Isolated testing of individual functions (e.g., `test_DepositERC20`) to ensure atomic logic correctness.
 2. **Integration Tests:** Validating the interaction between modules (e.g., `DAOIntegration_Lifecycle` validates the full flow from Proposal -> Vote -> Queue -> Execute).
-3. **Fuzz Testing:** Using property-based testing to throw random data at the system to find edge cases.
-* *Result:* `testFuzz_EndToEndChaos` passed with 256 runs, simulating complex, high-entropy system states involving random user actions and state changes.
-* *Result:* `testFuzz_RageQuitMath` verified the mathematical solvency of the exit mechanism under various economic conditions.
+3. **Fuzz Testing:** Using property-based testing to throw random data at the system.
+* *Result:* `testFuzz_EndToEndChaos` passed with 256 runs, simulating complex, high-entropy system states.
+* *Result:* `testFuzz_RageQuitMath` verified mathematical solvency under various economic conditions.
 
 
-4. **Security Tests:** Specific test suites (`DAOIntegration_Setup`) ensure that access controls cannot be bypassed and that the Core system locks down correctly after initialization.
+4. **Security Tests:** Specific test suites ensure that access controls cannot be bypassed and the Core locks down correctly.
 
 ---
 
-## ✅ Deployed Contracts (Verified)
+## <a id="deployed-contracts"></a>✅ Deployed Contracts (Verified)
 
 All contracts have been deployed and verified on the **Sepolia Testnet**.
 
@@ -162,17 +187,17 @@ All contracts have been deployed and verified on the **Sepolia Testnet**.
 
 ---
 
-## ⚙️ Engineering Standards
+## <a id="engineering-standards"></a>⚙️ Engineering Standards
 
 This codebase adheres to production-grade Solidity practices:
 
-* **Gas Optimization:** Usage of custom errors (`error Unauthorized()`), `unchecked` arithmetic where safe, and storage packing.
-* **Explicit Access Control:** Every state-changing function is guarded by `RoleManager` or `Timelock`. There are no "god mode" EOA (Externally Owned Account) admins.
-* **Upgradeability:** The system uses UUPS (Universal Upgradeable Proxy Standard) for the Core and Governor, allowing for logic patches without migrating state, while ensuring the Upgrade implementation itself is governed by the DAO.
+* **Gas Optimization:** Usage of custom errors (`error Unauthorized()`), `unchecked` blocks, and storage packing.
+* **Explicit Access Control:** No "god mode" EOA admins. Every function is guarded by `RoleManager` or `Timelock`.
+* **Upgradeability:** Uses UUPS (Universal Upgradeable Proxy Standard) for the Core and Governor, ensuring longevity.
 
 ---
 
-## 🛠️ Installation & Setup
+## <a id="installation"></a>🛠️ Installation & Setup
 
 **Prerequisites:** [Foundry Toolchain](https://getfoundry.sh/)
 
@@ -195,7 +220,19 @@ forge test
 
 ---
 
-## ⚠️ Disclaimer
+## <a id="educational-resources"></a>📚 Educational Resources
+
+If you are new to Protocol Engineering, DAOs, or Account Abstraction, these resources are essential reading to understand the architecture of Sentinel DAO:
+
+* **Foundry Framework:** [The Foundry Book](https://www.google.com/search?q=https://book.getfoundry.sh/) - The bible for Foundry development.
+* **Account Abstraction:** [EIP-4337 Documentation](https://www.google.com/search?q=https://eips.ethereum.org/EIPS/eip-4337) - Understanding Gasless transactions and Smart Accounts.
+* **Governance Logic:** [OpenZeppelin Governor](https://www.google.com/search?q=https://docs.openzeppelin.com/contracts/4.x/governance) - The foundational logic behind the voting mechanism.
+* **Security:** [Smart Contract Security Best Practices](https://www.google.com/search?q=https://consensys.github.io/smart-contract-best-practices/) - Essential for understanding the security patterns used here.
+* **Solidity:** [Solidity by Example](https://www.google.com/search?q=https://solidity-by-example.org/) - Great for understanding syntax and patterns.
+
+---
+
+## <a id="disclaimer"></a>⚠️ Disclaimer
 
 **EDUCATIONAL ARCHITECTURE NOTICE:**
 
