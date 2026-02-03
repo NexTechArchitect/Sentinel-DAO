@@ -192,27 +192,23 @@ The system has undergone a rigorous multi-layered testing strategy using the Fou
 
 ---
 
-## <a id="deployed-contracts"></a>Deployed Contracts
-
-All contracts have been deployed and verified on the **Sepolia Testnet**.
-
-| Module | Contract Name | Verified Address (Etherscan) |
-| --- | --- | --- |
-| **Core** | DAO Registry | [0xf4ffd...8cf6](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6) |
-| **Core** | Timelock Controller | [0xC4c57...6FCd](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd) |
-| **Core** | Treasury Vault | [0xE1131...1A4E](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E) |
-| **Gov** | Hybrid Governor | [0x24BC3...CAD3](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3) |
-| **Gov** | Governance Token | [0x7F787...ec1DB](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB) |
-| **Gov** | Proposal Guard | [0xC4015...C3bE](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE) |
-| **Sec** | Veto Council | [0x4Abd1...tnfh](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278) |
-| **Sec** | Emergency Pause | [0x54078...Ba96](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96) |
-| **Sec** | Rage Quit | [0x2c26e...44a2](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2) |
-| **Fi** | Yield Strategy | [0x843ab...b524](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524) |
-| **AA** | Account Factory | [0x7B587...9E96e](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e) |
-| **AA** | Gasless Paymaster | [0x6927f...E9cD](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD) |
-| **Off** | Offchain Executor | [0x3a40D...996F](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F) |
-| **Off** | Delegation Registry | [0x891ad...6B68](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68) |
-| **Adv** | Quadratic Funding | [0xFb045...b198](https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198) |
+| Module | Contract Name       | Explorer Link                                                                                                                                                      |
+| ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Core   | DAO Registry        | [https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6](https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6) |
+| Core   | Timelock Controller | [https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd](https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd) |
+| Core   | Treasury Vault      | [https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E](https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E) |
+| Gov    | Hybrid Governor     | [https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3](https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3) |
+| Gov    | Governance Token    | [https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB](https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB) |
+| Gov    | Proposal Guard      | [https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE](https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE) |
+| Sec    | Veto Council        | [https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278](https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278) |
+| Sec    | Emergency Pause     | [https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96](https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96) |
+| Sec    | Rage Quit           | [https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2](https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2) |
+| Fi     | Yield Strategy      | [https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524](https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524) |
+| AA     | Account Factory     | [https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e](https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e) |
+| AA     | Gasless Paymaster   | [https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD](https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD) |
+| Off    | Offchain Executor   | [https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F](https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F) |
+| Off    | Delegation Registry | [https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68](https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68) |
+| Adv    | Quadratic Funding   | [https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198](https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198) |
 
 ---
 
