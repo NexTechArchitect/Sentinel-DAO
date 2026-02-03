@@ -48,26 +48,53 @@ Recently upgraded to include **Account Abstraction (ERC-4337)**, Sentinel DAO no
 
 ## <a id="architecture-overview"></a>🏛️ Architecture Overview
 
-The following diagram illustrates the high-level data flow within the Sentinel DAO protocol, showing how user actions flow through the Account Abstraction layer into the Governance Core.
+The following diagram illustrates the **vertical data flow** within the Sentinel DAO protocol, showing how user actions propagate from the AA Layer down to the Treasury.
 
 ```mermaid
 graph TD
-    User((User)) -->|Gasless Tx| Paymaster[AA Paymaster]
-    Paymaster -->|Validate| AA[Smart Account]
-    AA -->|Vote| Governor[Hybrid Governor]
-    
-    subgraph "Governance Core"
-    Governor -->|Queue| Timelock[Timelock Controller]
-    Timelock -->|Execute| Treasury[DAO Treasury]
-    Timelock -->|Upgrade| Core[DAO Core Registry]
+    %% Actors
+    User((User / Voter))
+
+    %% Account Abstraction Layer
+    subgraph "Layer 1: Onboarding (ERC-4337)"
+        direction TB
+        Paymaster[Gasless Paymaster]
+        AA[Smart Account]
     end
-    
-    subgraph "Security Layer"
-    Veto[Veto Council] -.->|Cancel| Governor
-    Pause[Emergency Pause] -.->|Freeze| Timelock
+
+    %% Governance Layer
+    subgraph "Layer 2: Consensus"
+        direction TB
+        Governor[Hybrid Governor]
+        Veto[Veto Council]
     end
+
+    %% Execution Layer
+    subgraph "Layer 3: Execution Core"
+        direction TB
+        Timelock[Timelock Controller]
+        Core[DAO Core Registry]
+    end
+
+    %% Asset Layer
+    subgraph "Layer 4: Treasury & Yield"
+        direction TB
+        Treasury[DAO Treasury]
+        Aave[Aave V3 Protocol]
+    end
+
+    %% Connections
+    User -->|Sign Tx| Paymaster
+    Paymaster -->|Validate| AA
+    AA -->|Cast Vote| Governor
     
-    Treasury -->|Deposit| Aave[Aave V3 Protocol]
+    Governor -->|Queue Proposal| Timelock
+    Veto -.->|Emergency Cancel| Governor
+    
+    Timelock -->|Execute| Treasury
+    Timelock -->|Upgrade| Core
+    
+    Treasury -->|Auto-Invest| Aave
 
 ```
 
@@ -171,25 +198,25 @@ The system has undergone a rigorous multi-layered testing strategy using the Fou
 
 ## <a id="deployed-contracts"></a>✅ Deployed Contracts (Verified)
 
-All contracts have been deployed and verified on the **Sepolia Testnet**.
+All contracts have been deployed and verified on the **Sepolia Testnet**. Click the links below to view them on Etherscan.
 
-| Module | Contract Name | Verified Address | Status |
-| --- | --- | --- | --- |
-| **Core** | **DAO Registry** | [0xf4ffd...8cf6](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6) | ✅ Verified |
-| **Core** | **Timelock Controller** | [0xC4c57...6FCd](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd) | ✅ Verified |
-| **Core** | **Treasury Vault** | [0xE1131...1A4E](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E) | ✅ Verified |
-| **Gov** | **Hybrid Governor** | [0x24BC3...CAD3](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3) | ✅ Verified |
-| **Gov** | **Governance Token** | [0x7F787...ec1DB](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB) | ✅ Verified |
-| **Gov** | **Proposal Guard** | [0xC4015...C3bE](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE) | ✅ Verified |
-| **Sec** | **Veto Council** | [0x4Abd1...tnfh](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278) | ✅ Verified |
-| **Sec** | **Emergency Pause** | [0x54078...Ba96](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96) | ✅ Verified |
-| **Sec** | **Rage Quit** | [0x2c26e...44a2](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2) | ✅ Verified |
-| **Fi** | **Yield Strategy** | [0x843ab...b524](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524) | ✅ Verified |
-| **AA** | **Account Factory** | [0x7B587...9E96e](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e) | ✅ Verified |
-| **AA** | **Gasless Paymaster** | [0x6927f...E9cD](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD) | ✅ Verified |
-| **Off** | **Offchain Executor** | [0x3a40D...996F](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F) | ✅ Verified |
-| **Off** | **Delegation Registry** | [0x891ad...6B68](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68) | ✅ Verified |
-| **Adv** | **Quadratic Funding** | [0xFb045...b198](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198) | ✅ Verified |
+| Module | Contract Name | Explorer Link |
+| --- | --- | --- |
+| **Core** | **DAO Registry** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6) |
+| **Core** | **Timelock Controller** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xC4c57946dE2b9b585d05D21423Eee82501466FCd) |
+| **Core** | **Treasury Vault** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xE113199AE42eF5E9df14a455a67ACC26C8901A4E) |
+| **Gov** | **Hybrid Governor** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x24BC3F0e1D0e8732Ce30fbf07EF36beCC9a9CAD3) |
+| **Gov** | **Governance Token** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x7F78740d138edEBC17334217b927F5c4D50ec1DB) |
+| **Gov** | **Proposal Guard** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xC4015518192B3f86bF9F27DDeBEd253267D9C3bE) |
+| **Sec** | **Veto Council** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x4Abd12fAED0eabc8cC7825b503EB2B853C8a5278) |
+| **Sec** | **Emergency Pause** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x5407869765C92dA9c3B039979170aaBFFaB3Ba96) |
+| **Sec** | **Rage Quit** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x2c26e0b0BdA62434aA4e694a767cF2643C7b44a2) |
+| **Fi** | **Yield Strategy** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x843abAd0B13436b93E7ab71e075bED679586b524) |
+| **AA** | **Account Factory** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x7B587a4A5F571486f4A8dc1bd6aDB745F71fE96e) |
+| **AA** | **Gasless Paymaster** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x6927fc2B44008b5D05611194d47fa3451f9fE9cD) |
+| **Off** | **Offchain Executor** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x3a40D29433453e241415f822364Afdf0a7d5996F) |
+| **Off** | **Delegation Registry** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0x891addA9FfC646e5CB67015F5F6e667741b76B68) |
+| **Adv** | **Quadratic Funding** | [🔎 View on Sepolia Etherscan](https://www.google.com/search?q=https://sepolia.etherscan.io/address/0xFb0455c92908b57c978Fe4B7BE9D1f870B58b198) |
 
 ---
 
