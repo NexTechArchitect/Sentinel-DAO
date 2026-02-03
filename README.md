@@ -1,27 +1,47 @@
 
-
 # <h1 align="center">🛡️ Sentinel DAO</h1>
 
 <p align="center">
-<a href="[https://getfoundry.sh/](https://getfoundry.sh/)">
-<img src="[https://img.shields.io/badge/Built%20with-Foundry-orange.svg](https://www.google.com/search?q=https://img.shields.io/badge/Built%2520with-Foundry-orange.svg)" alt="Foundry">
-</a>
-<a href="[https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)">
-<img src="[https://img.shields.io/badge/License-MIT-blue.svg](https://www.google.com/search?q=https://img.shields.io/badge/License-MIT-blue.svg)" alt="License">
-</a>
-<a href="[https://sepolia.etherscan.io/](https://www.google.com/search?q=https://sepolia.etherscan.io/)">
-<img src="[https://img.shields.io/badge/Network-Sepolia-grey.svg](https://www.google.com/search?q=https://img.shields.io/badge/Network-Sepolia-grey.svg)" alt="Network">
-</a>
-<a href="[https://twitter.com/itZ_AmiT0](https://www.google.com/search?q=https://twitter.com/itZ_AmiT0)">
-<img src="[https://img.shields.io/twitter/follow/itZ_AmiT0?style=social](https://www.google.com/search?q=https://img.shields.io/twitter/follow/itZ_AmiT0%3Fstyle%3Dsocial)" alt="Twitter">
-</a>
+  <a href="https://getfoundry.sh/">
+    <img src="https://img.shields.io/badge/Built%20with-Foundry-orange" alt="Foundry">
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-blue" alt="License">
+  </a>
+  <a href="https://sepolia.etherscan.io/">
+    <img src="https://img.shields.io/badge/Network-Sepolia-grey" alt="Network">
+  </a>
+  <a href="https://twitter.com/itZ_AmiT0">
+    <img src="https://img.shields.io/twitter/follow/itZ_AmiT0?style=social" alt="Twitter">
+  </a>
 </p>
 
 <p align="center">
-<strong>A modular, protocol-level governance infrastructure designed for long-term institutional control.</strong>
+  <strong>A modular, protocol-level governance infrastructure designed for long-term institutional control.</strong>
 </p>
 
 ---
+
+```mermaid
+graph TD
+    User((User)) -->|Gasless Tx| Paymaster[AA Paymaster]
+    Paymaster -->|Validate| AA[Smart Account]
+    AA -->|Vote| Governor[Hybrid Governor]
+    
+    subgraph "Governance Core"
+    Governor -->|Queue| Timelock[Timelock Controller]
+    Timelock -->|Execute| Treasury[DAO Treasury]
+    Timelock -->|Upgrade| Core[DAO Core Registry]
+    end
+    
+    subgraph "Security Layer"
+    Veto[Veto Council] -.->|Cancel| Governor
+    Pause[Emergency Pause] -.->|Freeze| Timelock
+    end
+    
+    Treasury -->|Deposit| Aave[Aave V3 Protocol]
+
+```
 
 **Sentinel DAO** is not a UI-driven product; it is a rigorous governance framework. It is engineered to control treasury assets, protocol upgrades, and system parameters through enforced execution rules. The architecture strictly separates state from logic, ensuring that complex voting strategies cannot compromise the security of the treasury.
 
@@ -58,28 +78,7 @@ Sentinel DAO approaches governance as "Critical Infrastructure Engineering." It 
 
 ## <a id="system-architecture"></a>🏛️ System Architecture
 
-The system is anchored by a **Hybrid Governor**. It leverages OpenZeppelin's battle-tested foundation but is strictly modular. Below is the high-level data flow of the protocol:
-
-```mermaid
-graph TD
-    User((User/Voter)) -->|Gasless Tx| Paymaster[AA Paymaster]
-    Paymaster -->|Validate| AA[Smart Account]
-    AA -->|Vote| Governor[Hybrid Governor]
-    
-    subgraph "Governance Core"
-    Governor -->|Queue Proposal| Timelock[Timelock Controller]
-    Timelock -->|Execute| Treasury[DAO Treasury]
-    Timelock -->|Upgrade| Core[DAO Core Registry]
-    end
-    
-    subgraph "Security Layer"
-    Veto[Veto Council] -.->|Cancel Malicious Proposal| Governor
-    Pause[Emergency Pause] -.->|Freeze| Timelock
-    end
-    
-    Treasury -->|Yield Strategy| Aave[Aave V3 Protocol]
-
-```
+The system is anchored by a **Hybrid Governor**. It leverages OpenZeppelin's battle-tested foundation but is strictly modular. The diagram above illustrates the high-level data flow, showing how User actions flow through the AA Layer into the Governance Core.
 
 ---
 
@@ -203,7 +202,7 @@ This codebase adheres to production-grade Solidity practices:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/NexTechArchitect/Sentinel-DAO.git
+git clone [https://github.com/NexTechArchitect/Sentinel-DAO.git](https://github.com/NexTechArchitect/Sentinel-DAO.git)
 cd Sentinel-DAO
 
 # 2. Install Dependencies
@@ -247,3 +246,7 @@ This repository serves as a reference implementation for advanced DAO patterns. 
 *Senior Smart Contract Developer · Solidity · Foundry · Web3 Engineer*
 
 [GitHub](https://github.com/NexTechArchitect) • [X (Twitter)](https://x.com/itZ_AmiT0)
+
+```
+
+```
