@@ -19,7 +19,7 @@ contract CastVote is Script {
         console.log("Proposal State (Before Voting):", state);
 
         if (state == 1) { 
-            console.log("Voting is OPEN. Casting Vote...");
+            console.log("Voting is OPEN. Casting Vote");
             
             governor.castVote(proposalId, 1);
             
