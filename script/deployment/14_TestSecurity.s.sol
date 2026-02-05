@@ -20,8 +20,6 @@ contract TestSecurity is Script {
 
         console.log("  SECURITY CHECK ");
 
-        // Grant GUARDIAN_ROLE to Deployer (Admin can do this)
-        // We need this because only Guardians can pause
         bytes32 guardianRole = roleManager.GUARDIAN_ROLE();
         if (!roleManager.hasRole(guardianRole, deployer)) {
             roleManager.grantRole(guardianRole, deployer);
