@@ -30,7 +30,7 @@ contract SubmitProposal is Script {
             100 * 10**18
         );
 
-        string memory description = "Proposal #1: Send 100 DISO to Random User. This proposal intends to verify the end-to-end functionality of the DAO treasury transfer mechanism. We are testing the governance flow, voting power verification, and execution capabilities on the local sepolia chain.";
+        string memory description = "Proposal #1: Send 100 DISO to Random User. This proposal intends to verify the end-to-end functionality of the DAO treasury transfer mechanism.  We are testing the governance flow, voting power verification, and execution capabilities on the local sepolia chain.";
 
         console.log("Submitting Proposal at Block:", block.number);
         console.log("Description Length:", bytes(description).length);
