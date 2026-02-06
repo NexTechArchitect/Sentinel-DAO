@@ -11,7 +11,7 @@ contract DeployTreasury is Script {
         address timelock = vm.envAddress("TIMELOCK_ADDRESS");
         address roleManager = vm.envAddress("ROLE_MANAGER_ADDRESS");
 
-        // Real Aave V3 Pool Address on Sepolia
+        // Aave V3 Pool Address on Sepolia
         address aavePool = 0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951;
 
         vm.startBroadcast(pk);
