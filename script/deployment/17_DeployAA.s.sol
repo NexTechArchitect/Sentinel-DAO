@@ -11,7 +11,7 @@ contract DeployAA is Script {
     function run() external {
         uint256 pk = vm.envUint("PRIVATE_KEY");
         
-        address ENTRY_POINT = 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789;
+        address entry_Point = 0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789;
         
         address coreAddr = 0xf4ffd6558454c60E50ef97799C3D69758CB68cf6;
         DAOCore core = DAOCore(coreAddr);
@@ -20,8 +20,8 @@ contract DeployAA is Script {
 
         console.log("DEPLOYING AA MODULES (V2) ");
 
-        DAOAccountFactory factory = new DAOAccountFactory(ENTRY_POINT);
-        DAOPayMaster paymaster = new DAOPayMaster(ENTRY_POINT);
+        DAOAccountFactory factory = new DAOAccountFactory(entry_Point);
+        DAOPayMaster paymaster = new DAOPayMaster(entry_Point);
         SessionKeyModule sessionKeys = new SessionKeyModule();
 
         core.registerModule(keccak256("AA_FACTORY_V2"), address(factory));
