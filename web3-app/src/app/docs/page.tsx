@@ -15,9 +15,6 @@ import {
 
 export default function Docs() {
 
-  /* =====================================================
-     GLOBAL REFS & STATES
-  ===================================================== */
 
   const mainRef = useRef<HTMLDivElement | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
@@ -25,9 +22,6 @@ export default function Docs() {
   const [progress, setProgress] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  /* =====================================================
-     EFFECTS — TITLE, CURSOR, SCROLL, OBSERVER
-  ===================================================== */
 
   useEffect(() => {
     document.title = "Sentinel DAO | Technical Whitepaper";
@@ -86,7 +80,6 @@ export default function Docs() {
     }
   };
 
-  // Close sidebar when screen resizes to desktop
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -97,7 +90,6 @@ export default function Docs() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Prevent body scroll when mobile sidebar is open
   useEffect(() => {
     if (sidebarOpen) {
       document.body.style.overflow = 'hidden';
@@ -110,12 +102,9 @@ export default function Docs() {
   }, [sidebarOpen]);
 
   return (
-    // MAIN WRAPPER: Screen size fixed, flex-row layout
+   
     <div className="h-screen w-full bg-[#02000a] text-white font-sans selection:bg-[#ff00ff]/30 flex flex-col md:flex-row overflow-hidden relative">
       
-      {/* =========================
-          CURSOR NEON SPOTLIGHT (Hidden on Mobile/Touch Devices)
-      ========================= */}
       <div
         className="fixed z-[60] pointer-events-none w-[400px] h-[400px] rounded-full blur-[180px] bg-[#ff00ff]/10 transition-transform duration-75 mix-blend-screen hidden md:block"
         style={{
@@ -125,9 +114,6 @@ export default function Docs() {
         }}
       />
 
-      {/* =========================
-          MOBILE HEADER (Only visible on mobile)
-      ========================= */}
       <div className="md:hidden fixed top-0 left-0 right-0 z-[100] bg-[#050505] border-b border-white/10 px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-[#0a0a0f] rounded-lg border border-white/10">
@@ -148,9 +134,6 @@ export default function Docs() {
         </button>
       </div>
 
-      {/* =========================
-          MOBILE OVERLAY (backdrop when sidebar is open)
-      ========================= */}
       {sidebarOpen && (
         <div 
           className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[90]"
@@ -158,9 +141,6 @@ export default function Docs() {
         />
       )}
 
-      {/* =========================
-          RIGHT SIDE PROGRESS BAR
-      ========================= */}
       <div className="fixed top-0 right-0 w-1 h-full bg-white/5 z-[80]">
         <div
           className="bg-gradient-to-b from-[#00f3ff] via-[#ff00ff] to-[#00f3ff] w-full transition-all duration-100 ease-out shadow-[0_0_10px_#ff00ff]"
@@ -168,7 +148,7 @@ export default function Docs() {
         />
       </div>
 
-      {/* ======================== 1. NAVIGATION SIDEBAR ======================== */}
+      {/* ======================== NAVIGATION SIDEBAR ======================== */}
       <aside className={`
         fixed md:relative
         top-0 left-0
@@ -224,7 +204,7 @@ export default function Docs() {
         
         {/* Sidebar Nav Links */}
         <nav className="p-6 space-y-10 flex-1 overflow-y-auto">
-          {/* Section: Genesis */}
+          {/* Genesis */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-2">
                <div className="w-1.5 h-1.5 bg-[#ff00ff] rounded-sm rotate-45"></div>
@@ -237,7 +217,7 @@ export default function Docs() {
             </ul>
           </div>
 
-          {/* Section: The Kernel */}
+          {/*  The Kernel */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-2">
                <div className="w-1.5 h-1.5 bg-[#00f3ff] rounded-sm rotate-45"></div>
@@ -250,7 +230,7 @@ export default function Docs() {
             </ul>
           </div>
 
-          {/* Section: Governance Engine */}
+          {/* Governance Engine */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-2">
                <div className="w-1.5 h-1.5 bg-purple-500 rounded-sm rotate-45"></div>
@@ -309,7 +289,6 @@ export default function Docs() {
         </div>
       </aside>
 
-      {/* ======================== 2. MAIN CONTENT AREA ======================== */}
       <main 
         ref={mainRef}
         className="flex-1 h-full overflow-y-auto scroll-smooth custom-scroll relative bg-[#02000a] text-gray-300 mt-[72px] md:mt-0"
@@ -321,7 +300,7 @@ export default function Docs() {
 
         <div className="max-w-5xl mx-auto p-4 sm:p-8 md:px-24 md:pb-24 md:pt-4 relative z-10">
           
-          {/* ========================= SECTION 1: OVERVIEW ========================= */}
+          {/* ========================= OVERVIEW ========================= */}
           <section id="overview" className="mb-32 md:mb-48 pt-10">
             <div className="flex items-center gap-3 mb-10">
                 <div className="h-[1px] bg-gradient-to-r from-transparent via-[#00f3ff] to-transparent w-8 md:w-16"></div>
@@ -364,7 +343,7 @@ export default function Docs() {
             </div>
           </section>
 
-          {/* ========================= SECTION 2: PHILOSOPHY ========================= */}
+          {/* ========================= PHILOSOPHY ========================= */}
           <section id="philosophy" className="mb-32 md:mb-48 pt-10 md:pt-20 border-t border-white/5">
              <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
                <div className="w-12 h-12 md:w-14 md:h-14 bg-[#0a0a0f] rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
@@ -389,7 +368,7 @@ export default function Docs() {
              </div>
           </section>
 
-          {/* ========================= SECTION 3: ARCHITECTURE SCHEMA ========================= */}
+          {/* ========================= ARCHITECTURE SCHEMA ========================= */}
           <section id="architecture" className="mb-32 md:mb-48 pt-10 md:pt-20 border-t border-white/5">
              <div className="flex items-center gap-4 mb-12 md:mb-16">
                 <LayoutTemplate className="text-[#00f3ff] w-8 h-8 md:w-10 md:h-10" />
@@ -463,7 +442,7 @@ export default function Docs() {
              </div>
           </section>
 
-          {/* ========================= SECTION 4: KERNEL DEEP DIVE ========================= */}
+          {/* ========================= KERNEL DEEP DIVE ========================= */}
           <section id="core-layer" className="mb-32 md:mb-48 pt-10 md:pt-20 border-t border-white/5">
              <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
                <div className="p-3 md:p-4 bg-[#00f3ff]/10 rounded-xl md:rounded-2xl border border-[#00f3ff]/20">
@@ -553,7 +532,7 @@ export default function Docs() {
              </div>
           </section>
 
-          {/* ========================= SECTION 5: GOVERNANCE ENGINE ========================= */}
+          {/* ========================= GOVERNANCE ENGINE ========================= */}
           <section id="governor" className="mb-32 md:mb-48 pt-10 md:pt-20 border-t border-white/5">
              <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
                <div className="p-3 md:p-4 bg-purple-500/10 rounded-xl md:rounded-2xl border border-purple-500/20">
@@ -615,7 +594,7 @@ export default function Docs() {
              </div>
           </section>
 
-          {/* ========================= SECTION 6: SECURITY MATRIX ========================= */}
+          {/* ========================= SECURITY MATRIX ========================= */}
           <section id="rbac" className="mb-32 md:mb-48 pt-10 md:pt-20 border-t border-white/5">
              <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
                <div className="p-3 md:p-4 bg-red-500/10 rounded-xl md:rounded-2xl border border-red-500/20">
@@ -673,7 +652,7 @@ export default function Docs() {
              </div>
           </section>
 
-          {/* ========================= SECTION 7: ACCOUNT ABSTRACTION ========================= */}
+          {/* ========================= ACCOUNT ABSTRACTION ========================= */}
           <section id="aa" className="mb-32 md:mb-48 pt-10 md:pt-20 border-t border-white/5">
              <div className="flex items-center gap-4 md:gap-6 mb-12 md:mb-16">
                <div className="p-3 md:p-4 bg-yellow-500/10 rounded-xl md:rounded-2xl border border-yellow-500/20">
@@ -736,7 +715,7 @@ export default function Docs() {
 
           {/* ======================== FOOTER ======================== */}
           <footer className="border-t border-white/10 pt-12 md:pt-20 pb-12 mt-20 md:mt-32 relative overflow-hidden font-mono z-10">
-            {/* Background Glow */}
+         
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-gradient-to-t from-[#00f3ff]/5 to-transparent blur-[100px] pointer-events-none"></div>
 
             <div className="flex flex-col items-center justify-center text-center">

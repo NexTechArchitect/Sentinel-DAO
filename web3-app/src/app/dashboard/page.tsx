@@ -1,9 +1,6 @@
 'use client';
 
-/**
- * SENTINEL PROTOCOL - DASHBOARD (PREMIUM 4K UI + SESSION GUARD)
- * Clean, Readable, Mobile-Optimized & Fully Functional
- */
+
 
 import { useState, useEffect, useRef } from 'react';
 import { 
@@ -11,7 +8,7 @@ import {
   CheckCircle, AlertCircle, ShieldAlert, LogOut, 
   Hexagon, BarChart3, Wifi, Key, FileSignature, 
   X, ChevronRight, ExternalLink, Globe, Fingerprint, 
-  RefreshCcw, ShieldCheck
+  RefreshCcw, Wallet, Layers, Lock
 } from 'lucide-react';
 import Link from 'next/link';
 import { ConnectButton } from '@rainbow-me/rainbowkit'; 
@@ -24,19 +21,35 @@ import {
   useSignTypedData
 } from 'wagmi';
 import { formatEther, parseEther, maxUint256 } from 'viem';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CONTRACT_ADDRESSES, GOV_TOKEN_EXTENDED_ABI, 
   ROLE_MANAGER_ABI, GOV_ANALYTICS_ABI, 
   RAGE_QUIT_ABI, TREASURY_ABI, CHAINLINK_ABI,
   DELEGATION_REGISTRY_ABI, OFFCHAIN_EXECUTOR_ABI, ERC20_ABI
 } from '@/config/constants';
-import { SessionGuard } from '@/components/SessionGuard'; // NEW: Imported SessionGuard
+import { SessionGuard } from '@/components/SessionGuard';
 
-// =====================================================
-// EIP-712 DOMAIN CONFIGURATION (FIXED FROM DEPLOY SCRIPT)
-// =====================================================
 const EIP712_DOMAIN_NAME = "DAO Delegation"; 
 const EIP712_DOMAIN_VERSION = "1";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0, filter: "blur(5px)" },
+  show: { 
+    y: 0, 
+    opacity: 1, 
+    filter: "blur(0px)",
+    transition: { type: "spring", stiffness: 60, damping: 20 } 
+  }
+};
 
 type ToastState = { 
   type: 'SUCCESS' | 'ERROR'; 
@@ -49,50 +62,26 @@ export default function Dashboard() {
   const { isConnected, address } = useAccount();
   const { switchChain } = useSwitchChain(); 
   
-  // --- UI & Input States ---
-  const mainRef = useRef<HTMLDivElement | null>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null); // NEW: High-perf spotlight
-  const [progress, setProgress] = useState(0);
+  const spotlightRef = useRef<HTMLDivElement>(null);
   const [toast, setToast] = useState<ToastState>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const [isHoveringCards, setIsHoveringCards] = useState(false); // NEW: Hide spotlight on hover
   
-  // Input fields
   const [delegateeAddress, setDelegateeAddress] = useState('');
   const [burnAmount, setBurnAmount] = useState('');
   
-  // Explicit action tracking
   const [activeAction, setActiveAction] = useState<'APPROVE' | 'RAGEQUIT' | 'DELEGATE' | null>(null);
 
-  // Background cursor glow (High-Performance DOM Update)
   useEffect(() => {
     setIsMounted(true);
-    if (typeof window === 'undefined') return;
-
     const handleMouseMove = (e: MouseEvent) => {
       if (spotlightRef.current) {
-        spotlightRef.current.style.transform = `translate(${e.clientX - 300}px, ${e.clientY - 300}px)`;
+        spotlightRef.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(59, 130, 246, 0.08), transparent 40%)`;
       }
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  // Scroll Progress
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!mainRef.current) return;
-      const scrolled = (mainRef.current.scrollTop / (mainRef.current.scrollHeight - mainRef.current.clientHeight)) * 100;
-      setProgress(scrolled);
-    };
-    mainRef.current?.addEventListener("scroll", handleScroll);
-    return () => mainRef.current?.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // =====================================================
-  // 1. DATA FETCHING (ON-CHAIN)
-  // =====================================================
   const pollConfig = { refetchInterval: 15000, enabled: !!address };
 
   const { data: isAdmin } = useReadContract({ address: CONTRACT_ADDRESSES.ROLE_MANAGER as `0x${string}`, abi: ROLE_MANAGER_ABI, functionName: 'isAdmin', args: address ? [address] : undefined, ...pollConfig });
@@ -107,9 +96,7 @@ export default function Dashboard() {
 
   const { data: hasRageQuit, refetch: refetchRQ } = useReadContract({ address: CONTRACT_ADDRESSES.RAGE_QUIT as `0x${string}`, abi: RAGE_QUIT_ABI, functionName: 'hasRageQuit', args: address ? [address] : undefined, ...pollConfig });
   const { data: currentNonce, refetch: refetchNonce } = useReadContract({ address: CONTRACT_ADDRESSES.DELEGATION_REGISTRY as `0x${string}`, abi: DELEGATION_REGISTRY_ABI, functionName: 'nonces', args: address ? [address] : undefined, ...pollConfig });
-  const { data: offchainSigner } = useReadContract({ address: CONTRACT_ADDRESSES.OFFCHAIN_EXECUTOR as `0x${string}`, abi: OFFCHAIN_EXECUTOR_ABI, functionName: 'signer', query: { refetchInterval: 15000 } });
 
-  // Value formatting
   const ethPrice = ethPriceData ? Number((ethPriceData as any)[1]) / 10**8 : 0;
   const tEth = treasuryEth ? parseFloat(formatEther(treasuryEth as bigint)) : 0;
   const totalProposals = govStats ? Number((govStats as any)[0]) : 0;
@@ -119,19 +106,14 @@ export default function Dashboard() {
   const myDiso = disoBalance ? parseFloat(formatEther(disoBalance as bigint)) : 0;
   const totalDiso = totalSupply ? parseFloat(formatEther(totalSupply as bigint)) : 1; 
   
-  // Logic for Dynamic Burn Approval
   const parsedBurnAmount = burnAmount ? parseEther(burnAmount) : BigInt(0);
   const isApprovedForRQ = rqAllowance !== undefined && (rqAllowance as bigint) >= parsedBurnAmount && parsedBurnAmount > BigInt(0);
   const isValidBurnAmount = parsedBurnAmount > BigInt(0) && disoBalance !== undefined && parsedBurnAmount <= (disoBalance as bigint);
 
-  // Dynamic preview for the ETH the user will get based on their typed amount
   const previewBurnAmount = burnAmount ? parseFloat(burnAmount) : 0;
   const dynamicEstimatedEth = totalDiso > 0 ? (previewBurnAmount * tEth) / totalDiso : 0;
   const dynamicEstimatedUsd = dynamicEstimatedEth * ethPrice;
 
-  // =====================================================
-  // 2. TRANSACTIONS & SIGNATURES
-  // =====================================================
   const { writeContract: executeWrite, data: txHash, error: txError, reset: resetTx } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash: txHash });
   const { signTypedDataAsync } = useSignTypedData();
@@ -142,38 +124,33 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (isConfirmed) {
-      if (activeAction === 'APPROVE') setToast({ type: 'SUCCESS', message: 'Step 1 Complete: Approved', subMessage: 'Tokens approved. You can now execute the Burn.', hash: txHash });
+      if (activeAction === 'APPROVE') setToast({ type: 'SUCCESS', message: 'Approval Complete', subMessage: 'You can now execute the Burn.', hash: txHash });
       else if (activeAction === 'RAGEQUIT') {
-        setToast({ type: 'SUCCESS', message: 'Tokens Burned Successfully', subMessage: 'Rage Quit executed. ETH has been sent to your wallet.', hash: txHash });
+        setToast({ type: 'SUCCESS', message: 'Rage Quit Executed', subMessage: 'ETH has been sent to your wallet.', hash: txHash });
         setBurnAmount('');
       } else if (activeAction === 'DELEGATE') {
-        setToast({ type: 'SUCCESS', message: 'Delegation Successful', subMessage: 'Your signature was relayed and verified on-chain.', hash: txHash });
+        setToast({ type: 'SUCCESS', message: 'Delegation Successful', subMessage: 'Voting power delegated gaslessly.', hash: txHash });
       }
       setActiveAction(null);
-      setTimeout(() => { refetchRQ(); refetchNonce(); refetchAllowance(); refetchBalance(); }, 3500); 
+      resetTx();
+      setTimeout(() => { refetchRQ(); refetchNonce(); refetchAllowance(); refetchBalance(); }, 3000); 
     }
   }, [isConfirmed]);
 
   useEffect(() => {
     if (txError) {
-      setToast({ type: 'ERROR', message: 'Transaction Failed', subMessage: (txError as any)?.shortMessage || 'The request was rejected or failed on-chain.' });
+      setToast({ type: 'ERROR', message: 'Transaction Failed', subMessage: (txError as any)?.shortMessage || 'Request rejected.' });
       setActiveAction(null);
       resetTx();
     }
   }, [txError]);
-
-  // =====================================================
-  // 3. EVENT HANDLERS
-  // =====================================================
 
   const handleApproveRQ = () => {
     if (!address || !isValidBurnAmount) return;
     setActiveAction('APPROVE');
     executeWrite({
       address: CONTRACT_ADDRESSES.GOV_TOKEN as `0x${string}`,
-      abi: ERC20_ABI, 
-      functionName: 'approve',
-      args: [CONTRACT_ADDRESSES.RAGE_QUIT as `0x${string}`, maxUint256], 
+      abi: ERC20_ABI, functionName: 'approve', args: [CONTRACT_ADDRESSES.RAGE_QUIT as `0x${string}`, maxUint256], 
     });
   };
 
@@ -182,9 +159,7 @@ export default function Dashboard() {
     setActiveAction('RAGEQUIT');
     executeWrite({
       address: CONTRACT_ADDRESSES.RAGE_QUIT as `0x${string}`,
-      abi: RAGE_QUIT_ABI, 
-      functionName: 'quit',
-      args: [["0x0000000000000000000000000000000000000000"], parsedBurnAmount],
+      abi: RAGE_QUIT_ABI, functionName: 'quit', args: [["0x0000000000000000000000000000000000000000"], parsedBurnAmount],
     });
   };
 
@@ -194,39 +169,19 @@ export default function Dashboard() {
       setActiveAction('DELEGATE');
       const deadline = Math.floor(Date.now() / 1000) + 3600; 
       
-      const domain = {
-        name: EIP712_DOMAIN_NAME,
-        version: EIP712_DOMAIN_VERSION,
-        chainId: 11155111,
-        verifyingContract: CONTRACT_ADDRESSES.DELEGATION_REGISTRY as `0x${string}`
-      };
-
-      const types = {
-        Delegation: [
-            { name: "delegator", type: "address" },
-            { name: "delegatee", type: "address" },
-            { name: "nonce", type: "uint256" },
-            { name: "deadline", type: "uint256" }
-        ]
-      };
-
-      const message = {
-        delegator: address,
-        delegatee: delegateeAddress as `0x${string}`,
-        nonce: BigInt(currentNonce ? currentNonce.toString() : "0"),
-        deadline: BigInt(deadline)
-      };
+      const domain = { name: EIP712_DOMAIN_NAME, version: EIP712_DOMAIN_VERSION, chainId: 11155111, verifyingContract: CONTRACT_ADDRESSES.DELEGATION_REGISTRY as `0x${string}` };
+      const types = { Delegation: [{ name: "delegator", type: "address" }, { name: "delegatee", type: "address" }, { name: "nonce", type: "uint256" }, { name: "deadline", type: "uint256" }] };
+      const message = { delegator: address, delegatee: delegateeAddress as `0x${string}`, nonce: BigInt(currentNonce.toString()), deadline: BigInt(deadline) };
 
       const signature = await signTypedDataAsync({ domain, types, primaryType: 'Delegation', message });
 
       executeWrite({
         address: CONTRACT_ADDRESSES.DELEGATION_REGISTRY as `0x${string}`,
-        abi: DELEGATION_REGISTRY_ABI, 
-        functionName: 'delegateBySig',
-        args: [address, delegateeAddress as `0x${string}`, BigInt(currentNonce ? currentNonce.toString() : "0"), BigInt(deadline), signature],
+        abi: DELEGATION_REGISTRY_ABI, functionName: 'delegateBySig',
+        args: [address, delegateeAddress as `0x${string}`, BigInt(currentNonce.toString()), BigInt(deadline), signature],
       });
     } catch (err: any) {
-      setToast({ type: 'ERROR', message: 'Signature Rejected', subMessage: err.shortMessage || 'You denied the signing request.' });
+      setToast({ type: 'ERROR', message: 'Signature Rejected', subMessage: err.shortMessage || 'User denied signing.' });
       setActiveAction(null);
     }
   };
@@ -235,243 +190,252 @@ export default function Dashboard() {
 
   return (
     <SessionGuard requireSession={true}>
-      <div className="min-h-screen w-full bg-[#05050a] text-slate-200 font-sans flex flex-col relative selection:bg-blue-500/30">
+      <div className="min-h-screen w-full bg-[#05050a] text-slate-200 font-sans flex flex-col relative selection:bg-blue-500/30 overflow-x-hidden">
         
-        {/* PREMIUM AMBIENT BACKGROUND */}
-        <div className="fixed inset-0 z-0 bg-[#05050a] pointer-events-none"></div>
-        <div className="fixed top-[-10%] right-[-5%] w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-blue-600/10 rounded-full blur-[120px] md:blur-[160px] pointer-events-none animate-pulse-slow"></div>
-        <div className="fixed bottom-[-10%] left-[-5%] w-[400px] md:w-[800px] h-[400px] md:h-[800px] bg-purple-600/10 rounded-full blur-[120px] md:blur-[160px] pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
-        
-        {/* AMBIENT HIGHLIGHT: SMOOTH SPOTLIGHT - HIDES WHEN HOVERING CARDS */}
-        <div
-          ref={spotlightRef}
-          className={`fixed top-0 left-0 z-[60] pointer-events-none w-[600px] h-[600px] rounded-full mix-blend-screen hidden md:block transition-opacity duration-500 ease-in-out ${isHoveringCards ? 'opacity-0' : 'opacity-100'}`}
-          style={{ 
-            background: 'radial-gradient(circle, rgba(0,243,255,0.06) 0%, rgba(0,243,255,0) 70%)',
-            filter: 'blur(80px)'
-          }}
-        />
-        
-        {/* Scroll Progress Bar */}
-        <div className="fixed top-0 right-0 w-1 md:w-[2px] h-full bg-white/5 z-[100]">
-          <div className="bg-gradient-to-b from-blue-400 via-purple-500 to-blue-400 w-full transition-all duration-300 ease-out shadow-[0_0_15px_rgba(96,165,250,0.5)]" 
-                style={{ height: `${progress}%` }} />
-        </div>
+        {/* DYNAMIC BACKGROUND */}
+        <div className="fixed inset-0 z-0 bg-[#05050a]"></div>
+        <motion.div animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.1, 1] }} transition={{ duration: 10, repeat: Infinity }} className="fixed top-[-10%] right-[-10%] w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none" />
+        <motion.div animate={{ opacity: [0.2, 0.4, 0.2], scale: [1.1, 1, 1.1] }} transition={{ duration: 12, repeat: Infinity }} className="fixed bottom-[-10%] left-[-10%] w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none" />
+        <div ref={spotlightRef} className="fixed inset-0 z-10 pointer-events-none transition-opacity duration-500" />
 
-        {/* Top Navbar */}
-        <nav className="border-b border-white/5 bg-[#05050a]/80 backdrop-blur-2xl z-50 sticky top-0 transition-colors duration-300">
+        {/* NAVBAR */}
+        <nav className="border-b border-white/5 bg-[#05050a]/70 backdrop-blur-3xl z-50 sticky top-0 supports-[backdrop-filter]:bg-[#05050a]/40">
           <div className="max-w-7xl mx-auto px-4 md:px-8 h-20 w-full flex items-center justify-between">
-            <div className="flex items-center gap-4 md:gap-6">
-              <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-all text-sm font-bold tracking-widest uppercase">
-                <ArrowLeft size={16} /> <span className="hidden sm:inline">Terminal</span>
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors group">
+                <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="text-xs font-bold tracking-[0.2em] uppercase">Return</span>
               </Link>
-              <div className="h-8 w-px bg-white/10 hidden md:block"></div>
+              <div className="h-6 w-px bg-white/10 hidden md:block"></div>
               <div className="flex items-center gap-3">
-                 <ShieldCheck className="text-blue-400" size={24} />
-                 <span className="font-black text-white text-lg md:text-xl tracking-tight uppercase italic">Dashboard</span>
+                 <div className="p-1.5 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                    <Layers className="text-blue-400" size={18} />
+                 </div>
+                 <span className="text-lg font-bold text-white tracking-wide">DASHBOARD</span>
               </div>
             </div>
-            
-            <div className="flex items-center gap-6">
-              <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full">
-                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-[10px] font-bold text-green-400 tracking-widest uppercase">Identity Secured</span>
-              </div>
-              <ConnectButton showBalance={false} chainStatus="icon" />
+            <div className="flex items-center gap-4">
+               <ConnectButton showBalance={false} chainStatus="icon" accountStatus="avatar" />
             </div>
           </div>
         </nav>
 
-        {/* Main Content Area */}
-        <main ref={mainRef} className="flex-1 overflow-y-auto custom-scroll relative pb-32 p-4 md:p-12 z-10">
-          <div 
-            className="max-w-6xl mx-auto space-y-8 md:space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700"
-            onMouseEnter={() => setIsHoveringCards(true)}
-            onMouseLeave={() => setIsHoveringCards(false)}
+        <main className="flex-1 overflow-y-auto relative z-20 pb-20 pt-10 px-4 md:px-8">
+          <motion.div 
+            variants={containerVariants} initial="hidden" animate="show"
+            className="max-w-7xl mx-auto space-y-8"
           >
             
-            {/* Header Section */}
-            <div className="mb-12 border-l-4 border-blue-600 pl-6">
-              <h1 className="text-5xl font-black tracking-tighter text-white italic uppercase drop-shadow-2xl">
-                Command <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Center</span>
-              </h1>
-              <p className="text-slate-400 font-mono text-sm mt-2 uppercase tracking-widest flex items-center gap-2">
-                <Activity size={14} className="text-blue-500 animate-pulse"/> Review your governance identity & holdings
-              </p>
-            </div>
-
-            {/* 1. Profile Matrix */}
-            <div className="bg-slate-900/40 p-6 md:p-10 border border-white/5 rounded-3xl md:rounded-[2.5rem] flex flex-col md:flex-row justify-between gap-8 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-[50px] group-hover:bg-blue-500/10 transition-all duration-700"></div>
-                
-                <div className="space-y-4 relative z-10">
-                    <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                       <ShieldAlert size={18} className="text-blue-400"/> Current Access Level
-                    </h3>
-                    <div className="flex flex-wrap gap-4">
-                      {isConnected ? (
-                        <>
-                          {isAdmin && <span className="px-5 py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-bold uppercase tracking-widest rounded-xl flex items-center gap-2 shadow-[0_0_15px_rgba(239,68,68,0.15)]"><RefreshCcw size={16}/> Admin Override</span>}
-                          {isGuardian && <span className="px-5 py-2.5 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-bold uppercase tracking-widest rounded-xl flex items-center gap-2 shadow-[0_0_15px_rgba(168,85,247,0.15)]"><Fingerprint size={16}/> Veto Guardian</span>}
-                          {!isAdmin && !isGuardian && <span className="px-5 py-2.5 bg-slate-800 border border-white/10 text-slate-200 text-sm font-bold uppercase tracking-widest rounded-xl flex items-center gap-2 shadow-lg"><Globe size={16}/> Verified Citizen</span>}
-                        </>
-                      ) : <span className="text-sm text-slate-500 font-medium">Wallet Not Connected</span>}
-                    </div>
-                </div>
-                <div className="bg-black/50 p-6 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 min-w-[280px] shadow-inner flex flex-col justify-center relative z-10 group-hover:border-blue-500/30 transition-colors">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase mb-2 tracking-widest">Available Voting Power</p>
-                    <p className="text-4xl md:text-5xl font-black text-white tracking-tight">{myDiso.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
-                </div>
-            </div>
-
-            {/* 2. Global Analytics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-               {[
-                 { label: "Total Proposals", value: totalProposals, icon: BarChart3, color: "text-blue-400" },
-                 { label: "Passed", value: successProposals, icon: CheckCircle, color: "text-green-400" },
-                 { label: "Rejected", value: failedProposals, icon: AlertCircle, color: "text-red-400" },
-               ].map((stat, i) => (
-                 <div key={i} className="bg-slate-900/40 p-8 border border-white/5 rounded-[2rem] shadow-2xl backdrop-blur-xl group hover:-translate-y-1 hover:border-white/10 transition-all">
-                    <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <stat.icon size={16} className={stat.color}/> {stat.label}
-                    </p>
-                    <h2 className={`text-4xl font-black tracking-tight ${stat.color}`}>{stat.value}</h2>
-                 </div>
-               ))}
-            </div>
-
-            {/* 3. Off-Chain Matrix */}
-            <div className="bg-gradient-to-br from-purple-900/20 via-slate-900/30 to-black/40 p-6 md:p-12 border border-purple-500/20 rounded-3xl md:rounded-[3rem] relative overflow-hidden shadow-2xl backdrop-blur-xl">
-               <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 blur-[100px] rounded-full pointer-events-none"></div>
-               
-               <h3 className="text-2xl md:text-3xl font-black text-purple-300 mb-4 flex items-center gap-3 uppercase italic tracking-tighter">
-                  <Wifi size={28}/> Off-Chain Delegation
-               </h3>
-               <p className="text-slate-400 text-sm mb-10 max-w-2xl leading-relaxed font-light">Sign cryptographic payloads to delegate your voting power securely without paying any network gas fees. Zero friction.</p>
-
-               <div className="grid md:grid-cols-2 gap-8 md:gap-12 relative z-10">
-                   <div className="bg-black/40 p-6 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 space-y-6 shadow-inner">
-                       <div className="flex flex-col gap-2 border-b border-white/5 pb-6">
-                           <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2"><Key size={14}/> Current Nonce</span>
-                           <span className="text-3xl font-black text-white font-mono">{currentNonce !== undefined ? Number(currentNonce) : '0'}</span>
-                       </div>
-                       <div className="flex flex-col gap-2">
-                           <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-2"><Activity size={14}/> EIP-712 Domain</span>
-                           <span className="text-lg font-bold text-slate-300 tracking-wide">{EIP712_DOMAIN_NAME} <span className="text-xs text-slate-500 ml-2 font-mono">(v{EIP712_DOMAIN_VERSION})</span></span>
-                       </div>
-                   </div>
-
-                   <div className="flex flex-col justify-center space-y-6">
-                       <div>
-                           <label className="text-[10px] font-bold text-slate-400 mb-3 block uppercase tracking-widest">Delegatee Wallet Address</label>
-                           <input type="text" placeholder="0x..." value={delegateeAddress} onChange={(e) => setDelegateeAddress(e.target.value)}
-                              className="w-full bg-black/60 border border-white/10 rounded-2xl py-4 px-6 text-white text-sm outline-none focus:border-purple-500/50 transition-all font-mono shadow-inner" />
-                       </div>
-                       <button onClick={handleGaslessDelegation} disabled={!isConnected || activeAction === 'DELEGATE' || !delegateeAddress}
-                          className="w-full py-5 bg-purple-600 hover:bg-purple-500 text-white text-xs tracking-widest uppercase font-black rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 shadow-[0_0_30px_rgba(168,85,247,0.2)]">
-                          {activeAction === 'DELEGATE' ? <Loader2 size={18} className="animate-spin"/> : <FileSignature size={18}/>} 
-                          {activeAction === 'DELEGATE' ? 'Waiting for Signature...' : 'Sign & Delegate Gasless'}
-                       </button>
-                   </div>
+            <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/5 pb-8">
+               <div>
+                  <h1 className="text-3xl md:text-5xl font-medium text-white tracking-tight mb-2">
+                    Command <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400 font-bold">Center</span>
+                  </h1>
+                  <p className="text-slate-400 text-sm md:text-base font-light tracking-wide max-w-xl">
+                    Manage your identity, track protocol analytics, and execute cryptographic treasury actions.
+                  </p>
                </div>
-            </div>
+               <div className="flex items-center gap-3 px-4 py-2 bg-emerald-500/5 border border-emerald-500/20 rounded-full">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_10px_#34d399]"></div>
+                  <span className="text-xs font-bold text-emerald-400 tracking-widest uppercase">System Operational</span>
+               </div>
+            </motion.div>
 
-            {/* 4. Emergency Exit */}
-            <div className="bg-red-950/20 p-6 md:p-12 border border-red-500/20 rounded-3xl md:rounded-[3rem] relative shadow-2xl backdrop-blur-xl">
-               <div className="flex flex-col lg:flex-row justify-between gap-10">
-                  <div className="max-w-2xl space-y-6">
-                     <div className="flex items-center gap-4">
-                        <LogOut size={32} className="text-red-500"/>
-                        <h3 className="text-2xl md:text-3xl font-black text-red-400 tracking-tighter uppercase italic">Emergency Exit Protocol</h3>
+            <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+       
+                <div className="col-span-1 md:col-span-2 bg-[#0a0a0f]/60 backdrop-blur-xl p-8 rounded-[2rem] border border-white/5 hover:border-blue-500/30 transition-all group relative overflow-hidden">
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full group-hover:bg-blue-500/10 transition-colors"></div>
+                   <div className="relative z-10 flex flex-col h-full justify-between">
+                      <div className="flex items-start justify-between">
+                         <div>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-[0.15em] mb-1">Total Voting Power</p>
+                            <h2 className="text-4xl md:text-5xl font-medium text-white tracking-tight">
+                               {myDiso.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2})}
+                               <span className="text-lg md:text-2xl text-slate-500 ml-2 font-light">DISO</span>
+                            </h2>
+                         </div>
+                         <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
+                            <Wallet className="text-blue-400" size={24} />
+                         </div>
+                      </div>
+                      <div className="mt-6 flex gap-3">
+                         {isAdmin && <span className="badge-blue"><RefreshCcw size={14}/> Admin</span>}
+                         {isGuardian && <span className="badge-purple"><Fingerprint size={14}/> Guardian</span>}
+                         {!isAdmin && !isGuardian && <span className="badge-slate"><Globe size={14}/> Citizen</span>}
+                      </div>
+                   </div>
+                </div>
+
+                {[
+                  { label: "Treasury", value: `${tEth.toFixed(2)} ETH`, sub: `$${(tEth * ethPrice).toLocaleString()}`, icon: Shield, color: "text-indigo-400" },
+                  { label: "Total Proposals", value: totalProposals, sub: `${successProposals} Passed`, icon: FileSignature, color: "text-emerald-400" },
+                ].map((stat, i) => (
+                  <motion.div key={i} whileHover={{ y: -5 }} className="bg-[#0a0a0f]/60 backdrop-blur-xl p-6 rounded-[2rem] border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between h-40 shadow-lg">
+                     <div className="flex justify-between items-start">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{stat.label}</p>
+                        <stat.icon className={`${stat.color} opacity-80`} size={20} />
                      </div>
-                     <p className="text-sm md:text-base text-slate-400 leading-relaxed font-light">Burn a specific amount of your tokens to withdraw a proportional share of the Treasury's ETH. <strong className="text-slate-200 font-bold">This action cannot be reversed.</strong></p>
-                     
-                     {hasRageQuit ? (
-                        <div className="inline-flex items-center gap-3 px-6 py-4 bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-black uppercase tracking-widest rounded-2xl shadow-[0_0_20px_rgba(239,68,68,0.2)]">
-                           <ShieldAlert size={18}/> Protocol Executed. Assets Withdrawn.
-                        </div>
-                     ) : (
-                        <div className="bg-black/50 p-6 md:p-8 rounded-2xl md:rounded-3xl border border-white/5 inline-block min-w-full md:min-w-[300px] shadow-inner">
-                           <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-3">Estimated Withdrawal Output</p>
-                           <p className="text-4xl md:text-5xl font-black text-white flex items-baseline gap-2 tracking-tight">
-                              {dynamicEstimatedEth.toFixed(4)} <span className="text-red-500 text-xl md:text-2xl font-bold">ETH</span>
-                           </p>
-                           <p className="text-xs text-slate-500 mt-2 font-mono font-medium">≈ ${dynamicEstimatedUsd.toLocaleString(undefined, {minimumFractionDigits: 2})} USD</p>
-                        </div>
-                     )}
+                     <div>
+                        <h3 className="text-2xl font-medium text-white mb-1">{stat.value}</h3>
+                        <p className="text-xs text-slate-400 font-mono">{stat.sub}</p>
+                     </div>
+                  </motion.div>
+                ))}
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+               
+               <motion.div variants={itemVariants} className="bg-gradient-to-br from-[#0f0f16] to-[#05050a] p-8 md:p-10 rounded-[2.5rem] border border-white/5 relative overflow-hidden group shadow-2xl">
+                  <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-purple-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  
+                  <div className="flex items-center gap-4 mb-6">
+                     <div className="p-3 bg-purple-500/10 rounded-xl border border-purple-500/20 text-purple-400">
+                        <Wifi size={24} />
+                     </div>
+                     <div>
+                        <h3 className="text-xl font-bold text-white">Gasless Delegation</h3>
+                        <p className="text-xs text-slate-400">EIP-712 Signature Relay</p>
+                     </div>
                   </div>
 
-                  <div className="w-full lg:w-auto flex flex-col gap-4 justify-center">
-                     <ConnectButton.Custom>
-                        {({ account, chain, openConnectModal, mounted }) => {
-                            const connected = mounted && account && chain;
-                            const wrongNetwork = connected && chain.id !== 11155111;
+                  <div className="space-y-6">
+                     <div className="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Current Nonce</span>
+                        <span className="text-xl font-mono text-white">{currentNonce !== undefined ? Number(currentNonce) : '...'}</span>
+                     </div>
 
-                            if (!connected || wrongNetwork) return <button onClick={() => !connected ? openConnectModal() : switchChain({ chainId: 11155111 })} className="w-full md:w-[320px] py-5 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-black text-xs tracking-widest uppercase transition-all shadow-xl">Connect Wallet to Continue</button>;
-                            if (hasRageQuit || myDiso === 0) return <div className="w-full md:w-[320px] py-5 bg-slate-900 text-slate-600 rounded-2xl font-black text-xs tracking-widest uppercase text-center border border-white/5 opacity-50">{hasRageQuit ? "ALREADY EXITED" : "ZERO TOKEN BALANCE"}</div>;
+                     <div className="space-y-3">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Delegatee Address</label>
+                        <div className="relative">
+                           <input 
+                              type="text" 
+                              placeholder="0x..." 
+                              value={delegateeAddress} 
+                              onChange={(e) => setDelegateeAddress(e.target.value)}
+                              className="w-full bg-[#0a0a0f] border border-white/10 rounded-2xl py-4 pl-5 pr-12 text-white text-sm focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all font-mono outline-none placeholder:text-slate-700" 
+                           />
+                           <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600">
+                              <Key size={16} />
+                           </div>
+                        </div>
+                     </div>
 
-                            return (
-                                <div className="flex flex-col gap-4 w-full md:w-[320px]">
-                                   <div>
-                                       <label className="text-[10px] font-bold text-slate-400 mb-3 block uppercase tracking-widest">Amount to Burn</label>
-                                       <div className="relative">
-                                           <input 
-                                              type="number" 
-                                              placeholder="0.0" 
-                                              value={burnAmount} 
-                                              onChange={(e) => setBurnAmount(e.target.value)}
-                                              className="w-full bg-black/60 border border-white/10 rounded-2xl py-4 px-5 text-white text-sm outline-none focus:border-red-500/50 transition-all font-mono shadow-inner" 
-                                           />
-                                           <button 
-                                              onClick={() => setBurnAmount(myDiso.toString())}
-                                              className="absolute right-3 top-3 px-4 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-[10px] font-black tracking-widest uppercase text-slate-300 transition-colors"
-                                           >MAX</button>
-                                       </div>
-                                   </div>
-
-                                   {!isApprovedForRQ ? (
-                                      <button onClick={handleApproveRQ} disabled={activeAction !== null || !isValidBurnAmount} className="w-full py-5 bg-red-600/20 hover:bg-red-600/30 text-red-500 border border-red-500/30 rounded-2xl font-black text-[10px] tracking-widest uppercase transition-all flex justify-center items-center gap-3 disabled:opacity-50">
-                                          {activeAction === 'APPROVE' ? <Loader2 className="animate-spin" size={16}/> : <ChevronRight size={16}/>} 
-                                          {activeAction === 'APPROVE' ? "Approving..." : "Step 1: Approve Max"}
-                                      </button>
-                                   ) : (
-                                      <button onClick={handleRageQuit} disabled={activeAction !== null || !isValidBurnAmount} className="w-full py-5 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black text-[10px] tracking-widest uppercase transition-all flex justify-center items-center gap-3 shadow-[0_0_30px_rgba(239,68,68,0.3)] disabled:opacity-50">
-                                          {activeAction === 'RAGEQUIT' ? <Loader2 className="animate-spin" size={16}/> : <LogOut size={16}/>} 
-                                          {activeAction === 'RAGEQUIT' ? "Burning..." : "Step 2: Execute Burn"}
-                                      </button>
-                                   )}
-                                </div>
-                            );
-                        }}
-                     </ConnectButton.Custom>
-                     <p className="text-[10px] text-red-500/70 font-bold uppercase tracking-widest text-center max-w-[320px] mx-auto mt-2">Entering an amount will estimate your returns live.</p>
+                     <motion.button 
+                        whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                        onClick={handleGaslessDelegation} 
+                        disabled={!isConnected || activeAction === 'DELEGATE' || !delegateeAddress}
+                        className="w-full py-4 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold tracking-[0.15em] uppercase rounded-2xl transition-all shadow-[0_0_30px_rgba(168,85,247,0.3)] flex items-center justify-center gap-3 disabled:opacity-50 disabled:shadow-none"
+                     >
+                        {activeAction === 'DELEGATE' ? <Loader2 size={18} className="animate-spin"/> : <FileSignature size={18}/>} 
+                        {activeAction === 'DELEGATE' ? 'Signing...' : 'Sign Delegation'}
+                     </motion.button>
                   </div>
-               </div>
+               </motion.div>
+
+               <motion.div variants={itemVariants} className="bg-gradient-to-br from-red-950/10 to-[#05050a] p-8 md:p-10 rounded-[2.5rem] border border-red-500/10 relative overflow-hidden group shadow-2xl">
+                  <div className="absolute -top-20 -right-20 w-64 h-64 bg-red-600/5 blur-[80px] rounded-full pointer-events-none"></div>
+                  
+                  <div className="flex items-center gap-4 mb-6 relative z-10">
+                     <div className="p-3 bg-red-500/10 rounded-xl border border-red-500/20 text-red-400">
+                        <LogOut size={24} />
+                     </div>
+                     <div>
+                        <h3 className="text-xl font-bold text-white">Emergency Exit</h3>
+                        <p className="text-xs text-slate-400">Treasury Rage Quit Protocol</p>
+                     </div>
+                  </div>
+
+                  {hasRageQuit ? (
+                     <div className="h-64 flex flex-col items-center justify-center bg-red-500/5 rounded-3xl border border-red-500/20 text-center p-6">
+                        <ShieldAlert size={48} className="text-red-500 mb-4 opacity-50"/>
+                        <h4 className="text-lg font-bold text-red-400 uppercase tracking-widest">Protocol Executed</h4>
+                        <p className="text-slate-400 text-sm mt-2">Assets have been withdrawn to your wallet.</p>
+                     </div>
+                  ) : (
+                     <div className="space-y-6 relative z-10">
+                        <div className="p-5 bg-black/40 rounded-2xl border border-white/5 flex flex-col gap-1">
+                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Estimated Return</span>
+                           <div className="flex items-baseline gap-2">
+                              <span className="text-3xl font-medium text-white">{dynamicEstimatedEth.toFixed(4)}</span>
+                              <span className="text-sm font-bold text-red-400">ETH</span>
+                           </div>
+                           <span className="text-xs text-slate-500 font-mono">≈ ${dynamicEstimatedUsd.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                        </div>
+
+                        {myDiso === 0 ? (
+                           <div className="p-4 text-center border border-dashed border-slate-700 rounded-2xl text-slate-500 text-xs font-bold uppercase tracking-widest">
+                              No Tokens Available to Burn
+                           </div>
+                        ) : (
+                           <>
+                              <div className="space-y-3">
+                                 <div className="flex justify-between">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Burn Amount</label>
+                                    <button onClick={() => setBurnAmount(myDiso.toString())} className="text-[10px] font-bold text-blue-400 hover:text-blue-300 uppercase tracking-wider">Max</button>
+                                 </div>
+                                 <input 
+                                    type="number" 
+                                    placeholder="0.0" 
+                                    value={burnAmount} 
+                                    onChange={(e) => setBurnAmount(e.target.value)}
+                                    className="w-full bg-[#0a0a0f] border border-white/10 rounded-2xl py-4 px-5 text-white text-sm focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-all font-mono outline-none placeholder:text-slate-700" 
+                                 />
+                              </div>
+
+                              <div className="flex gap-4">
+                                 {!isApprovedForRQ ? (
+                                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleApproveRQ} disabled={activeAction !== null || !isValidBurnAmount} 
+                                       className="flex-1 py-4 bg-red-900/20 hover:bg-red-900/40 text-red-400 border border-red-500/30 text-xs font-bold tracking-[0.1em] uppercase rounded-2xl transition-all flex justify-center items-center gap-2 disabled:opacity-50">
+                                       {activeAction === 'APPROVE' ? <Loader2 className="animate-spin" size={16}/> : <CheckCircle size={16}/>} Approve
+                                    </motion.button>
+                                 ) : (
+                                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleRageQuit} disabled={activeAction !== null || !isValidBurnAmount} 
+                                       className="flex-1 py-4 bg-red-600 hover:bg-red-500 text-white text-xs font-bold tracking-[0.1em] uppercase rounded-2xl transition-all flex justify-center items-center gap-2 shadow-[0_0_30px_rgba(220,38,38,0.4)] disabled:opacity-50">
+                                       {activeAction === 'RAGEQUIT' ? <Loader2 className="animate-spin" size={16}/> : <LogOut size={16}/>} Execute Burn
+                                    </motion.button>
+                                 )}
+                              </div>
+                           </>
+                        )}
+                     </div>
+                  )}
+               </motion.div>
             </div>
-          </div>
+
+          </motion.div>
         </main>
 
-        {/* Explorer Linked Toast Notifications */}
-        {toast && (
-          <div className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[2000] animate-in slide-in-from-right duration-300 w-[calc(100%-3rem)] md:w-[400px]">
-             <div className={`flex items-start gap-4 md:gap-6 p-6 md:p-8 rounded-[2rem] border backdrop-blur-2xl shadow-2xl bg-[#08080f]/95 ${toast.type === 'SUCCESS' ? 'border-blue-500/30' : 'border-red-500/30'}`}>
-                <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'SUCCESS' ? 'bg-blue-500/10 text-blue-400' : 'bg-red-500/10 text-red-400'}`}>
-                   {toast.type === 'SUCCESS' ? <CheckCircle size={24} className="md:w-7 md:h-7"/> : <AlertCircle size={24} className="md:w-7 md:h-7"/>}
-                </div>
-                <div className="flex-1 mt-1">
-                   <h4 className={`text-xs md:text-sm font-black tracking-widest uppercase mb-1 ${toast.type === 'SUCCESS' ? 'text-blue-400' : 'text-red-400'}`}>{toast.message}</h4>
-                   <p className="text-[10px] md:text-xs font-mono text-slate-400 leading-relaxed mb-4">{toast.subMessage}</p>
-                   {toast.hash && (
-                     <a href={`https://sepolia.etherscan.io/tx/${toast.hash}`} target="_blank" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-400 hover:text-blue-300 bg-blue-500/10 px-4 py-2 rounded-xl border border-blue-500/20 transition-all">
-                       <ExternalLink size={12}/> View Transaction
-                     </a>
-                   )}
-                </div>
-                <button onClick={() => setToast(null)} className="text-slate-600 hover:text-white transition-colors p-1"><X size={16}/></button>
-             </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {toast && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20, scale: 0.95 }} 
+              animate={{ opacity: 1, y: 0, scale: 1 }} 
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              className="fixed bottom-8 right-0 left-0 md:left-auto md:right-8 z-50 px-4 md:px-0 flex justify-center md:block pointer-events-none"
+            >
+               <div className="w-full md:w-[400px] pointer-events-auto bg-[#0a0a0f]/95 backdrop-blur-2xl border border-white/10 p-6 rounded-[1.5rem] shadow-2xl flex gap-4 items-start relative overflow-hidden">
+                  <div className={`absolute left-0 top-0 bottom-0 w-1 ${toast.type === 'SUCCESS' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
+                  <div className={`mt-1 p-2 rounded-full ${toast.type === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                     {toast.type === 'SUCCESS' ? <CheckCircle size={20}/> : <ShieldAlert size={20}/>}
+                  </div>
+                  <div className="flex-1">
+                     <h4 className="text-sm font-bold text-white mb-1 tracking-wide">{toast.message}</h4>
+                     <p className="text-xs text-slate-400 leading-relaxed mb-3">{toast.subMessage}</p>
+                     {toast.hash && (
+                        <a href={`https://sepolia.etherscan.io/tx/${toast.hash}`} target="_blank" className="inline-flex items-center gap-2 text-[10px] font-bold text-blue-400 hover:text-blue-300 uppercase tracking-wider transition-colors">
+                           View on Explorer <ExternalLink size={10}/>
+                        </a>
+                     )}
+                  </div>
+                  <button onClick={() => setToast(null)} className="text-slate-600 hover:text-white transition-colors"><X size={18}/></button>
+               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </div>
     </SessionGuard>
   );
 }
+
+const badgeBase = "px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center gap-2 border";

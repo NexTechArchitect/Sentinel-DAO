@@ -21,7 +21,6 @@ export function useAASession() {
     error: null,
   });
 
-  // Check local storage on load so user doesn't have to sign every time they refresh
   useEffect(() => {
     if (isConnected && address) {
       const savedSession = localStorage.getItem(`sentinel_session_${address}`);
@@ -33,12 +32,10 @@ export function useAASession() {
         }));
       }
     } else {
-      // If disconnected, reset state
       setSessionState(prev => ({ ...prev, isSessionActive: false, nonce: BigInt(0) }));
     }
   }, [isConnected, address]);
 
-  // FREE OFF-CHAIN SIGNATURE LOGIC
   const createSession = async () => {
     if (!address) {
       setSessionState(prev => ({ ...prev, error: 'Wallet not connected' }));
@@ -48,14 +45,11 @@ export function useAASession() {
     try {
       setSessionState(prev => ({ ...prev, isLoading: true, error: null }));
       
-      // The Message the user will sign (100% Free)
       const message = `SENTINEL PROTOCOL\n\nVerify your institutional identity to establish a secure off-chain session.\n\nWallet: ${address}\nTimestamp: ${Date.now()}`;
 
-      // This triggers a FREE signature popup, NOT a transaction
       const signature = await signMessageAsync({ message });
 
       if (signature) {
-        // Save session locally so it persists across pages
         localStorage.setItem(`sentinel_session_${address}`, 'active');
         
         setSessionState(prev => ({ 
@@ -79,7 +73,7 @@ export function useAASession() {
   return {
     ...sessionState,
     createSession,
-    isConnected, // <-- YEH LINE ADD KARNI HAI (TS Error Fix)
+    isConnected, 
     address
   };
 }

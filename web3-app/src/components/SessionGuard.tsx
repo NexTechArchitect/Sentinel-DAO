@@ -4,7 +4,6 @@ import { useAASession } from '@/hooks/useAASession';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Loader2, Lock, ShieldCheck, ShieldAlert } from 'lucide-react';
 
-// FIX: Added requireSession type to stop the TS Error
 export function SessionGuard({ 
   children, 
   requireSession = true 
@@ -14,7 +13,6 @@ export function SessionGuard({
 }) {
   const { isConnected, isSessionActive, createSession, isLoading, error } = useAASession();
 
-  // 1. Agar Wallet hi connected nahi hai
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-[#05050a] flex items-center justify-center p-6 text-center font-sans">
@@ -27,7 +25,6 @@ export function SessionGuard({
     );
   }
 
-  // 2. Wallet connected hai par OFF-CHAIN SIGNATURE nahi diya
   if (requireSession && !isSessionActive) {
     return (
       <div className="min-h-screen bg-[#05050a] flex items-center justify-center p-6 font-sans">
@@ -62,6 +59,5 @@ export function SessionGuard({
     );
   }
 
-  // 3. Sab theek hai toh protected page ka content dikhao
   return <>{children}</>;
 }

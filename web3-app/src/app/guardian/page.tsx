@@ -1,9 +1,5 @@
 'use client';
 
-/**
- * SENTINEL PROTOCOL - GUARDIAN DEFENSE MATRIX (V2.0.5)
- * Included: Smart Role Detection & Self-Grant Logic.
- */
 
 import { useState, useEffect, useRef } from 'react';
 import { 
@@ -12,7 +8,7 @@ import {
   Hexagon, Lock, Unlock, Users, Crosshair, 
   X, AlertTriangle, ChevronRight, ExternalLink, 
   Globe, Fingerprint, RefreshCcw, Network, Server, Skull, Key,
-  ShieldCheck // <--- FIXED: Added missing import here
+  ShieldCheck 
 } from 'lucide-react';
 import Link from 'next/link';
 import { ConnectButton } from '@rainbow-me/rainbowkit'; 
@@ -31,7 +27,6 @@ import {
   VETO_COUNCIL_ABI 
 } from '@/config/constants';
 
-// Role Hashes 
 const ROLES = {
   ADMIN: "0x0000000000000000000000000000000000000000000000000000000000000000",
   GUARDIAN: keccak256(toBytes("GUARDIAN_ROLE")),
@@ -83,7 +78,6 @@ export default function GuardianMatrix() {
 
   const hasAccess = isAdmin || isGuardian;
 
-  // --- CONTRACT WRITES ---
   const { writeContract: executeWrite, data: txHash, error: txError, reset: resetTx } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash: txHash });
 
@@ -111,9 +105,8 @@ export default function GuardianMatrix() {
     }
   }, [txError]);
 
-  // --- HANDLERS ---
   const handlePauseToggle = (pauseSystem: boolean) => {
-    if (!address || !isGuardian) return; // Only Guardians can pause
+    if (!address || !isGuardian) return; 
     setActiveAction(pauseSystem ? 'PAUSE' : 'UNPAUSE');
     executeWrite({ address: CONTRACT_ADDRESSES.EMERGENCY_PAUSE as `0x${string}`, abi: EMERGENCY_PAUSE_ABI, functionName: pauseSystem ? 'pause' : 'unpause' });
   };
@@ -209,7 +202,6 @@ export default function GuardianMatrix() {
                         ) : <span className="text-sm text-slate-500 font-medium">Wallet Not Connected</span>}
                     </div>
                     
-                    {/* NEW SMART WARNING: If they are Admin but NOT Guardian */}
                     {isAdmin && !isGuardian && (
                         <div className="bg-orange-500/10 border border-orange-500/30 p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2">
                             <div className="flex items-start gap-3 text-orange-400">
