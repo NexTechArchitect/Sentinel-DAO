@@ -16,9 +16,12 @@
   <br>
 </p>
 
+<br>
 <a href="https://sentinel-dao-brown.vercel.app/">
-  <img src="https://img.shields.io/badge/🚀_LAUNCH_LIVE_DASHBOARD-ACCESS_TERMINAL-000000?style=for-the-badge&logo=vercel&logoColor=white&labelColor=232323" height="45" />
+  <img src="https://img.shields.io/badge/🔴_LIVE_ACCESS-LAUNCH_SENTINEL_DASHBOARD-000000?style=for-the-badge&logo=vercel&logoColor=white&labelColor=232323&height=50" height="50" />
 </a>
+<br>
+<br>
 
 <p align="center">
   <a href="https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO">💻 View Source Code</a> • 
@@ -119,32 +122,32 @@ src/contracts/
 
 The immutable heart of the protocol. These contracts define the rules of power.
 
-* **[`DAOCore.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/DAOCore.sol)** – **The Registry:** Acts as the central source of truth. It maintains the allowlist of all active modules. If a contract is not registered here, it is not part of the DAO.
-* **[`DAOTimelock.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/DAOTimelock.sol)** – **Execution Gatekeeper:** Enforces a mandatory delay (e.g., 48 hours) on all passed proposals before execution. This strictly prevents "Flash Governance" attacks.
-* **[`HybridGovernorDynamic.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/HybridGovernorDynamic.sol)** – **Consensus Engine:** Manages the proposal lifecycle (`Proposed -> Active -> Queued -> Executed`). It supports modular voting strategies based on proposal type.
+* **`DAOCore.sol`** – **The Registry:** Acts as the central source of truth. It maintains the allowlist of all active modules. If a contract is not registered here, it is not part of the DAO.
+* **`DAOTimelock.sol`** – **Execution Gatekeeper:** Enforces a mandatory delay (e.g., 48 hours) on all passed proposals before execution. This strictly prevents "Flash Governance" attacks.
+* **`HybridGovernorDynamic.sol`** – **Consensus Engine:** Manages the proposal lifecycle (`Proposed -> Active -> Queued -> Executed`). It supports modular voting strategies based on proposal type.
 
 #### 2. Autonomous Treasury (Financial Engine)
 
 Designed for active capital allocation, not just passive storage.
 
-* **[`DAOTreasury.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/DAOTreasury.sol)** – **The Vault:** Holds ETH, ERC-20, and NFT assets. Implements a **Pull-Payment Pattern** to prevent reentrancy attacks during fund transfers.
-* **[`TreasuryYieldStrategy.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/TreasuryYieldStrategy.sol)** – **Yield Optimizer:** A pluggable module that automatically deposits idle treasury assets into **Aave V3** lending pools, generating passive APY for the DAO.
+* **`DAOTreasury.sol`** – **The Vault:** Holds ETH, ERC-20, and NFT assets. Implements a **Pull-Payment Pattern** to prevent reentrancy attacks during fund transfers.
+* **`TreasuryYieldStrategy.sol`** – **Yield Optimizer:** A pluggable module that automatically deposits idle treasury assets into **Aave V3** lending pools, generating passive APY for the DAO.
 
 #### 3. Account Abstraction (ERC-4337 Layer)
 
 Removes blockchain complexity to offer a "Web2-like" user experience.
 
-* **[`DAOAccountFactory.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/aa/DAOAccountFactory.sol)** – **Smart Wallet Generator:** Deploys deterministic, counterfactual Smart Accounts for users, enabling features like social recovery.
-* **[`DAOPayMaster.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/aa/DAOPayMaster.sol)** – **Gas Sponsor:** A protocol-funded contract that subsidizes gas fees, allowing members to vote and propose without holding ETH.
-* **[`SessionKeyModule.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/aa/SessionKeyModule.sol)** – **UX Enhancer:** Allows users to sign a single "Session Permission" (valid for X hours). This enables distinct actions (like voting) without repeated wallet popups.
+* **`DAOAccountFactory.sol`** – **Smart Wallet Generator:** Deploys deterministic, counterfactual Smart Accounts for users, enabling features like social recovery.
+* **`DAOPayMaster.sol`** – **Gas Sponsor:** A protocol-funded contract that subsidizes gas fees, allowing members to vote and propose without holding ETH.
+* **`SessionKeyModule.sol`** – **UX Enhancer:** Allows users to sign a single "Session Permission" (valid for X hours). This enables distinct actions (like voting) without repeated wallet popups.
 
 #### 4. Sentinel Security (Defense Mechanisms)
 
 Active protection systems against governance capture and malicious actors.
 
-* **[`VetoCouncil.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/governance/VetoCouncil.sol)** – **Optimistic Guard:** A multisig of trusted guardians who can cancel malicious proposals (e.g., a 51% attack to drain funds) before they execute.
-* **[`RageQuit.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/governance/RageQuit.sol)** – **Minority Protection:** If a hostile proposal passes, dissenting members can burn their governance tokens to withdraw their proportional share of the treasury *before* the new law takes effect.
-* **[`ProposalGuard.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/governance/ProposalGuard.sol)** – **Anti-Spam:** Enforces dynamic thresholds and reputation checks before a user can submit a proposal, preventing Governance Griefing.
+* **`VetoCouncil.sol`** – **Optimistic Guard:** A multisig of trusted guardians who can cancel malicious proposals (e.g., a 51% attack to drain funds) before they execute.
+* **`RageQuit.sol`** – **Minority Protection:** If a hostile proposal passes, dissenting members can burn their governance tokens to withdraw their proportional share of the treasury *before* the new law takes effect.
+* **`ProposalGuard.sol`** – **Anti-Spam:** Enforces dynamic thresholds and reputation checks before a user can submit a proposal, preventing Governance Griefing.
 
 ---
 
