@@ -40,11 +40,10 @@
 
 1. [🏛️ Architectural Philosophy](#-architectural-philosophy)
 2. [✅ Verified Contract Addresses](#-verified-contract-addresses)
-3. [🧩 System Topology](#-system-topology)
-4. [⚙️ Core Functionality Deep-Dive](#-core-functionality-deep-dive)
-5. [💻 Frontend Engineering](#-frontend-engineering)
-6. [🧪 Testing & Security Vectors](#-testing--security-vectors)
-7. [🛠️ Installation & Deployment](#-installation--deployment)
+3. [🧩 Smart Contract Topology](#-smart-contract-topology)
+4. [💻 Frontend Engineering](#-frontend-engineering)
+5. [🧪 Testing & Security Vectors](#-testing--security-vectors)
+6. [🛠️ Installation & Deployment](#-installation--deployment)
 
 ---
 
@@ -98,51 +97,54 @@ All contracts are deployed and verified on the **Sepolia Testnet**. Click the ad
 
 ---
 
-## 🧩 System Topology
+## 🧩 Smart Contract Topology
 
-The codebase is organized into logical domains. Instead of a monolithic structure, we separate the **Kernel (State)** from the **Plugins (Logic)** and the **Interface (Client)**.
+The codebase is organized into logical domains, strictly separating **State (Kernel)** from **Logic (Plugins)**.
+
+### 📂 Directory Structure
 
 ```bash
-Sentinel-DAO/
-├── contracts/              # SOLIDITY KERNEL (Foundry)
-│   ├── core/               # Registry, Timelock, Access Control
-│   ├── governance/         # Voting Logic, Token Standards, Veto
-│   ├── aa/                 # ERC-4337 Smart Wallets & Bundlers
-│   ├── security/           # Emergency Pause & Analytics
-│   └── treasury/           # Vaults & DeFi Yield Strategies
-│
-└── web3-app/               # CLIENT APPLICATION (Next.js 14)
-    ├── src/app/            # App Router & Pages (Treasury, Proposals)
-    ├── src/hooks/          # Custom Web3 Logic (Wagmi/Viem)
-    └── src/config/         # Constants & ABI Bindings
+src/contracts/
+├── core/           # THE KERNEL (Registry, Timelock, Treasury)
+├── aa/             # USER ABSTRACTION (ERC-4337 Smart Wallets)
+├── governance/     # CONSENSUS LAYER (Voting Logic, Tokens)
+├── security/       # DEFENSE SYSTEMS (Pause, Analytics, RBAC)
+└── treasury/       # ASSET MANAGEMENT (Yield Strategies)
 
 ```
 
----
+### ⚙️ Module Breakdown
 
-## ⚙️ Core Functionality Deep-Dive
+#### 1. The Kernel (Core Execution)
 
-### 1. The Governance Kernel
+The immutable heart of the protocol. These contracts define the rules of power.
 
-The "Brain" of the DAO. These contracts manage permissions and system parameters.
+* **[`DAOCore.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/DAOCore.sol)** – **The Registry:** Acts as the central source of truth. It maintains the allowlist of all active modules. If a contract is not registered here, it is not part of the DAO.
+* **[`DAOTimelock.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/DAOTimelock.sol)** – **Execution Gatekeeper:** Enforces a mandatory delay (e.g., 48 hours) on all passed proposals before execution. This strictly prevents "Flash Governance" attacks.
+* **[`HybridGovernorDynamic.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/HybridGovernorDynamic.sol)** – **Consensus Engine:** Manages the proposal lifecycle (`Proposed -> Active -> Queued -> Executed`). It supports modular voting strategies based on proposal type.
 
-* **Role Manager:** Implements granular Access Control (RBAC). Unlike simple `Ownable` contracts, this allows for specific roles (e.g., `PROPOSER_ROLE`, `EXECUTOR_ROLE`, `GUARDIAN_ROLE`).
-* **Dynamic Config:** Allows the DAO to adjust critical parameters (Quorum, Thresholds) via governance vote without redeploying contracts.
+#### 2. Autonomous Treasury (Financial Engine)
 
-### 2. Autonomous Treasury & Yield
+Designed for active capital allocation, not just passive storage.
 
-The financial engine is designed for active management, not just passive storage.
+* **[`DAOTreasury.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/DAOTreasury.sol)** – **The Vault:** Holds ETH, ERC-20, and NFT assets. Implements a **Pull-Payment Pattern** to prevent reentrancy attacks during fund transfers.
+* **[`TreasuryYieldStrategy.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/core/TreasuryYieldStrategy.sol)** – **Yield Optimizer:** A pluggable module that automatically deposits idle treasury assets into **Aave V3** lending pools, generating passive APY for the DAO.
 
-* **Pull-Payment Vault:** Prevents reentrancy attacks by requiring users to "withdraw" funds rather than the contract "pushing" them.
-* **Aave V3 Integration:** Idle assets in the treasury are programmatically deposited into Aave lending pools. This generates passive APY, ensuring the treasury combats inflation.
+#### 3. Account Abstraction (ERC-4337 Layer)
 
-### 3. Account Abstraction (ERC-4337)
+Removes blockchain complexity to offer a "Web2-like" user experience.
 
-Abstracts blockchain complexity from the end-user.
+* **[`DAOAccountFactory.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/aa/DAOAccountFactory.sol)** – **Smart Wallet Generator:** Deploys deterministic, counterfactual Smart Accounts for users, enabling features like social recovery.
+* **[`DAOPayMaster.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/aa/DAOPayMaster.sol)** – **Gas Sponsor:** A protocol-funded contract that subsidizes gas fees, allowing members to vote and propose without holding ETH.
+* **[`SessionKeyModule.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/aa/SessionKeyModule.sol)** – **UX Enhancer:** Allows users to sign a single "Session Permission" (valid for X hours). This enables distinct actions (like voting) without repeated wallet popups.
 
-* **Smart Accounts:** Deploys deterministic Smart Accounts for users via `DAOAccountFactory`.
-* **Gasless Voting:** A protocol-funded `Paymaster` sponsors gas fees for governance actions.
-* **Session Keys:** Users sign once to start a "Session" (e.g., valid for 1 hour). During this time, they can vote or propose without repeated wallet popups.
+#### 4. Sentinel Security (Defense Mechanisms)
+
+Active protection systems against governance capture and malicious actors.
+
+* **[`VetoCouncil.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/governance/VetoCouncil.sol)** – **Optimistic Guard:** A multisig of trusted guardians who can cancel malicious proposals (e.g., a 51% attack to drain funds) before they execute.
+* **[`RageQuit.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/governance/RageQuit.sol)** – **Minority Protection:** If a hostile proposal passes, dissenting members can burn their governance tokens to withdraw their proportional share of the treasury *before* the new law takes effect.
+* **[`ProposalGuard.sol`](https://www.google.com/search?q=https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO/blob/main/src/contracts/governance/ProposalGuard.sol)** – **Anti-Spam:** Enforces dynamic thresholds and reputation checks before a user can submit a proposal, preventing Governance Griefing.
 
 ---
 
@@ -255,6 +257,13 @@ This repository serves as a reference implementation for advanced DAO patterns (
 
 <div align="center">
 <b>Engineered with ❤️ by <a href="https://github.com/NexTechArchitect">NexTech Architect</a></b>
+
+
+
+
+
+<a href="https://x.com/itZ_AmiT0">Connect on 𝕏 (Twitter)</a>
+
 
 
 
