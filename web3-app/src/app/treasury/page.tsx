@@ -4,15 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import { 
   ArrowUpRight, ArrowDownLeft, History, ShieldCheck, ArrowLeft, 
   Loader2, Zap, Landmark, X, Image as ImageIcon, ExternalLink, 
-  CheckCircle, AlertCircle, Shield, TrendingUp, LayoutGrid, Layers, Copy, Lock
+  CheckCircle, AlertCircle, LayoutGrid, Layers, Lock
 } from 'lucide-react';
 import Link from 'next/link';
 import { ConnectButton } from '@rainbow-me/rainbowkit'; 
 import { 
   useAccount, useReadContract, useWriteContract, 
-  useWaitForTransactionReceipt, useSwitchChain, useChainId, useBalance 
+  useWaitForTransactionReceipt, useBalance 
 } from 'wagmi';
-import { parseUnits, formatEther } from 'viem';
+import { parseUnits, formatEther, formatUnits } from 'viem';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CONTRACT_ADDRESSES, TREASURY_ABI, CHAINLINK_ABI, SUPPORTED_TOKENS, ERC20_ABI } from '@/config/constants';
 
@@ -31,7 +31,7 @@ const itemVariants = {
 
 type Transaction = {
   hash: string;
-  type: 'DEPOSIT' | 'WITHDRAW';
+  type: 'DEPOSIT' | 'WITHDRAW' | 'APPROVE';
   token: string;
   amount: string;
   timestamp: string;
@@ -51,9 +51,7 @@ const DEMO_NFTS = [
 ];
 
 export default function Treasury() {
-  const { isConnected, address } = useAccount();
-  const chainId = useChainId(); 
-  const { switchChain } = useSwitchChain(); 
+  const { address } = useAccount();
   
   const mainRef = useRef<HTMLDivElement | null>(null);
   const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
@@ -113,10 +111,26 @@ export default function Treasury() {
     query: { refetchInterval: 15000 }
   });
 
-  const { data: userBalance, refetch: refetchUser } = useBalance({
+  const { data: userNativeBalance } = useBalance({
     address: address,
     chainId: 11155111,
-    query: { refetchInterval: 15000 }
+    query: { refetchInterval: 5000 }
+  });
+
+  const { data: userTokenBalance, refetch: refetchTokenBal } = useReadContract({
+    address: selectedToken.address as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'balanceOf',
+    args: [address as `0x${string}`],
+    query: { enabled: !selectedToken.isNative && !!address }
+  });
+
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
+    address: selectedToken.address as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'allowance',
+    args: [address as `0x${string}`, CONTRACT_ADDRESSES.TREASURY as `0x${string}`],
+    query: { enabled: !selectedToken.isNative && !!address }
   });
 
   useEffect(() => {
@@ -124,43 +138,64 @@ export default function Treasury() {
         refetchPrice();
         refetchEth();
         refetchDiso();
-        refetchUser();
-    }, 15000);
+        refetchTokenBal();
+        refetchAllowance();
+    }, 10000);
     return () => clearInterval(intervalId);
-  }, [refetchPrice, refetchEth, refetchDiso, refetchUser]);
+  }, [refetchPrice, refetchEth, refetchDiso, refetchTokenBal, refetchAllowance]);
 
   const { writeContract: executeTx, data: txHash, isPending: isTxPending, error: txError, reset: resetTx } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash: txHash });
 
+  const needsApproval = !selectedToken.isNative && 
+                        modalMode === 'DEPOSIT' && 
+                        allowance !== undefined && 
+                        amount !== '' &&
+                        parseFloat(formatUnits(allowance as bigint, selectedToken.decimals)) < parseFloat(amount);
+
+  // We use a ref to track if the last action was an approval to prevent closing the modal
+  const lastActionWasApproval = useRef(false);
+
   useEffect(() => {
     if (txHash && isModalOpen) {
-      setIsModalOpen(false);
+      if (!needsApproval && !lastActionWasApproval.current) {
+         setIsModalOpen(false);
+      }
+      
       const newTx: Transaction = {
         hash: txHash,
-        type: modalMode,
+        type: needsApproval ? 'APPROVE' : modalMode,
         token: selectedToken.symbol,
-        amount: `${amount} ${selectedToken.symbol}`,
+        amount: needsApproval ? `Approve ${selectedToken.symbol}` : `${amount} ${selectedToken.symbol}`,
         timestamp: new Date().toLocaleTimeString()
       };
       setRecentTx(prev => [newTx, ...prev]);
-      setToast({ type: 'SUCCESS', message: 'Transaction Dispatched', subMessage: 'Awaiting confirmation...', hash: txHash });
+      setToast({ type: 'SUCCESS', message: needsApproval ? 'Approving Asset' : 'Transaction Dispatched', subMessage: 'Awaiting confirmation...', hash: txHash });
     }
-  }, [txHash, isModalOpen]);
+  }, [txHash]);
 
   useEffect(() => {
     if (isConfirmed && txHash) {
-      setToast({ type: 'SUCCESS', message: 'Transaction Confirmed', subMessage: 'Treasury updated.', hash: txHash });
-      setAmount('');
+      setToast({ type: 'SUCCESS', message: 'Confirmed', subMessage: 'Blockchain state updated.', hash: txHash });
+      
+      // Crucial Fix: Only reset amount and close modal if it was NOT an approval
+      if (!lastActionWasApproval.current) {
+          setAmount('');
+      } else {
+          // If it was approval, we just reset the logic flag so next click is deposit
+          lastActionWasApproval.current = false;
+      }
+      
       resetTx();
-      setTimeout(() => {
-        refetchEth();
-        refetchDiso();
-        refetchUser();
-      }, 3000);
+      refetchEth();
+      refetchDiso();
+      refetchTokenBal();
+      refetchAllowance();
     }
     if (txError) {
        setToast({ type: 'ERROR', message: 'Transaction Failed', subMessage: (txError as any)?.shortMessage || "Request rejected." });
        resetTx();
+       lastActionWasApproval.current = false;
     }
   }, [isConfirmed, txError]);
 
@@ -169,21 +204,30 @@ export default function Treasury() {
     setModalMode(mode);
     setIsModalOpen(true);
     setAmount('');
+    lastActionWasApproval.current = false;
   };
 
   const getAvailableAmount = () => {
-    if (modalMode === 'DEPOSIT' && userBalance) {
-      return parseFloat(formatEther(userBalance.value));
-    } else if (modalMode === 'WITHDRAW' && treasuryEthBalance) {
-      return parseFloat(formatEther(treasuryEthBalance));
+    if (modalMode === 'DEPOSIT') {
+      if (selectedToken.isNative) {
+        return userNativeBalance ? parseFloat(formatEther(userNativeBalance.value)) : 0;
+      } else {
+        return userTokenBalance ? parseFloat(formatUnits(userTokenBalance as bigint, selectedToken.decimals)) : 0;
+      }
+    } else if (modalMode === 'WITHDRAW') {
+        return treasuryEthBalance ? parseFloat(formatEther(treasuryEthBalance)) : 0;
     }
     return 0;
   };
 
   const setMaxAmount = () => {
-    if (modalMode === 'DEPOSIT' && userBalance) {
-      const maxVal = parseFloat(formatEther(userBalance.value)) - 0.001;
-      setAmount(maxVal > 0 ? maxVal.toFixed(4) : '0');
+    if (modalMode === 'DEPOSIT') {
+      if (selectedToken.isNative && userNativeBalance) {
+        const maxVal = parseFloat(formatEther(userNativeBalance.value)) - 0.01;
+        setAmount(maxVal > 0 ? maxVal.toFixed(4) : '0');
+      } else if (!selectedToken.isNative && userTokenBalance) {
+        setAmount(formatUnits(userTokenBalance as bigint, selectedToken.decimals));
+      }
     } else if (modalMode === 'WITHDRAW' && treasuryEthBalance) {
       setAmount(formatEther(treasuryEthBalance));
     }
@@ -192,14 +236,38 @@ export default function Treasury() {
   const handleAction = async () => {
     if (!amount || parseFloat(amount) <= 0) return;
     const parsedAmount = parseUnits(amount, selectedToken.decimals);
-    if (modalMode === 'DEPOSIT') {
-        if (selectedToken.isNative) {
-            executeTx({ address: CONTRACT_ADDRESSES.TREASURY as `0x${string}`, abi: TREASURY_ABI, functionName: 'depositEth', value: parsedAmount, chainId: 11155111 });
+
+    try {
+        if (modalMode === 'DEPOSIT') {
+            if (selectedToken.isNative) {
+                lastActionWasApproval.current = false;
+                executeTx({ address: CONTRACT_ADDRESSES.TREASURY as `0x${string}`, abi: TREASURY_ABI, functionName: 'depositEth', value: parsedAmount, chainId: 11155111 });
+            } else {
+                if (needsApproval) {
+                    lastActionWasApproval.current = true; // Mark as approval so modal stays open
+                    executeTx({ 
+                        address: selectedToken.address as `0x${string}`, 
+                        abi: ERC20_ABI, 
+                        functionName: 'approve', 
+                        args: [CONTRACT_ADDRESSES.TREASURY as `0x${string}`, parsedAmount], 
+                        chainId: 11155111 
+                    });
+                } else {
+                    lastActionWasApproval.current = false;
+                    executeTx({ 
+                        address: CONTRACT_ADDRESSES.TREASURY as `0x${string}`, 
+                        abi: TREASURY_ABI, 
+                        functionName: 'depositERC20', 
+                        args: [selectedToken.address as `0x${string}`, parsedAmount], 
+                        chainId: 11155111 
+                    });
+                }
+            }
         } else {
-            executeTx({ address: CONTRACT_ADDRESSES.TREASURY as `0x${string}`, abi: TREASURY_ABI, functionName: 'depositERC20', args: [selectedToken.address as `0x${string}`, parsedAmount], chainId: 11155111 });
+            alert("Governance Proposal Required for Withdrawals.");
         }
-    } else {
-        alert("Governance Proposal Required for Withdrawals.");
+    } catch (e) {
+        console.error(e);
     }
   };
 
@@ -258,32 +326,32 @@ export default function Treasury() {
             <div className="flex flex-col md:flex-row justify-between items-end gap-8">
                <div>
                   <div className="flex items-center gap-3 mb-4">
-                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
-                     <span className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">Treasury Module Active</span>
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
+                      <span className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">Treasury Module Active</span>
                   </div>
                   <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight leading-none mb-6">
                     Capital <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400">Reserves</span>
                   </h1>
                   <div className="flex items-center gap-8">
-                     <div>
-                        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Value Locked</p>
-                        <p className="text-3xl md:text-4xl font-mono font-bold text-white tracking-tight">
-                           ${treasuryEthBalance && ethPrice ? (parseFloat(formatEther(treasuryEthBalance)) * ethPrice).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
-                        </p>
-                     </div>
-                     <div className="w-px h-10 bg-white/10"></div>
-                     <div>
-                        <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Ether Price</p>
-                        <p className="text-3xl md:text-4xl font-mono font-bold text-cyan-400">${ethPrice.toLocaleString()}</p>
-                     </div>
+                      <div>
+                         <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Value Locked</p>
+                         <p className="text-3xl md:text-4xl font-mono font-bold text-white tracking-tight">
+                            ${treasuryEthBalance && ethPrice ? (parseFloat(formatEther(treasuryEthBalance)) * ethPrice).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
+                         </p>
+                      </div>
+                      <div className="w-px h-10 bg-white/10"></div>
+                      <div>
+                         <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Ether Price</p>
+                         <p className="text-3xl md:text-4xl font-mono font-bold text-cyan-400">${ethPrice.toLocaleString()}</p>
+                      </div>
                   </div>
                </div>
                <div className="flex gap-4 w-full md:w-auto">
                   <button onClick={() => openModal('DEPOSIT')} className="flex-1 md:flex-none px-8 py-4 bg-white text-black rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2">
-                     <ArrowDownLeft size={16}/> Deposit
+                      <ArrowDownLeft size={16}/> Deposit
                   </button>
                   <button onClick={() => openModal('WITHDRAW')} className="flex-1 md:flex-none px-8 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-                     <ArrowUpRight size={16}/> Withdraw
+                      <ArrowUpRight size={16}/> Withdraw
                   </button>
                </div>
             </div>
@@ -302,12 +370,12 @@ export default function Treasury() {
                     className={`w-full p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden ${activeTab === tab.id ? 'bg-cyan-900/10 border-cyan-500/30' : 'bg-[#0a0a0e] border-white/5 hover:border-white/10'}`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                       <div className={`p-3 rounded-2xl ${activeTab === tab.id ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400'}`}>
-                          {tab.id === 'tokens' && <LayoutGrid size={20} />}
-                          {tab.id === 'nft_vault' && <Layers size={20} />}
-                          {tab.id === 'trans_history' && <History size={20} />}
-                       </div>
-                       {activeTab === tab.id && <Zap size={16} className="text-cyan-400 fill-current" />}
+                        <div className={`p-3 rounded-2xl ${activeTab === tab.id ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400'}`}>
+                           {tab.id === 'tokens' && <LayoutGrid size={20} />}
+                           {tab.id === 'nft_vault' && <Layers size={20} />}
+                           {tab.id === 'trans_history' && <History size={20} />}
+                        </div>
+                        {activeTab === tab.id && <Zap size={16} className="text-cyan-400 fill-current" />}
                     </div>
                     <h3 className={`text-lg font-bold uppercase tracking-tight ${activeTab === tab.id ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>{tab.label}</h3>
                     <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">{tab.desc}</p>
@@ -319,43 +387,41 @@ export default function Treasury() {
                <AnimatePresence mode="wait">
                  {activeTab === 'tokens' && (
                    <motion.div variants={containerVariants} initial="hidden" animate="show" exit={{ opacity: 0 }} className="space-y-4">
-                      {/* ETH CARD */}
                       <motion.div variants={itemVariants} className="p-8 rounded-[2.5rem] bg-[#0a0a0e] border border-white/5 hover:border-cyan-500/20 transition-all group relative overflow-hidden">
-                         <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity scale-150"><Landmark size={120}/></div>
-                         <div className="flex justify-between items-center relative z-10">
-                            <div className="flex items-center gap-6">
-                               <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center text-3xl shadow-inner">⟠</div>
-                               <div>
-                                  <h3 className="text-2xl font-bold text-white">Ethereum</h3>
-                                  <span className="inline-block mt-1 px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Native</span>
-                               </div>
-                            </div>
-                            <div className="text-right">
-                               <p className="text-3xl font-mono font-bold text-white">{formatEther(treasuryEthBalance ?? BigInt(0)).slice(0, 8)}</p>
-                               <p className="text-xs font-mono text-slate-500 mt-1">ETH</p>
-                            </div>
-                         </div>
+                          <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity scale-150"><Landmark size={120}/></div>
+                          <div className="flex justify-between items-center relative z-10">
+                             <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center text-3xl shadow-inner">⟠</div>
+                                <div>
+                                   <h3 className="text-2xl font-bold text-white">Ethereum</h3>
+                                   <span className="inline-block mt-1 px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Native</span>
+                                </div>
+                             </div>
+                             <div className="text-right">
+                                <p className="text-3xl font-mono font-bold text-white">{formatEther(treasuryEthBalance ?? BigInt(0)).slice(0, 8)}</p>
+                                <p className="text-xs font-mono text-slate-500 mt-1">ETH</p>
+                             </div>
+                          </div>
                       </motion.div>
 
-                      {/* TOKEN CARDS */}
                       {SUPPORTED_TOKENS.filter(t => !t.isNative).map(token => {
-                         const isDiso = token.symbol === 'DISO';
-                         const tokenBalance = isDiso && treasuryDisoBalance ? parseFloat(formatEther(treasuryDisoBalance as bigint)) : 0;
-                         return (
-                           <motion.div key={token.symbol} variants={itemVariants} className="p-8 rounded-[2.5rem] bg-[#0a0a0e] border border-white/5 hover:border-white/10 transition-all flex items-center justify-between group">
-                              <div className="flex items-center gap-6">
-                                 <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center font-bold text-xl shadow-inner text-slate-300">{token.symbol.substring(0,2)}</div>
-                                 <div>
-                                    <h3 className="text-xl font-bold text-slate-200">{token.name}</h3>
-                                    <span className={`inline-block mt-1 px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] font-bold uppercase tracking-widest ${isDiso ? 'text-purple-400' : 'text-slate-500'}`}>{isDiso ? 'Governance' : 'Standard'}</span>
-                                 </div>
-                              </div>
-                              <div className="text-right">
-                                 <p className="text-2xl font-mono font-bold text-slate-300">{tokenBalance.toLocaleString()}</p>
-                                 <p className="text-xs font-mono text-slate-600 mt-1">{token.symbol}</p>
-                              </div>
-                           </motion.div>
-                         );
+                          const isDiso = token.symbol === 'DISO';
+                          const tokenBalance = isDiso && treasuryDisoBalance ? parseFloat(formatEther(treasuryDisoBalance as bigint)) : 0;
+                          return (
+                            <motion.div key={token.symbol} variants={itemVariants} className="p-8 rounded-[2.5rem] bg-[#0a0a0e] border border-white/5 hover:border-white/10 transition-all flex items-center justify-between group">
+                               <div className="flex items-center gap-6">
+                                  <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center font-bold text-xl shadow-inner text-slate-300">{token.symbol.substring(0,2)}</div>
+                                  <div>
+                                     <h3 className="text-xl font-bold text-slate-200">{token.name}</h3>
+                                     <span className={`inline-block mt-1 px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] font-bold uppercase tracking-widest ${isDiso ? 'text-purple-400' : 'text-slate-500'}`}>{isDiso ? 'Governance' : 'Standard'}</span>
+                                  </div>
+                               </div>
+                               <div className="text-right">
+                                  <p className="text-2xl font-mono font-bold text-slate-300">{tokenBalance.toLocaleString()}</p>
+                                  <p className="text-xs font-mono text-slate-600 mt-1">{token.symbol}</p>
+                               </div>
+                            </motion.div>
+                          );
                       })}
                    </motion.div>
                  )}
@@ -383,11 +449,13 @@ export default function Treasury() {
                       {recentTx.length > 0 ? recentTx.map((tx, i) => (
                         <motion.div key={i} variants={itemVariants} className="p-6 bg-[#0a0a0e] border border-white/5 rounded-3xl flex items-center justify-between group hover:border-white/10 transition-all">
                            <div className="flex items-center gap-6">
-                              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
-                                 {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={20}/> : <ArrowUpRight size={20}/>}
+                              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-emerald-500/10 text-emerald-400' : tx.type === 'APPROVE' ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'}`}>
+                                 {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={20}/> : tx.type === 'APPROVE' ? <Lock size={20}/> : <ArrowUpRight size={20}/>}
                               </div>
                               <div>
-                                 <h4 className="font-bold text-white text-sm mb-1">{tx.type === 'DEPOSIT' ? 'Asset Received' : 'Asset Sent'}</h4>
+                                 <h4 className="font-bold text-white text-sm mb-1">
+                                    {tx.type === 'DEPOSIT' ? 'Asset Received' : tx.type === 'APPROVE' ? 'Token Approval' : 'Asset Sent'}
+                                 </h4>
                                  <span className="text-[10px] font-mono text-slate-500 bg-white/5 px-2 py-1 rounded">{tx.timestamp}</span>
                               </div>
                            </div>
@@ -436,11 +504,16 @@ export default function Treasury() {
                                  <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" className="w-full p-6 rounded-3xl bg-black/40 border border-white/10 text-4xl font-mono text-white outline-none focus:border-cyan-500/50 transition-all placeholder:text-slate-800" />
                                  <button onClick={setMaxAmount} className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-bold text-cyan-500 bg-cyan-500/10 px-3 py-1.5 rounded-lg hover:bg-cyan-500/20 uppercase tracking-wide">Max</button>
                               </div>
-                              <div className="text-right text-[10px] font-mono text-slate-500">Available: {getAvailableAmount().toFixed(4)} {selectedToken.symbol}</div>
+                              <div className="text-right text-[10px] font-mono text-slate-500">Available: {getAvailableAmount().toLocaleString()} {selectedToken.symbol}</div>
                            </div>
-                           <button onClick={handleAction} disabled={isTxPending || isConfirming || !amount} className="w-full py-6 rounded-2xl bg-white text-black font-bold text-sm uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed">
-                             {isTxPending || isConfirming ? <Loader2 className="animate-spin" size={18}/> : <Zap size={18} fill="currentColor"/>}
-                             {isTxPending ? 'Confirming...' : 'Execute Transaction'}
+                           
+                           <button 
+                             onClick={handleAction} 
+                             disabled={isTxPending || isConfirming || !amount} 
+                             className={`w-full py-6 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${needsApproval ? 'bg-amber-500 text-black hover:bg-amber-400' : 'bg-white text-black hover:bg-slate-200'}`}
+                           >
+                             {isTxPending || isConfirming ? <Loader2 className="animate-spin" size={18}/> : needsApproval ? <Lock size={18} fill="currentColor"/> : <Zap size={18} fill="currentColor"/>}
+                             {isTxPending ? 'Confirming...' : needsApproval ? `Approve ${selectedToken.symbol}` : `Deposit ${selectedToken.symbol}`}
                            </button>
                         </div>
                      </div>
