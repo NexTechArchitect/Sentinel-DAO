@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Stack](https://img.shields.io/badge/Full_Stack-Next.js_14_%7C_Foundry-blueviolet.svg)](https://nextjs.org)
 [![Network](https://img.shields.io/badge/Network-Sepolia_Testnet-blue.svg)](https://sepolia.etherscan.io/)
-[![Status](https://img.shields.io/badge/Security-Audited_Architecture-orange.svg)](https://github.com/NexTechArchitect)
+[![Status](https://img.shields.io/badge/Security-Invariant_Tested-orange.svg)](https://github.com/NexTechArchitect)
 
 <p align="center">
   <br>
@@ -16,19 +16,46 @@
   <br>
 </p>
 
-[🚀 **Launch Dashboard**](https://sentinel-dao-brown.vercel.app/) • [💻 **View Source**](https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO) • [📜 **System Docs**](https://github.com/NexTechArchitect/Sentinel-DAO/tree/main/docs)
+<a href="https://sentinel-dao-brown.vercel.app/">
+  <img src="https://img.shields.io/badge/🚀_LAUNCH_LIVE_DASHBOARD-ACCESS_TERMINAL-000000?style=for-the-badge&logo=vercel&logoColor=white&labelColor=232323" height="45" />
+</a>
+
+<p align="center">
+  <a href="https://github.com/NexTechArchitect/Web3-FullStack-Sentinal-DAO">💻 View Source Code</a> • 
+  <a href="https://github.com/NexTechArchitect/Sentinel-DAO/tree/main/docs">📜 System Documentation</a> • 
+  <a href="https://sepolia.etherscan.io/address/0xf4ffd6558454c60E50ef97799C3D69758CB68cf6">🔗 View On-Chain Registry</a>
+</p>
 
 </div>
 
 ---
 
-## 🧠 Design Philosophy
+### 🦅 Executive Summary
 
-Sentinel DAO is not just a UI; it is **Critical Infrastructure Engineering**. It addresses specific failure modes observed in earlier DAO generations:
+**Sentinel DAO represents a paradigm shift in on-chain organization management.** It is not merely a voting tool; it is **critical infrastructure** designed to survive the adversarial nature of the dark forest. Engineered as a modular 'Operating System' for sovereign capital, Sentinel bridges the gap between rigorous, immutable smart contract security and frictionless user experience. By strictly separating state (Kernel) from logic (Plugins) and integrating a non-custodial **Account Abstraction layer**, it ensures that complex voting strategies never compromise the security of the treasury, while offering a gasless, "Web2-like" experience for stakeholders.
 
-1.  **No Implicit Power:** The architecture follows a strict separation of concerns. No contract possesses implicit power over another. Even Admins cannot bypass the **TimelockController**.
-2.  **Enforced Delays:** All state-changing proposals execute exclusively through a Timelock. This creates a transparent delay window, ensuring no governance decision is applied instantly.
-3.  **Governance as an OS:** Modules (Voting Strategies, Yield Engines, Account Abstraction) can be swapped or upgraded without migrating the underlying asset-holding contracts.
+---
+
+## 📑 Table of Contents
+
+1. [🏛️ Architectural Philosophy](#-architectural-philosophy)
+2. [✅ Verified Contract Addresses](#-verified-contract-addresses)
+3. [🧩 System Topology](#-system-topology)
+4. [⚙️ Core Functionality Deep-Dive](#-core-functionality-deep-dive)
+5. [💻 Frontend Engineering](#-frontend-engineering)
+6. [🧪 Testing & Security Vectors](#-testing--security-vectors)
+7. [🛠️ Installation & Deployment](#-installation--deployment)
+
+---
+
+## 🏛️ Architectural Philosophy
+
+Sentinel DAO addresses specific failure modes observed in earlier DAO generations (Governance Attacks, Treasury Draining, and Apathy) by enforcing a strict **"Code is Law"** hierarchy.
+
+### Key Invariants:
+1.  **Zero Implicit Trust:** The architecture follows a strict separation of concerns. No contract possesses implicit power over another. Even system administrators cannot bypass the **TimelockController**.
+2.  **Deterministic Execution:** All state-changing proposals execute exclusively through a Timelock. This creates a transparent, immutable delay window, ensuring no governance decision is applied instantly.
+3.  **Governance as an OS:** The system is designed as an Operating System. Modules (Voting Strategies, Yield Engines, Account Abstraction) are "Pluggable," allowing the DAO to upgrade logic without migrating the underlying asset-holding contracts.
 
 ---
 
@@ -71,21 +98,21 @@ All contracts are deployed and verified on the **Sepolia Testnet**. Click the ad
 
 ---
 
-## 🏛️ System Architecture
+## 🧩 System Topology
 
-Sentinel DAO is architected as a **Full-Stack Decentralized Application**. It strictly separates the **Solidity Kernel** (Logic & State) from the **Next.js Client** (Interaction & Telemetry), connected via strictly typed hooks.
+The codebase is organized into logical domains. Instead of a monolithic structure, we separate the **Kernel (State)** from the **Plugins (Logic)** and the **Interface (Client)**.
 
-### 📂 Architectural Topology
 ```bash
 Sentinel-DAO/
 ├── contracts/              # SOLIDITY KERNEL (Foundry)
 │   ├── core/               # Registry, Timelock, Access Control
-│   ├── governance/         # Voting Logic, Token Standards
-│   ├── aa/                 # ERC-4337 Smart Wallets
-│   └── treasury/           # Vaults & Yield Strategies
+│   ├── governance/         # Voting Logic, Token Standards, Veto
+│   ├── aa/                 # ERC-4337 Smart Wallets & Bundlers
+│   ├── security/           # Emergency Pause & Analytics
+│   └── treasury/           # Vaults & DeFi Yield Strategies
 │
 └── web3-app/               # CLIENT APPLICATION (Next.js 14)
-    ├── src/app/            # App Router & Pages
+    ├── src/app/            # App Router & Pages (Treasury, Proposals)
     ├── src/hooks/          # Custom Web3 Logic (Wagmi/Viem)
     └── src/config/         # Constants & ABI Bindings
 
@@ -93,24 +120,50 @@ Sentinel-DAO/
 
 ---
 
-## 🖥️ Frontend Engineering (Client)
+## ⚙️ Core Functionality Deep-Dive
+
+### 1. The Governance Kernel
+
+The "Brain" of the DAO. These contracts manage permissions and system parameters.
+
+* **Role Manager:** Implements granular Access Control (RBAC). Unlike simple `Ownable` contracts, this allows for specific roles (e.g., `PROPOSER_ROLE`, `EXECUTOR_ROLE`, `GUARDIAN_ROLE`).
+* **Dynamic Config:** Allows the DAO to adjust critical parameters (Quorum, Thresholds) via governance vote without redeploying contracts.
+
+### 2. Autonomous Treasury & Yield
+
+The financial engine is designed for active management, not just passive storage.
+
+* **Pull-Payment Vault:** Prevents reentrancy attacks by requiring users to "withdraw" funds rather than the contract "pushing" them.
+* **Aave V3 Integration:** Idle assets in the treasury are programmatically deposited into Aave lending pools. This generates passive APY, ensuring the treasury combats inflation.
+
+### 3. Account Abstraction (ERC-4337)
+
+Abstracts blockchain complexity from the end-user.
+
+* **Smart Accounts:** Deploys deterministic Smart Accounts for users via `DAOAccountFactory`.
+* **Gasless Voting:** A protocol-funded `Paymaster` sponsors gas fees for governance actions.
+* **Session Keys:** Users sign once to start a "Session" (e.g., valid for 1 hour). During this time, they can vote or propose without repeated wallet popups.
+
+---
+
+## 💻 Frontend Engineering
 
 The frontend is built on **Next.js 14 (App Router)**, utilizing a modular provider pattern to manage blockchain state without a centralized backend.
 
-### Tech Stack
+### Technical Stack
 
 * **Framework:** Next.js 14 (TypeScript)
+* **State Management:** Wagmi v2 + Viem + TanStack Query
+* **Authentication:** RainbowKit (Wallet Connect & Metamask)
 * **Styling:** Tailwind CSS + Framer Motion (8K Animations)
-* **Web3 Hooks:** Wagmi v2 + Viem
-* **Auth:** RainbowKit (ConnectButton)
-* **Infrastructure:** Public RPC Nodes (Zero API Key dependency)
+* **Infrastructure:** Public RPC Nodes (Zero API Key dependency for resilience)
 
-### Directory Breakdown (`src/`)
+### Client Architecture
 
 | Directory | Role & Responsibility |
 | --- | --- |
-| **`app/`** | **Routing & Pages.** Each folder (`/treasury`, `/proposals`, `/guardian`) represents a distinct module using Server Components for performance. |
-| **`components/`** | **UI Atoms.** Reusable UI elements. Includes `SessionGuard.tsx` which protects routes based on wallet connection and AA session status. |
+| **`app/`** | **Routing & Pages.** distinct modules (`/treasury`, `/proposals`, `/guardian`) using Server Components for performance. |
+| **`components/`** | **UI Atoms.** Reusable 8K UI elements. Includes `SessionGuard.tsx` which protects routes based on AA session status. |
 | **`hooks/`** | **Business Logic.** Custom React Hooks wrapping Wagmi/Viem: <br>
 
 <br>• `useAASession.ts`: Manages Account Abstraction session keys.<br>
@@ -118,36 +171,46 @@ The frontend is built on **Next.js 14 (App Router)**, utilizing a modular provid
 <br>• `useDAOData.ts`: Fetches real-time governance metrics.<br>
 
 <br>• `useProposals.ts`: Handles proposal lifecycle (Submit -> Vote -> Queue). |
-| **`config/`** | **System Configuration.** Contains `constants.ts` with verified Contract Addresses, ABIs, and RPC configurations. |
 
 ---
 
-## 🧩 Core Modules & Functionality
+## 🧪 Testing & Security Vectors
 
-### 1. Autonomous Treasury & Yield
+The system has undergone a rigorous multi-layered testing strategy using the **Foundry** framework, executing **256 tests** across Unit, Fuzzing, and Integration layers with **zero failures**.
 
-The financial engine is designed for active management.
+### Test Suite Topology
 
-* **Multi-Asset Vault:** Supports ETH, ERC-20, and NFTs with "Pull-Payment" architecture.
-* **Yield Optimization:** An automated module integrates with **Aave V3**. Idle treasury assets are programmatically deposited into lending pools to generate yield, ensuring the treasury grows over time.
+The test architecture mirrors the modularity of the system, ensuring coverage across State, Logic, and Threat Models.
 
-### 2. Account Abstraction (ERC-4337)
+```bash
+test/
+├── unit/                   # ATOMIC LOGIC VERIFICATION (20 Files)
+│   ├── DAOCore.t.sol       # Registry Integrity
+│   ├── DAOTreasury.t.sol   # Vault Security & Reentrancy Checks
+│   └── RoleManager.t.sol   # Access Control Invariants
+├── integration/            # SYSTEM INTERACTION (5 Files)
+│   ├── DAOIntegration_Lifecycle.t.sol  # Full Flow (Propose -> Vote -> Execute)
+│   └── DAOIntegration_RageQuit.t.sol   # Minority Protection Mechanics
+├── fuzz/                   # PROPERTY-BASED TESTING (4 Files)
+│   ├── FuzzDAO_SystemStress.t.sol      # High-Entropy State Chaos
+│   └── FuzzVotingStrategies.t.sol      # Mathematical Correctness
+└── mocks/                  # SIMULATION ADAPTERS
 
-Abstracts blockchain complexity from the end-user.
+```
 
-* **Smart Accounts:** Deploys deterministic Smart Accounts for users via `DAOAccountFactory`.
-* **Gasless Voting:** A protocol-funded `Paymaster` sponsors gas fees for governance actions.
-* **Session Keys:** Users sign once to start a session and perform multiple actions without repeated wallet popups.
+### Key Methodologies
 
-### 3. Sentinel Security Layer
+1. **Unit Tests:** Isolated testing of individual functions (e.g., `test_DepositERC20`) to ensure atomic logic correctness.
+2. **Integration Tests:** Validating the complex interaction between modules, ensuring `Timelock` correctly respects `Governor` delays.
+3. **Fuzz Testing:**
+* `testFuzz_EndToEndChaos`: Simulates random user actions to find edge cases in state transitions.
+* `testFuzz_RageQuitMath`: Verified the mathematical solvency of the exit mechanism under various economic conditions.
 
-* **Veto Council:** A specialized multisig of trusted guardians who can cancel malicious proposals.
-* **Emergency Pause:** A circuit breaker that freezes the protocol in the event of a zero-day exploit.
-* **Rage Quit:** Minority protection mechanism allowing dissenters to exit with their share of the treasury.
+
 
 ---
 
-## 🛠️ Installation & Setup
+## 🛠️ Installation & Deployment
 
 To run the full stack environment locally:
 
@@ -186,12 +249,12 @@ Open `http://localhost:3000` to view the Dashboard.
 ## ⚠️ Disclaimer
 
 **EDUCATIONAL ARCHITECTURE NOTICE:**
-This repository serves as a reference implementation for advanced DAO patterns. While it utilizes production-grade libraries and verified patterns, this codebase has **NOT** undergone a formal external security audit. Use at your own risk.
+This repository serves as a reference implementation for advanced DAO patterns (Timelock, AA, Yield Strategies). While it utilizes production-grade libraries (OpenZeppelin) and verified architectural patterns, this codebase has **NOT** undergone a formal external security audit. Use at your own risk.
 
 ---
 
 <div align="center">
-<b>Built with ❤️ by <a href="https://www.google.com/url?sa=E&source=gmail&q=https://github.com/NexTechArchitect">NexTech Architect</a></b>
+<b>Engineered with ❤️ by <a href="https://github.com/NexTechArchitect">NexTech Architect</a></b>
 
 
 
