@@ -3,54 +3,50 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { 
   ArrowRight, Shield, Zap, Lock, Cpu, Github, 
-  CheckCircle, Loader2, BookOpen, Terminal, Menu, X, KeyRound, LogOut,
+  Loader2, BookOpen, Terminal, Menu, X, KeyRound, LogOut,
   Activity, Server 
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useAASession } from '@/hooks/useAASession';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
+// Optimized Variants for Mobile (Less Physics)
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.2 }
+    transition: { staggerChildren: 0.05, delayChildren: 0.1 } // Faster stagger
   }
 };
 
 const textRevealVariants = {
-  hidden: { y: 100, opacity: 0, filter: "blur(10px)" },
+  hidden: { y: 20, opacity: 0 }, // Removed blur filter (Heavy on Mobile)
   show: { 
     y: 0, 
     opacity: 1, 
-    filter: "blur(0px)",
-    transition: { type: "spring", stiffness: 70, damping: 15 } 
-  }
-};
-
-const itemVariants = {
-  hidden: { y: 30, opacity: 0, filter: "blur(8px)" },
-  show: { 
-    y: 0, 
-    opacity: 1, 
-    filter: "blur(0px)",
-    transition: { type: "spring", stiffness: 60, damping: 20 } 
+    transition: { type: "spring", stiffness: 100, damping: 20 } 
   }
 };
 
 const cardHoverVariants = {
   initial: { y: 0, scale: 1 },
-  hover: { y: -10, scale: 1.02, transition: { type: "spring", stiffness: 300 } }
+  hover: { y: -5, scale: 1.01, transition: { duration: 0.2 } } // Simpler hover
 };
 
+// Aurora only animates on Desktop now
 const auroraVariants = {
   animate: {
-    scale: [1, 1.2, 1],
-    opacity: [0.3, 0.5, 0.3],
-    rotate: [0, 10, -10, 0],
-    transition: { duration: 15, repeat: Infinity, ease: "linear" }
+    scale: [1, 1.1, 1],
+    opacity: [0.3, 0.4, 0.3],
+    rotate: [0, 5, -5, 0],
+    transition: { duration: 20, repeat: Infinity, ease: "linear" }
+  },
+  static: {
+    scale: 1,
+    opacity: 0.3,
+    rotate: 0
   }
 };
 
@@ -62,16 +58,33 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const spotlightRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Reduce Motion Preference Check
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
-    const handleMouseMove = (e: MouseEvent) => {
-      if (spotlightRef.current) {
-        spotlightRef.current.style.background = `radial-gradient(1000px circle at ${e.clientX}px ${e.clientY}px, rgba(34, 211, 238, 0.08), transparent 50%)`;
-      }
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    
+    // Check if device is mobile to disable heavy effects
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    // Only attach mouse listener on Desktop
+    if (window.matchMedia("(pointer: fine)").matches) {
+        const handleMouseMove = (e: MouseEvent) => {
+          if (spotlightRef.current) {
+            spotlightRef.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(34, 211, 238, 0.06), transparent 40%)`;
+          }
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => {
+          window.removeEventListener('mousemove', handleMouseMove);
+          window.removeEventListener('resize', checkMobile);
+        }
+    }
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const formatAddress = (addr: string) => `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
@@ -81,35 +94,44 @@ export default function Home() {
   return (
     <div className="min-h-screen relative text-slate-200 font-sans selection:bg-cyan-500/30 overflow-x-hidden bg-[#030305] flex flex-col">
       
+      {/* 1. Base Layer */}
       <div className="fixed inset-0 z-0 bg-[#030305]"></div>
       
+      {/* 2. Optimized Aurora Blobs (Static on Mobile) */}
       <motion.div 
-        variants={auroraVariants} animate="animate"
-        className="fixed top-[-30%] right-[-20%] w-[1200px] h-[1200px] bg-indigo-900/20 rounded-full blur-[150px] pointer-events-none mix-blend-screen"
+        variants={auroraVariants} 
+        animate={isMobile || shouldReduceMotion ? "static" : "animate"}
+        className="fixed top-[-20%] right-[-20%] w-[300px] md:w-[1000px] h-[300px] md:h-[1000px] bg-indigo-900/20 rounded-full blur-[60px] md:blur-[120px] pointer-events-none mix-blend-screen transform-gpu"
       />
       <motion.div 
-        variants={auroraVariants} animate="animate" transition={{ delay: 2 }}
-        className="fixed bottom-[-20%] left-[-20%] w-[1200px] h-[1200px] bg-cyan-900/10 rounded-full blur-[150px] pointer-events-none mix-blend-screen"
+        variants={auroraVariants} 
+        animate={isMobile || shouldReduceMotion ? "static" : "animate"}
+        transition={{ delay: 2 }}
+        className="fixed bottom-[-20%] left-[-20%] w-[300px] md:w-[1000px] h-[300px] md:h-[1000px] bg-cyan-900/10 rounded-full blur-[60px] md:blur-[120px] pointer-events-none mix-blend-screen transform-gpu"
       />
-      <div className="fixed top-[20%] left-[30%] w-[800px] h-[800px] bg-violet-900/10 rounded-full blur-[180px] pointer-events-none animate-pulse" />
+      
+      {/* 3. Static Pulse (Reduced size for mobile) */}
+      <div className="fixed top-[20%] left-[10%] md:left-[30%] w-[200px] md:w-[800px] h-[200px] md:h-[800px] bg-violet-900/10 rounded-full blur-[80px] md:blur-[150px] pointer-events-none transform-gpu" />
 
-      <div ref={spotlightRef} className="fixed inset-0 z-10 pointer-events-none transition-opacity duration-700" />
+      {/* 4. Desktop Only Effects */}
+      <div ref={spotlightRef} className="fixed inset-0 z-10 pointer-events-none transition-opacity duration-700 hidden md:block" />
+      <div className="fixed inset-0 z-[1] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none hidden md:block"></div>
 
-      <div className="fixed inset-0 z-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent_80%)] opacity-[0.04] pointer-events-none"></div>
-      <div className="fixed inset-0 z-[1] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none"></div>
+      {/* Grid Pattern (Lighter on mobile) */}
+      <div className="fixed inset-0 z-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent_80%)] opacity-[0.03] pointer-events-none"></div>
 
       <motion.nav 
-        initial={{ y: -100, opacity: 0 }} 
+        initial={{ y: -20, opacity: 0 }} 
         animate={{ y: 0, opacity: 1 }} 
-        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 w-full z-[999] border-b border-white/5 bg-[#030305]/60 backdrop-blur-2xl supports-[backdrop-filter]:bg-[#030305]/20"
+        transition={{ duration: 0.5 }}
+        className="fixed top-0 w-full z-[999] border-b border-white/5 bg-[#030305]/90 md:bg-[#030305]/70 backdrop-blur-md"
       >
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-24 flex items-center justify-between">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-20 md:h-24 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative p-2.5 bg-white/5 rounded-xl border border-white/10 group-hover:border-cyan-500/50 transition-all duration-500 shadow-[0_0_30px_rgba(34,211,238,0.1)]">
-               <Shield className="w-6 h-6 text-cyan-400 relative z-10" strokeWidth={2} />
+            <div className="relative p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors">
+               <Shield className="w-5 h-5 md:w-6 md:h-6 text-cyan-400 relative z-10" strokeWidth={2} />
             </div>
-            <span className="text-2xl font-black tracking-tight text-white uppercase flex items-center gap-1">
+            <span className="text-xl md:text-2xl font-black tracking-tight text-white uppercase flex items-center gap-1">
               Sentinel<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">DAO</span>
             </span>
           </Link>
@@ -156,7 +178,7 @@ export default function Home() {
                   )}
                 </ConnectButton.Custom>
              ) : (
-                <div className="flex items-center gap-2 px-4 py-2 bg-red-500/5 rounded-full border border-red-500/10 backdrop-blur-md">
+                <div className="flex items-center gap-2 px-4 py-2 bg-red-500/5 rounded-full border border-red-500/10">
                    <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
                    <span className="text-[10px] font-bold tracking-widest uppercase text-red-500">System Offline</span>
                 </div>
@@ -165,7 +187,7 @@ export default function Home() {
 
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-3 text-white bg-white/5 rounded-xl border border-white/5 active:scale-95 transition-all"
+            className="lg:hidden p-2.5 text-white bg-white/5 rounded-xl border border-white/5 active:scale-95 transition-all"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -177,7 +199,7 @@ export default function Home() {
               initial={{ height: 0, opacity: 0 }} 
               animate={{ height: "auto", opacity: 1 }} 
               exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden bg-[#05050a]/95 backdrop-blur-xl border-b border-white/10 overflow-hidden absolute w-full"
+              className="lg:hidden bg-[#05050a]/98 border-b border-white/10 overflow-hidden absolute w-full"
             >
               <div className="px-6 py-8 space-y-4">
                 {['PROPOSALS', 'TREASURY', 'GUARDIAN'].map((item) => (
@@ -200,7 +222,7 @@ export default function Home() {
                 {isConnected && (
                   <button 
                     onClick={() => { disconnect(); setMobileMenuOpen(false); }}
-                    className="w-full mt-6 py-5 flex items-center justify-center gap-2 rounded-2xl bg-red-500/5 text-red-400 text-xs font-bold tracking-widest uppercase border border-red-500/10 active:scale-98 transition-transform"
+                    className="w-full mt-6 py-4 flex items-center justify-center gap-2 rounded-xl bg-red-500/10 text-red-400 text-xs font-bold tracking-widest uppercase border border-red-500/20 active:scale-95 transition-transform"
                   >
                     <LogOut size={16} /> Disconnect
                   </button>
@@ -211,16 +233,15 @@ export default function Home() {
         </AnimatePresence>
       </motion.nav>
 
-      <main className="relative z-20 flex-1 flex flex-col items-center justify-center pt-40 pb-20 px-4 text-center overflow-hidden min-h-[90vh]">
+      <main className="relative z-20 flex-1 flex flex-col items-center justify-center pt-32 pb-16 px-4 text-center overflow-hidden min-h-[85vh]">
         
         <motion.div 
           variants={containerVariants} initial="hidden" animate="show"
-          className="max-w-[1300px] mx-auto flex flex-col items-center"
+          className="max-w-[1300px] mx-auto flex flex-col items-center w-full"
         >
-          <motion.div variants={textRevealVariants} className="mb-14">
-              <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-indigo-500 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-1000 animate-pulse"></div>
-                <div className="relative inline-flex items-center gap-3 px-8 py-3 rounded-full border border-white/10 bg-[#0a0a0f] shadow-2xl backdrop-blur-md">
+          <motion.div variants={textRevealVariants} className="mb-10 md:mb-14">
+              <div className="relative">
+                <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border border-white/10 bg-[#0a0a0f] shadow-lg">
                   {isSessionActive ? 
                     <span className="flex h-2 w-2 relative">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -228,68 +249,59 @@ export default function Home() {
                     </span> 
                     : <Terminal size={12} className="text-cyan-400" />
                   }
-                  <span className={`text-xs font-bold tracking-[0.25em] uppercase ${isSessionActive ? 'text-emerald-400' : 'text-cyan-400'}`}>
+                  <span className={`text-[10px] md:text-xs font-bold tracking-[0.25em] uppercase ${isSessionActive ? 'text-emerald-400' : 'text-cyan-400'}`}>
                     {isSessionActive ? 'Identity Secured' : 'Protocol V2.0.4 Online'}
                   </span>
                 </div>
              </div>
           </motion.div>
 
-          <div className="relative mb-12 z-10 perspective-1000">
-             <motion.div 
-               variants={textRevealVariants}
-               className="mb-4 overflow-hidden"
-             >
-               <h1 className="text-[40px] sm:text-7xl md:text-9xl lg:text-[130px] font-medium text-white tracking-tighter leading-none inline-block relative">
-                 <span className="absolute inset-0 bg-gradient-to-r from-slate-100 via-slate-400 to-slate-100 bg-clip-text text-transparent bg-[length:200%_auto] animate-shimmer opacity-20 blur-xl">Institutional</span>
-                 <span className="bg-gradient-to-br from-white via-slate-200 to-slate-500 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">Institutional</span>
+          <div className="relative mb-8 md:mb-12 z-10">
+             <motion.div variants={textRevealVariants} className="mb-2">
+               <h1 className="text-[32px] sm:text-6xl md:text-8xl lg:text-[110px] font-medium text-white tracking-tighter leading-none inline-block relative">
+                 <span className="bg-gradient-to-br from-white via-slate-200 to-slate-500 bg-clip-text text-transparent">Institutional</span>
                </h1>
              </motion.div>
 
-             <motion.div 
-               variants={textRevealVariants}
-               className="relative"
-             >
-               <h1 className="text-[40px] sm:text-7xl md:text-9xl lg:text-[140px] font-black tracking-tighter uppercase leading-[0.85] text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-cyan-400 bg-[length:200%_auto] animate-gradient-x drop-shadow-[0_0_60px_rgba(34,211,238,0.25)]">
+             <motion.div variants={textRevealVariants} className="relative">
+               <h1 className="text-[36px] sm:text-7xl md:text-9xl lg:text-[120px] font-black tracking-tighter uppercase leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-cyan-400">
                  Governance
                </h1>
              </motion.div>
           </div>
 
-          <motion.p variants={textRevealVariants} className="text-slate-400 text-base md:text-xl max-w-4xl mx-auto mb-20 leading-relaxed font-light tracking-wide">
-            The Operating System for <strong className="text-white font-medium border-b border-cyan-500/30 pb-1">Decentralized Power</strong>. 
+          <motion.p variants={textRevealVariants} className="text-slate-400 text-sm md:text-xl max-w-3xl mx-auto mb-16 leading-relaxed font-light tracking-wide px-4">
+            The Operating System for <strong className="text-white font-medium">Decentralized Power</strong>. 
             Secure Treasury, Modular Logic, and Gasless Voting execution.
           </motion.p>
 
-          <motion.div variants={textRevealVariants} className="flex flex-col sm:flex-row gap-8 items-center justify-center w-full max-w-md sm:max-w-none relative z-20 mb-36">
+          <motion.div variants={textRevealVariants} className="flex flex-col sm:flex-row gap-6 items-center justify-center w-full max-w-sm sm:max-w-none relative z-20 mb-24">
               <ConnectButton.Custom>
                 {({ account, chain, openConnectModal, mounted: rainbowMounted }) => {
                   const ready = mounted && rainbowMounted;
                   const connected = ready && account && chain;
 
                   return (
-                    <div className="w-full sm:w-[320px] flex flex-col gap-4">
+                    <div className="w-full sm:w-[300px] flex flex-col gap-4">
                       {!ready ? (
-                        <div className="w-full py-6 bg-white/5 rounded-2xl animate-pulse"></div>
+                        <div className="w-full py-5 bg-white/5 rounded-xl animate-pulse"></div>
                       ) : !connected ? (
                         <motion.button 
-                          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={openConnectModal}
-                          className="relative w-full py-6 bg-white text-black rounded-2xl flex items-center justify-center gap-3 font-black text-xs tracking-[0.2em] uppercase shadow-[0_0_60px_rgba(255,255,255,0.2)] overflow-hidden group"
+                          className="relative w-full py-5 bg-white text-black rounded-xl flex items-center justify-center gap-3 font-black text-xs tracking-[0.2em] uppercase shadow-lg active:opacity-90"
                         >
-                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 w-full h-full skew-x-12" />
                           <Zap size={18} fill="currentColor" /> Launch Terminal
                         </motion.button>
                       ) : !isSessionActive ? (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-4">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
                           <motion.button 
-                            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={createSession}
                             disabled={isAALoading}
-                            className="relative w-full py-6 bg-gradient-to-r from-cyan-600 to-cyan-500 rounded-2xl flex items-center justify-center gap-3 border border-cyan-400/20 shadow-[0_0_50px_rgba(8,145,178,0.4)] text-white group overflow-hidden"
+                            className="relative w-full py-5 bg-gradient-to-r from-cyan-600 to-cyan-500 rounded-xl flex items-center justify-center gap-3 border border-cyan-400/20 shadow-lg text-white"
                           >
-                            <div className="absolute top-0 -left-[100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 group-hover:animate-shine" />
-                            {isAALoading ? <Loader2 className="animate-spin" size={20} /> : <KeyRound size={20} />}
+                            {isAALoading ? <Loader2 className="animate-spin" size={18} /> : <KeyRound size={18} />}
                             <span className="font-bold text-xs tracking-[0.2em] uppercase">Verify Identity</span>
                           </motion.button>
                           <button onClick={() => disconnect()} className="text-[10px] uppercase tracking-widest text-slate-600 hover:text-red-400 transition-colors py-2">
@@ -299,10 +311,10 @@ export default function Home() {
                       ) : (
                         <Link href="/dashboard" className="w-full">
                           <motion.button 
-                            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                            className="relative w-full py-6 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 bg-[length:200%_auto] animate-gradient-x rounded-2xl flex items-center justify-center gap-3 font-bold text-xs tracking-[0.2em] uppercase text-white shadow-[0_0_60px_rgba(79,70,229,0.5)] group border border-white/10"
+                            whileTap={{ scale: 0.95 }}
+                            className="relative w-full py-5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center gap-3 font-bold text-xs tracking-[0.2em] uppercase text-white shadow-lg border border-white/10"
                           >
-                            Enter Dashboard <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform"/>
+                            Enter Dashboard <ArrowRight size={18} />
                           </motion.button>
                         </Link>
                       )}
@@ -311,10 +323,10 @@ export default function Home() {
                 }}
               </ConnectButton.Custom>
 
-              <Link href="/docs" className="w-full sm:w-[260px]">
+              <Link href="/docs" className="w-full sm:w-[240px]">
                 <motion.div 
-                  whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.05)" }} whileTap={{ scale: 0.98 }}
-                  className="w-full py-6 border border-white/10 bg-[#0a0a0f]/50 backdrop-blur-md rounded-2xl text-slate-400 font-bold text-xs tracking-[0.2em] flex items-center justify-center gap-3 uppercase transition-all hover:text-white hover:border-white/20 hover:shadow-2xl"
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full py-5 border border-white/10 bg-[#0a0a0f]/50 rounded-xl text-slate-400 font-bold text-xs tracking-[0.2em] flex items-center justify-center gap-3 uppercase transition-all active:bg-white/5"
                 >
                   <BookOpen size={18} /> Documentation
                 </motion.div>
@@ -323,23 +335,22 @@ export default function Home() {
 
           <motion.div 
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full relative z-10 px-4"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full relative z-10 px-2"
           >
               {[
-                { title: "Zero-Trust Kernel", desc: "State logic separated from decision modules via proxy architecture.", icon: Cpu, color: "text-cyan-400", bg: "bg-cyan-500/10", border: "group-hover:border-cyan-500/30" },
-                { title: "Timelock Vault", desc: "Cryptographic 48-hour execution delay on all critical parameters.", icon: Lock, color: "text-indigo-400", bg: "bg-indigo-500/10", border: "group-hover:border-indigo-500/30" },
-                { title: "Gasless Voting", desc: "Native ERC-4337 Paymaster integration for seamless UX.", icon: Zap, color: "text-amber-400", bg: "bg-amber-500/10", border: "group-hover:border-amber-500/30" },
+                { title: "Zero-Trust Kernel", desc: "State logic separated from decision modules via proxy architecture.", icon: Cpu, color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
+                { title: "Timelock Vault", desc: "Cryptographic 48-hour execution delay on all critical parameters.", icon: Lock, color: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500/20" },
+                { title: "Gasless Voting", desc: "Native ERC-4337 Paymaster integration for seamless UX.", icon: Zap, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
               ].map((item, i) => (
                 <motion.div 
-                  key={i} variants={cardHoverVariants} initial="initial" whileHover="hover"
-                  className={`p-12 bg-[#0a0a0f]/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] hover:bg-[#0a0a0f]/60 transition-colors duration-500 group text-left relative overflow-hidden ${item.border}`}
+                  key={i} variants={cardHoverVariants} whileHover="hover"
+                  className={`p-8 bg-[#0a0a0f]/40 backdrop-blur-md border border-white/5 rounded-[2rem] text-left relative overflow-hidden active:scale-[0.98] transition-transform`}
                 >
-                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 border border-white/5 ${item.bg} ${item.color} shadow-lg relative z-10`}>
-                      <item.icon size={32} />
+                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 border ${item.border} ${item.bg} ${item.color}`}>
+                      <item.icon size={24} />
                    </div>
-                   <h3 className="text-2xl font-bold text-white mb-4 tracking-wide group-hover:translate-x-1 transition-transform relative z-10">{item.title}</h3>
-                   <p className="text-base text-slate-400 leading-relaxed font-light relative z-10">{item.desc}</p>
-                   <div className={`absolute -bottom-20 -right-20 w-64 h-64 rounded-full blur-[80px] opacity-0 group-hover:opacity-10 transition-opacity duration-700 ${item.bg}`}></div>
+                   <h3 className="text-xl font-bold text-white mb-3 tracking-wide">{item.title}</h3>
+                   <p className="text-sm text-slate-400 leading-relaxed font-light">{item.desc}</p>
                 </motion.div>
               ))}
           </motion.div>
@@ -349,9 +360,9 @@ export default function Home() {
 
       <motion.footer 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-        className="w-full border-t border-white/5 bg-[#030305]/80 backdrop-blur-xl py-8 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-[10px] md:text-xs text-slate-600 font-bold uppercase tracking-[0.15em] z-50 gap-6"
+        className="w-full border-t border-white/5 bg-[#030305] py-8 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-[10px] md:text-xs text-slate-600 font-bold uppercase tracking-[0.15em] z-50 gap-6"
       >
-         <div className="flex items-center gap-8">
+         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
             <span className="flex items-center gap-2"><Activity size={14} className="text-emerald-500"/> All Systems Nominal</span>
             <span className="flex items-center gap-2"><Server size={14} className="text-indigo-500"/> Sepolia: 4829104</span>
          </div>

@@ -58,11 +58,35 @@ export const GOV_TOKEN_ABI = [
 ] as const;
 
 export const GOVERNOR_ABI = [
+ 
   { name: 'propose', type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'targets', type: 'address[]' }, { name: 'values', type: 'uint256[]' }, { name: 'calldatas', type: 'bytes[]' }, { name: 'description', type: 'string' }], outputs: [{ type: 'uint256' }] },
   { name: 'castVote', type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'proposalId', type: 'uint256' }, { name: 'support', type: 'uint8' }], outputs: [{ type: 'uint256' }] },
   { name: 'state', type: 'function', stateMutability: 'view', inputs: [{ name: 'proposalId', type: 'uint256' }], outputs: [{ type: 'uint8' }] },
   { name: 'proposalThreshold', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
   { name: 'lastProposalTime', type: 'function', stateMutability: 'view', inputs: [{ name: 'account', type: 'address' }], outputs: [{ type: 'uint256' }] },
+  
+  { 
+    name: 'hasVoted', 
+    type: 'function', 
+    stateMutability: 'view', 
+    inputs: [
+      { name: 'proposalId', type: 'uint256' }, 
+      { name: 'account', type: 'address' }
+    ], 
+    outputs: [{ type: 'bool' }] 
+  },
+  { 
+    name: 'proposalVotes', 
+    type: 'function', 
+    stateMutability: 'view', 
+    inputs: [{ name: 'proposalId', type: 'uint256' }], 
+    outputs: [
+      { name: 'againstVotes', type: 'uint256' }, 
+      { name: 'forVotes', type: 'uint256' }, 
+      { name: 'abstainVotes', type: 'uint256' }
+    ] 
+  },
+
   { name: 'ProposalCreated', type: 'event', inputs: [{ name: 'proposalId', type: 'uint256', indexed: false }, { name: 'proposer', type: 'address', indexed: false }, { name: 'targets', type: 'address[]', indexed: false }, { name: 'values', type: 'uint256[]', indexed: false }, { name: 'signatures', type: 'string[]', indexed: false }, { name: 'calldatas', type: 'bytes[]', indexed: false }, { name: 'startBlock', type: 'uint256', indexed: false }, { name: 'endBlock', type: 'uint256', indexed: false }, { name: 'description', type: 'string', indexed: false }] }
 ] as const;
 
