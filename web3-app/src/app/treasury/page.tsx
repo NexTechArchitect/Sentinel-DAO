@@ -54,7 +54,6 @@ export default function Treasury() {
   const { address } = useAccount();
   
   const mainRef = useRef<HTMLDivElement | null>(null);
-  const [cursorPos, setCursorPos] = useState({ x: -1000, y: -1000 });
   const [progress, setProgress] = useState(0);
   const [activeTab, setActiveTab] = useState<'tokens' | 'nft_vault' | 'trans_history'>('tokens');
   const [recentTx, setRecentTx] = useState<Transaction[]>([]);
@@ -65,10 +64,10 @@ export default function Treasury() {
   const [selectedToken, setSelectedToken] = useState(SUPPORTED_TOKENS[0]); 
   const [amount, setAmount] = useState('');
 
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    setIsMounted(true);
   }, []);
 
   useEffect(() => {
@@ -153,7 +152,6 @@ export default function Treasury() {
                         amount !== '' &&
                         parseFloat(formatUnits(allowance as bigint, selectedToken.decimals)) < parseFloat(amount);
 
-  // We use a ref to track if the last action was an approval to prevent closing the modal
   const lastActionWasApproval = useRef(false);
 
   useEffect(() => {
@@ -178,11 +176,9 @@ export default function Treasury() {
     if (isConfirmed && txHash) {
       setToast({ type: 'SUCCESS', message: 'Confirmed', subMessage: 'Blockchain state updated.', hash: txHash });
       
-      // Crucial Fix: Only reset amount and close modal if it was NOT an approval
       if (!lastActionWasApproval.current) {
           setAmount('');
       } else {
-          // If it was approval, we just reset the logic flag so next click is deposit
           lastActionWasApproval.current = false;
       }
       
@@ -244,7 +240,7 @@ export default function Treasury() {
                 executeTx({ address: CONTRACT_ADDRESSES.TREASURY as `0x${string}`, abi: TREASURY_ABI, functionName: 'depositEth', value: parsedAmount, chainId: 11155111 });
             } else {
                 if (needsApproval) {
-                    lastActionWasApproval.current = true; // Mark as approval so modal stays open
+                    lastActionWasApproval.current = true; 
                     executeTx({ 
                         address: selectedToken.address as `0x${string}`, 
                         abi: ERC20_ABI, 
@@ -271,49 +267,48 @@ export default function Treasury() {
     }
   };
 
+  if (!isMounted) return null;
+
   return (
-    <div className="h-screen w-full bg-[#030305] text-slate-200 font-sans selection:bg-cyan-500/30 flex flex-col overflow-hidden relative">
+    // Background: Cream | Text: Dark Stone
+    <div className="h-screen w-full bg-[#F5F2EB] text-stone-900 font-serif selection:bg-emerald-200 flex flex-col overflow-hidden relative">
       
-      <div className="fixed z-[60] pointer-events-none w-[500px] h-[500px] rounded-full blur-[200px] bg-cyan-500/5 transition-transform duration-75 mix-blend-screen" style={{ transform: `translate(${cursorPos.x - 250}px, ${cursorPos.y - 250}px)`, left: 0, top: 0 }} />
+      {/* Background Texture */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-40 mix-blend-multiply"></div>
 
-      <div className="fixed top-0 right-0 w-1 h-full bg-white/5 z-[100]">
-        <div className="bg-gradient-to-b from-cyan-500 via-indigo-500 to-cyan-500 w-full transition-all duration-100 ease-out" style={{ height: `${progress}%` }} />
+      {/* Progress Bar */}
+      <div className="fixed top-0 right-0 w-1.5 h-full bg-[#E5E0D6] z-[100]">
+        <div className="bg-emerald-600 w-full transition-all duration-100 ease-out" style={{ height: `${progress}%` }} />
       </div>
 
-      <div className="fixed inset-0 z-0">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-cyan-600/5 rounded-full blur-[200px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-indigo-600/5 rounded-full blur-[200px] pointer-events-none"></div>
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
-      </div>
-
-      <nav className="border-b border-white/5 bg-[#030305]/80 backdrop-blur-2xl z-50 flex-shrink-0">
+      <nav className="border-b border-[#D6D3C0] bg-[#F5F2EB]/95 backdrop-blur-2xl z-50 flex-shrink-0">
         <div className="max-w-[1600px] mx-auto px-6 h-20 w-full flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link href="/" className="group flex items-center gap-3 text-slate-400 hover:text-white transition-all">
-              <div className="p-2 rounded-xl bg-white/5 border border-white/10 group-hover:border-cyan-500/50 transition-all">
+            <Link href="/" className="group flex items-center gap-3 text-stone-600 hover:text-black transition-all">
+              <div className="p-2 rounded-xl bg-white border border-[#D6D3C0] group-hover:border-stone-400 transition-all">
                 <ArrowLeft size={18} /> 
               </div>
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Back to Terminal</span>
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase font-sans">Back to Terminal</span>
             </Link>
-            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-cyan-900/10 border border-cyan-500/20 rounded-full">
-               <ShieldCheck size={14} className="text-cyan-400" />
-               <span className="text-[10px] font-bold tracking-widest text-cyan-300 uppercase">Vault Secure</span>
+            <div className="hidden md:flex items-center gap-3 px-4 py-1.5 bg-emerald-100 border border-emerald-200 rounded-full">
+               <ShieldCheck size={14} className="text-emerald-700" />
+               <span className="text-[10px] font-bold tracking-widest text-emerald-800 uppercase font-sans">Vault Secure</span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-             <ConnectButton.Custom>
-                {({ account, chain, openConnectModal, openAccountModal, mounted }) => {
-                  const connected = mounted && account && chain;
-                  return (
-                    <button 
-                      onClick={connected ? openAccountModal : openConnectModal}
-                      className={`px-6 py-2.5 border rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${connected ? 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10' : 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20'}`}
-                    >
-                      {connected ? account.displayName : "Connect Wallet"}
-                    </button>
-                  );
-                }}
+              <ConnectButton.Custom>
+                 {({ account, chain, openConnectModal, openAccountModal, mounted }) => {
+                   const connected = mounted && account && chain;
+                   return (
+                     <button 
+                       onClick={connected ? openAccountModal : openConnectModal}
+                       className={`px-6 py-2.5 border rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all font-sans ${connected ? 'bg-white border-[#D6D3C0] text-stone-700 hover:bg-stone-50' : 'bg-stone-900 border-black text-white hover:bg-black'}`}
+                     >
+                       {connected ? account.displayName : "Connect Wallet"}
+                     </button>
+                   );
+                 }}
               </ConnectButton.Custom>
           </div>
         </div>
@@ -326,31 +321,31 @@ export default function Treasury() {
             <div className="flex flex-col md:flex-row justify-between items-end gap-8">
                <div>
                   <div className="flex items-center gap-3 mb-4">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_#10b981]"></div>
-                      <span className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em]">Treasury Module Active</span>
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></div>
+                      <span className="text-stone-500 text-[10px] font-bold uppercase tracking-[0.3em] font-sans">Treasury Module Active</span>
                   </div>
-                  <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight leading-none mb-6">
-                    Capital <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-400 to-purple-400">Reserves</span>
+                  <h1 className="text-5xl md:text-7xl font-black text-black tracking-tight leading-none mb-6 font-serif">
+                    Capital <span className="text-stone-500 italic">Reserves</span>
                   </h1>
-                  <div className="flex items-center gap-8">
+                  <div className="flex items-center gap-8 font-sans">
                       <div>
-                         <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Value Locked</p>
-                         <p className="text-3xl md:text-4xl font-mono font-bold text-white tracking-tight">
-                            ${treasuryEthBalance && ethPrice ? (parseFloat(formatEther(treasuryEthBalance)) * ethPrice).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
+                         <p className="text-stone-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Value Locked</p>
+                         <p className="text-3xl md:text-4xl font-mono font-bold text-stone-900 tracking-tight">
+                           ${treasuryEthBalance && ethPrice ? (parseFloat(formatEther(treasuryEthBalance)) * ethPrice).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}
                          </p>
                       </div>
-                      <div className="w-px h-10 bg-white/10"></div>
+                      <div className="w-px h-10 bg-[#D6D3C0]"></div>
                       <div>
-                         <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-1">Ether Price</p>
-                         <p className="text-3xl md:text-4xl font-mono font-bold text-cyan-400">${ethPrice.toLocaleString()}</p>
+                         <p className="text-stone-500 text-[10px] font-bold uppercase tracking-widest mb-1">Ether Price</p>
+                         <p className="text-3xl md:text-4xl font-mono font-bold text-emerald-700">${ethPrice.toLocaleString()}</p>
                       </div>
                   </div>
                </div>
-               <div className="flex gap-4 w-full md:w-auto">
-                  <button onClick={() => openModal('DEPOSIT')} className="flex-1 md:flex-none px-8 py-4 bg-white text-black rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2">
+               <div className="flex gap-4 w-full md:w-auto font-sans">
+                  <button onClick={() => openModal('DEPOSIT')} className="flex-1 md:flex-none px-8 py-4 bg-stone-900 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:scale-105 transition-transform shadow-lg flex items-center justify-center gap-2">
                       <ArrowDownLeft size={16}/> Deposit
                   </button>
-                  <button onClick={() => openModal('WITHDRAW')} className="flex-1 md:flex-none px-8 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                  <button onClick={() => openModal('WITHDRAW')} className="flex-1 md:flex-none px-8 py-4 bg-white border border-[#D6D3C0] text-stone-900 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-stone-50 transition-all flex items-center justify-center gap-2">
                       <ArrowUpRight size={16}/> Withdraw
                   </button>
                </div>
@@ -358,7 +353,7 @@ export default function Treasury() {
           </motion.div>
 
           <div className="grid grid-cols-12 gap-8">
-             <div className="col-span-12 lg:col-span-3 space-y-4">
+             <div className="col-span-12 lg:col-span-3 space-y-4 font-sans">
                 {[
                   { id: 'tokens', label: 'Assets', icon: LayoutGrid, desc: 'Balance Sheet' },
                   { id: 'nft_vault', label: 'NFT Vault', icon: Layers, desc: 'Digital Collectibles' },
@@ -367,18 +362,18 @@ export default function Treasury() {
                   <button 
                     key={tab.id} 
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`w-full p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden ${activeTab === tab.id ? 'bg-cyan-900/10 border-cyan-500/30' : 'bg-[#0a0a0e] border-white/5 hover:border-white/10'}`}
+                    className={`w-full p-6 rounded-3xl border text-left transition-all duration-300 group relative overflow-hidden ${activeTab === tab.id ? 'bg-white border-black shadow-md' : 'bg-[#E5E0D6] border-transparent hover:bg-[#D6D3C0]'}`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                        <div className={`p-3 rounded-2xl ${activeTab === tab.id ? 'bg-cyan-500 text-black' : 'bg-white/5 text-slate-400'}`}>
+                        <div className={`p-3 rounded-2xl ${activeTab === tab.id ? 'bg-stone-900 text-white' : 'bg-white text-stone-400'}`}>
                            {tab.id === 'tokens' && <LayoutGrid size={20} />}
                            {tab.id === 'nft_vault' && <Layers size={20} />}
                            {tab.id === 'trans_history' && <History size={20} />}
                         </div>
-                        {activeTab === tab.id && <Zap size={16} className="text-cyan-400 fill-current" />}
+                        {activeTab === tab.id && <Zap size={16} className="text-amber-500 fill-current" />}
                     </div>
-                    <h3 className={`text-lg font-bold uppercase tracking-tight ${activeTab === tab.id ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>{tab.label}</h3>
-                    <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">{tab.desc}</p>
+                    <h3 className={`text-lg font-bold uppercase tracking-tight ${activeTab === tab.id ? 'text-black' : 'text-stone-500'}`}>{tab.label}</h3>
+                    <p className="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-1">{tab.desc}</p>
                   </button>
                 ))}
              </div>
@@ -387,19 +382,19 @@ export default function Treasury() {
                <AnimatePresence mode="wait">
                  {activeTab === 'tokens' && (
                    <motion.div variants={containerVariants} initial="hidden" animate="show" exit={{ opacity: 0 }} className="space-y-4">
-                      <motion.div variants={itemVariants} className="p-8 rounded-[2.5rem] bg-[#0a0a0e] border border-white/5 hover:border-cyan-500/20 transition-all group relative overflow-hidden">
-                          <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity scale-150"><Landmark size={120}/></div>
+                      <motion.div variants={itemVariants} className="p-8 rounded-[2.5rem] bg-white border border-[#D6D3C0] hover:border-black transition-all group relative overflow-hidden shadow-sm">
+                          <div className="absolute top-0 right-0 p-10 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity scale-150"><Landmark size={120}/></div>
                           <div className="flex justify-between items-center relative z-10">
                              <div className="flex items-center gap-6">
-                                <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center text-3xl shadow-inner">⟠</div>
+                                <div className="w-16 h-16 rounded-3xl bg-[#F5F2EB] border border-[#E5E0D6] flex items-center justify-center text-3xl shadow-sm text-black">⟠</div>
                                 <div>
-                                   <h3 className="text-2xl font-bold text-white">Ethereum</h3>
-                                   <span className="inline-block mt-1 px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Native</span>
+                                   <h3 className="text-2xl font-bold text-black font-serif">Ethereum</h3>
+                                   <span className="inline-block mt-1 px-3 py-1 rounded-full border border-[#D6D3C0] bg-[#F5F2EB] text-[10px] font-bold text-stone-500 uppercase tracking-widest font-sans">Native</span>
                                 </div>
                              </div>
                              <div className="text-right">
-                                <p className="text-3xl font-mono font-bold text-white">{formatEther(treasuryEthBalance ?? BigInt(0)).slice(0, 8)}</p>
-                                <p className="text-xs font-mono text-slate-500 mt-1">ETH</p>
+                                <p className="text-3xl font-mono font-bold text-black">{formatEther(treasuryEthBalance ?? BigInt(0)).slice(0, 8)}</p>
+                                <p className="text-xs font-mono text-stone-500 mt-1">ETH</p>
                              </div>
                           </div>
                       </motion.div>
@@ -408,17 +403,17 @@ export default function Treasury() {
                           const isDiso = token.symbol === 'DISO';
                           const tokenBalance = isDiso && treasuryDisoBalance ? parseFloat(formatEther(treasuryDisoBalance as bigint)) : 0;
                           return (
-                            <motion.div key={token.symbol} variants={itemVariants} className="p-8 rounded-[2.5rem] bg-[#0a0a0e] border border-white/5 hover:border-white/10 transition-all flex items-center justify-between group">
+                            <motion.div key={token.symbol} variants={itemVariants} className="p-8 rounded-[2.5rem] bg-white border border-[#D6D3C0] hover:border-black transition-all flex items-center justify-between group shadow-sm">
                                <div className="flex items-center gap-6">
-                                  <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center font-bold text-xl shadow-inner text-slate-300">{token.symbol.substring(0,2)}</div>
+                                  <div className="w-16 h-16 rounded-3xl bg-[#F5F2EB] border border-[#E5E0D6] flex items-center justify-center font-bold text-xl shadow-sm text-stone-700">{token.symbol.substring(0,2)}</div>
                                   <div>
-                                     <h3 className="text-xl font-bold text-slate-200">{token.name}</h3>
-                                     <span className={`inline-block mt-1 px-3 py-1 rounded-full border border-white/5 bg-white/5 text-[10px] font-bold uppercase tracking-widest ${isDiso ? 'text-purple-400' : 'text-slate-500'}`}>{isDiso ? 'Governance' : 'Standard'}</span>
+                                     <h3 className="text-xl font-bold text-black font-serif">{token.name}</h3>
+                                     <span className={`inline-block mt-1 px-3 py-1 rounded-full border border-[#D6D3C0] bg-[#F5F2EB] text-[10px] font-bold uppercase tracking-widest font-sans ${isDiso ? 'text-purple-700' : 'text-stone-500'}`}>{isDiso ? 'Governance' : 'Standard'}</span>
                                   </div>
                                </div>
                                <div className="text-right">
-                                  <p className="text-2xl font-mono font-bold text-slate-300">{tokenBalance.toLocaleString()}</p>
-                                  <p className="text-xs font-mono text-slate-600 mt-1">{token.symbol}</p>
+                                  <p className="text-2xl font-mono font-bold text-black">{tokenBalance.toLocaleString()}</p>
+                                  <p className="text-xs font-mono text-stone-500 mt-1">{token.symbol}</p>
                                </div>
                             </motion.div>
                           );
@@ -429,15 +424,14 @@ export default function Treasury() {
                  {activeTab === 'nft_vault' && (
                    <motion.div variants={containerVariants} initial="hidden" animate="show" exit={{ opacity: 0 }} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {DEMO_NFTS.map((nft) => (
-                        <motion.div key={nft.id} variants={itemVariants} className="bg-[#0a0a0e] border border-white/5 rounded-[2rem] p-6 hover:bg-[#0f0f13] transition-all cursor-pointer group">
-                           <div className="w-full aspect-square bg-black/40 rounded-2xl mb-6 flex items-center justify-center border border-white/5 group-hover:border-cyan-500/20 transition-colors relative overflow-hidden">
-                              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                              <ImageIcon size={40} className="text-slate-700 group-hover:text-cyan-500/50 transition-colors"/>
+                        <motion.div key={nft.id} variants={itemVariants} className="bg-white border border-[#D6D3C0] rounded-[2rem] p-6 hover:shadow-lg transition-all cursor-pointer group">
+                           <div className="w-full aspect-square bg-[#F5F2EB] rounded-2xl mb-6 flex items-center justify-center border border-[#E5E0D6] group-hover:border-black transition-colors relative overflow-hidden">
+                              <ImageIcon size={40} className="text-stone-400 group-hover:text-black transition-colors"/>
                            </div>
-                           <h4 className="text-lg font-bold text-white mb-2">{nft.name}</h4>
-                           <div className="flex justify-between items-center">
-                              <span className="text-xs text-slate-500 font-bold uppercase tracking-wide">{nft.collection}</span>
-                              <span className="text-[10px] font-black text-black bg-white px-3 py-1 rounded-full uppercase tracking-widest">{nft.tier}</span>
+                           <h4 className="text-lg font-bold text-black mb-2 font-serif">{nft.name}</h4>
+                           <div className="flex justify-between items-center font-sans">
+                              <span className="text-xs text-stone-500 font-bold uppercase tracking-wide">{nft.collection}</span>
+                              <span className="text-[10px] font-black text-white bg-black px-3 py-1 rounded-full uppercase tracking-widest">{nft.tier}</span>
                            </div>
                         </motion.div>
                       ))}
@@ -447,27 +441,27 @@ export default function Treasury() {
                  {activeTab === 'trans_history' && (
                    <motion.div variants={containerVariants} initial="hidden" animate="show" exit={{ opacity: 0 }} className="space-y-4">
                       {recentTx.length > 0 ? recentTx.map((tx, i) => (
-                        <motion.div key={i} variants={itemVariants} className="p-6 bg-[#0a0a0e] border border-white/5 rounded-3xl flex items-center justify-between group hover:border-white/10 transition-all">
+                        <motion.div key={i} variants={itemVariants} className="p-6 bg-white border border-[#D6D3C0] rounded-3xl flex items-center justify-between group hover:border-black transition-all shadow-sm">
                            <div className="flex items-center gap-6">
-                              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-emerald-500/10 text-emerald-400' : tx.type === 'APPROVE' ? 'bg-amber-500/10 text-amber-400' : 'bg-red-500/10 text-red-400'}`}>
+                              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-emerald-100 text-emerald-700' : tx.type === 'APPROVE' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
                                  {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={20}/> : tx.type === 'APPROVE' ? <Lock size={20}/> : <ArrowUpRight size={20}/>}
                               </div>
                               <div>
-                                 <h4 className="font-bold text-white text-sm mb-1">
+                                 <h4 className="font-bold text-black text-sm mb-1 font-serif">
                                     {tx.type === 'DEPOSIT' ? 'Asset Received' : tx.type === 'APPROVE' ? 'Token Approval' : 'Asset Sent'}
                                  </h4>
-                                 <span className="text-[10px] font-mono text-slate-500 bg-white/5 px-2 py-1 rounded">{tx.timestamp}</span>
+                                 <span className="text-[10px] font-mono text-stone-500 bg-[#F5F2EB] px-2 py-1 rounded border border-[#D6D3C0]">{tx.timestamp}</span>
                               </div>
                            </div>
                            <div className="text-right">
-                              <span className="text-lg font-mono font-bold text-white">{tx.amount}</span>
-                              <a href={`https://sepolia.etherscan.io/tx/${tx.hash}`} target="_blank" className="flex items-center justify-end gap-1 text-[10px] text-cyan-500 font-bold uppercase tracking-widest hover:text-white mt-1 transition-colors">Explorer <ExternalLink size={10}/></a>
+                              <span className="text-lg font-mono font-bold text-black">{tx.amount}</span>
+                              <a href={`https://sepolia.etherscan.io/tx/${tx.hash}`} target="_blank" className="flex items-center justify-end gap-1 text-[10px] text-stone-400 font-bold uppercase tracking-widest hover:text-black mt-1 transition-colors font-sans">Explorer <ExternalLink size={10}/></a>
                            </div>
                         </motion.div>
                       )) : (
-                        <motion.div variants={itemVariants} className="py-32 text-center border border-dashed border-white/10 rounded-[3rem] bg-white/[0.01]">
-                           <History className="mx-auto text-slate-700 mb-4" size={48}/>
-                           <p className="text-xs font-bold text-slate-600 uppercase tracking-widest">No Recent Activity</p>
+                        <motion.div variants={itemVariants} className="py-32 text-center border-2 border-dashed border-[#D6D3C0] rounded-[3rem] bg-[#F5F2EB]">
+                           <History className="mx-auto text-stone-400 mb-4" size={48}/>
+                           <p className="text-xs font-bold text-stone-500 uppercase tracking-widest font-sans">No Recent Activity</p>
                         </motion.div>
                       )}
                    </motion.div>
@@ -478,39 +472,39 @@ export default function Treasury() {
 
           <AnimatePresence>
             {isModalOpen && (
-               <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl">
-                  <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="bg-[#0e0e12] border border-white/10 w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden relative">
-                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-indigo-500" />
+               <div className="fixed inset-0 z-[1000] flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
+                  <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="bg-white border border-[#D6D3C0] w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden relative font-sans">
+                     <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-stone-800 to-stone-600" />
                      <div className="p-10">
                         <div className="flex justify-between items-center mb-8">
                            <div>
-                              <h3 className="text-2xl font-bold text-white mb-1">{modalMode} FUNDS</h3>
-                              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Secure Gateway</p>
+                              <h3 className="text-2xl font-black text-black mb-1 font-serif uppercase tracking-tight">{modalMode} FUNDS</h3>
+                              <p className="text-xs font-bold text-stone-500 uppercase tracking-widest">Secure Gateway</p>
                            </div>
-                           <button onClick={() => setIsModalOpen(false)} className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"><X size={20} /></button>
+                           <button onClick={() => setIsModalOpen(false)} className="p-3 rounded-full bg-[#F5F2EB] hover:bg-[#E5E0D6] text-stone-600 hover:text-black transition-colors"><X size={20} /></button>
                         </div>
                         <div className="space-y-6">
-                           <div className="p-5 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-between">
-                              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Select Asset</span>
+                           <div className="p-5 rounded-3xl bg-[#F5F2EB] border border-[#E5E0D6] flex items-center justify-between">
+                              <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">Select Asset</span>
                               <div className="relative">
-                                 <select className="bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-sm font-bold text-white outline-none focus:border-cyan-500/50 appearance-none pr-8" onChange={(e) => { const t = SUPPORTED_TOKENS.find(x => x.symbol === e.target.value); if(t) setSelectedToken(t); }} value={selectedToken.symbol}>
+                                 <select className="bg-white border border-[#D6D3C0] rounded-xl px-4 py-2 text-sm font-bold text-black outline-none focus:border-black appearance-none pr-8 cursor-pointer" onChange={(e) => { const t = SUPPORTED_TOKENS.find(x => x.symbol === e.target.value); if(t) setSelectedToken(t); }} value={selectedToken.symbol}>
                                     {SUPPORTED_TOKENS.map(t => <option key={t.symbol} value={t.symbol}>{t.symbol}</option>)}
                                  </select>
                               </div>
                            </div>
                            <div className="space-y-3">
-                              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-2">Amount</label>
+                              <label className="text-[10px] font-bold text-stone-500 uppercase tracking-widest ml-2">Amount</label>
                               <div className="relative">
-                                 <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" className="w-full p-6 rounded-3xl bg-black/40 border border-white/10 text-4xl font-mono text-white outline-none focus:border-cyan-500/50 transition-all placeholder:text-slate-800" />
-                                 <button onClick={setMaxAmount} className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-bold text-cyan-500 bg-cyan-500/10 px-3 py-1.5 rounded-lg hover:bg-cyan-500/20 uppercase tracking-wide">Max</button>
+                                 <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" className="w-full p-6 rounded-3xl bg-[#F5F2EB] border border-[#E5E0D6] text-4xl font-mono text-black outline-none focus:border-stone-400 transition-all placeholder:text-stone-300" />
+                                 <button onClick={setMaxAmount} className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-bold text-stone-900 bg-white border border-[#D6D3C0] px-3 py-1.5 rounded-lg hover:bg-stone-50 uppercase tracking-wide">Max</button>
                               </div>
-                              <div className="text-right text-[10px] font-mono text-slate-500">Available: {getAvailableAmount().toLocaleString()} {selectedToken.symbol}</div>
+                              <div className="text-right text-[10px] font-mono text-stone-500">Available: {getAvailableAmount().toLocaleString()} {selectedToken.symbol}</div>
                            </div>
                            
                            <button 
                              onClick={handleAction} 
                              disabled={isTxPending || isConfirming || !amount} 
-                             className={`w-full py-6 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${needsApproval ? 'bg-amber-500 text-black hover:bg-amber-400' : 'bg-white text-black hover:bg-slate-200'}`}
+                             className={`w-full py-6 rounded-2xl font-bold text-sm uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed ${needsApproval ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-stone-900 text-white hover:bg-black'}`}
                            >
                              {isTxPending || isConfirming ? <Loader2 className="animate-spin" size={18}/> : needsApproval ? <Lock size={18} fill="currentColor"/> : <Zap size={18} fill="currentColor"/>}
                              {isTxPending ? 'Confirming...' : needsApproval ? `Approve ${selectedToken.symbol}` : `Deposit ${selectedToken.symbol}`}
@@ -524,17 +518,17 @@ export default function Treasury() {
 
           <AnimatePresence>
             {toast && (
-               <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.9 }} className="fixed bottom-10 right-10 z-[2000] max-w-sm w-full">
-                  <div className={`p-6 rounded-3xl border backdrop-blur-2xl shadow-2xl flex gap-5 items-start ${toast.type === 'SUCCESS' ? 'bg-[#0a0a0f]/95 border-emerald-500/20' : 'bg-[#0a0a0f]/95 border-red-500/20'}`}>
-                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${toast.type === 'SUCCESS' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+               <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: 0.9 }} className="fixed bottom-10 right-10 z-[2000] max-w-sm w-full font-sans">
+                  <div className={`p-6 rounded-3xl border shadow-2xl flex gap-5 items-start bg-white ${toast.type === 'SUCCESS' ? 'border-emerald-200' : 'border-red-200'}`}>
+                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${toast.type === 'SUCCESS' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
                         {toast.type === 'SUCCESS' ? <CheckCircle size={20}/> : <AlertCircle size={20}/>}
                      </div>
                      <div className="flex-1">
-                        <h4 className={`text-sm font-bold uppercase tracking-wide mb-1 ${toast.type === 'SUCCESS' ? 'text-white' : 'text-red-400'}`}>{toast.message}</h4>
-                        <p className="text-[11px] text-slate-400 leading-relaxed mb-3 font-medium">{toast.subMessage}</p>
-                        {toast.hash && <a href={`https://sepolia.etherscan.io/tx/${toast.hash}`} target="_blank" className="inline-flex items-center gap-1.5 text-[10px] font-bold text-cyan-500 hover:text-white transition-colors uppercase tracking-widest"><ExternalLink size={10}/> View Explorer</a>}
+                        <h4 className={`text-sm font-bold uppercase tracking-wide mb-1 ${toast.type === 'SUCCESS' ? 'text-black' : 'text-red-800'}`}>{toast.message}</h4>
+                        <p className="text-[11px] text-stone-600 leading-relaxed mb-3 font-medium">{toast.subMessage}</p>
+                        {toast.hash && <a href={`https://sepolia.etherscan.io/tx/${toast.hash}`} target="_blank" className="inline-flex items-center gap-1.5 text-[10px] font-bold text-stone-500 hover:text-black transition-colors uppercase tracking-widest"><ExternalLink size={10}/> View Explorer</a>}
                      </div>
-                     <button onClick={() => setToast(null)} className="text-slate-600 hover:text-white"><X size={16}/></button>
+                     <button onClick={() => setToast(null)} className="text-stone-400 hover:text-black"><X size={16}/></button>
                   </div>
                </motion.div>
             )}

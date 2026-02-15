@@ -3,50 +3,44 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { 
   ArrowRight, Shield, Zap, Lock, Cpu, Github, 
-  Loader2, BookOpen, Terminal, Menu, X, KeyRound, LogOut,
-  Activity, Server 
+  Loader2, BookOpen, Menu, X, KeyRound, LogOut,
+  Leaf, Feather, Wind, Anchor
 } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAccount, useDisconnect } from 'wagmi';
 import { useAASession } from '@/hooks/useAASession';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// Optimized Variants for Mobile (Less Physics)
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05, delayChildren: 0.1 } // Faster stagger
-  }
+// --- INTERACTIVE FALLING VARIANTS ---
+
+const fallingVariants = {
+  initial: { y: -100, x: 0, opacity: 0, rotate: 0 },
+  animate: (custom: number) => ({
+    y: [ -100, 1200 ], 
+    x: [ 
+      0, 
+      custom * 100, 
+      -custom * 80, 
+      custom * 50 
+    ], 
+    rotate: [ 0, 45, 180, 360 ],
+    opacity: [ 0, 1, 1, 0 ], // Fully Visible (Opacity 1)
+    transition: {
+      duration: 15 + Math.random() * 20, 
+      repeat: Infinity,
+      ease: "linear",
+      delay: Math.random() * 10
+    }
+  })
 };
 
-const textRevealVariants = {
-  hidden: { y: 20, opacity: 0 }, // Removed blur filter (Heavy on Mobile)
-  show: { 
+const fadeUp = {
+  hidden: { y: 30, opacity: 0 },
+  visible: { 
     y: 0, 
     opacity: 1, 
-    transition: { type: "spring", stiffness: 100, damping: 20 } 
-  }
-};
-
-const cardHoverVariants = {
-  initial: { y: 0, scale: 1 },
-  hover: { y: -5, scale: 1.01, transition: { duration: 0.2 } } // Simpler hover
-};
-
-// Aurora only animates on Desktop now
-const auroraVariants = {
-  animate: {
-    scale: [1, 1.1, 1],
-    opacity: [0.3, 0.4, 0.3],
-    rotate: [0, 5, -5, 0],
-    transition: { duration: 20, repeat: Infinity, ease: "linear" }
-  },
-  static: {
-    scale: 1,
-    opacity: 0.3,
-    rotate: 0
+    transition: { type: "spring", stiffness: 60, damping: 20 } 
   }
 };
 
@@ -56,320 +50,327 @@ export default function Home() {
   const { isSessionActive, createSession, isLoading: isAALoading } = useAASession();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const spotlightRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Reduce Motion Preference Check
-  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
-    
-    // Check if device is mobile to disable heavy effects
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-
-    // Only attach mouse listener on Desktop
-    if (window.matchMedia("(pointer: fine)").matches) {
-        const handleMouseMove = (e: MouseEvent) => {
-          if (spotlightRef.current) {
-            spotlightRef.current.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(34, 211, 238, 0.06), transparent 40%)`;
-          }
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => {
-          window.removeEventListener('mousemove', handleMouseMove);
-          window.removeEventListener('resize', checkMobile);
-        }
-    }
-    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const formatAddress = (addr: string) => `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
 
   if (!mounted) return null;
 
+  // Colors for leaves so they stand out against cream background
+  // Green, Brown (Autumn), Dark Grey
+  const leafColors = ["#059669", "#d97706", "#4b5563", "#047857"];
+
   return (
-    <div className="min-h-screen relative text-slate-200 font-sans selection:bg-cyan-500/30 overflow-x-hidden bg-[#030305] flex flex-col">
+    <div className="min-h-screen relative text-stone-900 font-serif bg-[#F5F2EB] overflow-x-hidden flex flex-col">
       
-      {/* 1. Base Layer */}
-      <div className="fixed inset-0 z-0 bg-[#030305]"></div>
-      
-      {/* 2. Optimized Aurora Blobs (Static on Mobile) */}
-      <motion.div 
-        variants={auroraVariants} 
-        animate={isMobile || shouldReduceMotion ? "static" : "animate"}
-        className="fixed top-[-20%] right-[-20%] w-[300px] md:w-[1000px] h-[300px] md:h-[1000px] bg-indigo-900/20 rounded-full blur-[60px] md:blur-[120px] pointer-events-none mix-blend-screen transform-gpu"
-      />
-      <motion.div 
-        variants={auroraVariants} 
-        animate={isMobile || shouldReduceMotion ? "static" : "animate"}
-        transition={{ delay: 2 }}
-        className="fixed bottom-[-20%] left-[-20%] w-[300px] md:w-[1000px] h-[300px] md:h-[1000px] bg-cyan-900/10 rounded-full blur-[60px] md:blur-[120px] pointer-events-none mix-blend-screen transform-gpu"
-      />
-      
-      {/* 3. Static Pulse (Reduced size for mobile) */}
-      <div className="fixed top-[20%] left-[10%] md:left-[30%] w-[200px] md:w-[800px] h-[200px] md:h-[800px] bg-violet-900/10 rounded-full blur-[80px] md:blur-[150px] pointer-events-none transform-gpu" />
+      {/* --- BACKGROUND LAYERS --- */}
+      <div className="fixed inset-0 z-0 opacity-[0.5] pointer-events-none mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
-      {/* 4. Desktop Only Effects */}
-      <div ref={spotlightRef} className="fixed inset-0 z-10 pointer-events-none transition-opacity duration-700 hidden md:block" />
-      <div className="fixed inset-0 z-[1] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none hidden md:block"></div>
+      {/* --- INTERACTIVE LEAVES LAYER --- */}
+      <div className="fixed inset-0 z-0 overflow-hidden h-full pointer-events-none">
+        {/* Pointer events none on container, auto on children so we can touch leaves but click buttons behind them */}
+        {[...Array(20)].map((_, i) => {
+          const isFeather = i % 2 === 0;
+          const randomSize = 28 + Math.random() * 32; // Big sizes
+          const randomLeft = Math.floor(Math.random() * 100);
+          const color = leafColors[i % leafColors.length]; // Cycle through colors
+          
+          return (
+            <motion.div
+              key={i}
+              custom={i % 2 === 0 ? 1 : -1}
+              variants={fallingVariants}
+              initial="initial"
+              animate="animate"
+              // INTERACTION: Hover/Touch pe bhagega (Run away effect)
+              whileHover={{ 
+                scale: 1.5, 
+                rotate: 90, 
+                x: (Math.random() - 0.5) * 200, // Random direction mein bhagega
+                y: -50, // Thoda upar udega
+                transition: { duration: 0.4 }
+              }}
+              whileTap={{ scale: 0.8, opacity: 0 }} // Click karne pe gayab
+              className="absolute cursor-pointer pointer-events-auto opacity-80 hover:opacity-100 transition-opacity"
+              style={{ 
+                left: `${randomLeft}%`, 
+                color: color // Actual colors applied
+              }} 
+            >
+              {isFeather ? 
+                <Feather size={randomSize} strokeWidth={1.5} /> : 
+                <Leaf size={randomSize} strokeWidth={1.5} fill={color} fillOpacity={0.1} /> // Thoda sa fill color bhi diya
+              }
+            </motion.div>
+          )
+        })}
+      </div>
 
-      {/* Grid Pattern (Lighter on mobile) */}
-      <div className="fixed inset-0 z-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent_80%)] opacity-[0.03] pointer-events-none"></div>
-
+      {/* --- NAVBAR --- */}
       <motion.nav 
         initial={{ y: -20, opacity: 0 }} 
         animate={{ y: 0, opacity: 1 }} 
-        transition={{ duration: 0.5 }}
-        className="fixed top-0 w-full z-[999] border-b border-white/5 bg-[#030305]/90 md:bg-[#030305]/70 backdrop-blur-md"
+        className="fixed top-0 w-full z-[50] border-b border-[#E5E0D6] bg-[#F5F2EB]/95 backdrop-blur-md shadow-sm"
       >
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 h-20 md:h-24 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative p-2 bg-white/5 rounded-lg border border-white/10 group-hover:border-cyan-500/50 transition-colors">
-               <Shield className="w-5 h-5 md:w-6 md:h-6 text-cyan-400 relative z-10" strokeWidth={2} />
+        <div className="max-w-[1400px] mx-auto px-6 h-24 flex items-center justify-between">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="p-2.5 bg-white rounded-xl border border-[#E5E0D6] shadow-sm group-hover:border-[#78716c] transition-all">
+               <Shield className="w-7 h-7 text-stone-900" strokeWidth={2} />
             </div>
-            <span className="text-xl md:text-2xl font-black tracking-tight text-white uppercase flex items-center gap-1">
-              Sentinel<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">DAO</span>
+            <span className="text-2xl font-bold tracking-tight text-stone-900 flex items-center gap-1 font-sans">
+              Sentinel<span className="text-stone-500 font-medium">DAO</span>
             </span>
           </Link>
           
-          <div className="hidden lg:flex items-center gap-10 text-[11px] font-bold tracking-[0.2em] text-slate-400">
-             {['PROPOSALS', 'TREASURY', 'GUARDIAN'].map((item) => (
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center gap-12 text-xs font-bold tracking-[0.25em] text-stone-600 font-sans uppercase">
+             {['Proposals', 'Treasury', 'Guardian'].map((item) => (
                isSessionActive ? (
                  <Link 
-                   key={item} 
-                   href={`/${item.toLowerCase()}`} 
-                   className="hover:text-white transition-colors relative group py-2"
+                   key={item} href={`/${item.toLowerCase()}`} 
+                   className="hover:text-black transition-colors relative group py-2"
                  >
                    {item}
-                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-cyan-500 transition-all duration-300 group-hover:w-full shadow-[0_0_15px_#22d3ee]"></span>
+                   <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-black transition-all duration-300 group-hover:w-full"></span>
                  </Link>
                ) : (
-                 <span key={item} className="opacity-30 cursor-not-allowed flex items-center gap-2 grayscale transition-all">
-                   <Lock size={10} /> {item}
+                 <span key={item} className="opacity-40 cursor-not-allowed flex items-center gap-2">
+                   <Lock size={12} /> {item}
                  </span>
                )
              ))}
           </div>
 
+          {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-6">
-             <a href="https://github.com/NexTechArchitect/Sentinel-DAO" target="_blank" className="text-slate-500 hover:text-white transition-all hover:scale-110 duration-300">
-               <Github size={22} />
+             <a href="https://github.com/NexTechArchitect/Sentinel-DAO" target="_blank" className="text-stone-400 hover:text-black transition-colors">
+               <Github size={24} />
              </a>
-             <div className="h-8 w-px bg-white/10"></div>
              
              {isConnected && address ? (
                 <ConnectButton.Custom>
                   {({ openAccountModal }) => (
-                    <motion.button 
-                      whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    <button 
                       onClick={openAccountModal}
-                      className="flex items-center gap-3 px-5 py-2.5 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 text-[10px] font-bold tracking-widest uppercase hover:bg-emerald-500/10 hover:border-emerald-500/40 transition-all shadow-[0_0_20px_rgba(16,185,129,0.1)]"
+                      className="px-6 py-3 rounded-full border border-[#E5E0D6] bg-white text-stone-900 text-xs font-sans font-bold tracking-widest uppercase hover:shadow-md transition-all flex items-center gap-2"
                     >
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                      </span>
+                      <div className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse"></div>
                       {formatAddress(address)}
-                    </motion.button>
+                    </button>
                   )}
                 </ConnectButton.Custom>
              ) : (
-                <div className="flex items-center gap-2 px-4 py-2 bg-red-500/5 rounded-full border border-red-500/10">
-                   <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-                   <span className="text-[10px] font-bold tracking-widest uppercase text-red-500">System Offline</span>
-                </div>
+               <ConnectButton.Custom>
+                 {({ openConnectModal }) => (
+                   <button onClick={openConnectModal} className="text-xs font-bold tracking-widest uppercase text-stone-600 hover:text-black transition-colors border-b-2 border-transparent hover:border-black pb-1">
+                     Connect Wallet
+                   </button>
+                 )}
+               </ConnectButton.Custom>
              )}
           </div>
 
+          {/* Mobile Toggle */}
           <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2.5 text-white bg-white/5 rounded-xl border border-white/5 active:scale-95 transition-all"
+            onClick={() => setMobileMenuOpen(true)}
+            className="lg:hidden p-3 text-stone-900 bg-white border border-[#E5E0D6] rounded-xl shadow-sm hover:bg-[#E5E0D6] transition-colors"
           >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Menu size={26} strokeWidth={2} />
           </button>
         </div>
-
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div 
-              initial={{ height: 0, opacity: 0 }} 
-              animate={{ height: "auto", opacity: 1 }} 
-              exit={{ height: 0, opacity: 0 }}
-              className="lg:hidden bg-[#05050a]/98 border-b border-white/10 overflow-hidden absolute w-full"
-            >
-              <div className="px-6 py-8 space-y-4">
-                {['PROPOSALS', 'TREASURY', 'GUARDIAN'].map((item) => (
-                  isSessionActive ? (
-                    <Link 
-                      key={item} 
-                      href={`/${item.toLowerCase()}`} 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block py-4 text-sm font-bold tracking-widest text-slate-300 hover:text-white border-l-2 border-transparent hover:border-cyan-500 pl-6 bg-white/[0.02] hover:bg-white/[0.05] rounded-r-xl transition-all"
-                    >
-                      {item}
-                    </Link>
-                  ) : (
-                    <div key={item} className="py-4 text-sm font-bold tracking-widest text-slate-600 pl-6 flex items-center gap-3 bg-black/20 rounded-r-xl">
-                      <Lock size={14} /> {item}
-                    </div>
-                  )
-                ))}
-                
-                {isConnected && (
-                  <button 
-                    onClick={() => { disconnect(); setMobileMenuOpen(false); }}
-                    className="w-full mt-6 py-4 flex items-center justify-center gap-2 rounded-xl bg-red-500/10 text-red-400 text-xs font-bold tracking-widest uppercase border border-red-500/20 active:scale-95 transition-transform"
-                  >
-                    <LogOut size={16} /> Disconnect
-                  </button>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.nav>
 
-      <main className="relative z-20 flex-1 flex flex-col items-center justify-center pt-32 pb-16 px-4 text-center overflow-hidden min-h-[85vh]">
+      {/* --- MOBILE DRAWER --- */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex justify-end"
+          >
+            <div className="absolute inset-0 bg-stone-900/30 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
+            
+            <motion.div 
+              initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="relative w-[85%] max-w-sm h-full bg-[#F5F2EB] shadow-2xl flex flex-col border-l border-[#E5E0D6]"
+            >
+              <div className="flex justify-between items-center p-8 border-b border-[#E5E0D6]">
+                <span className="text-sm font-bold font-sans tracking-widest text-stone-500">NAVIGATION</span>
+                <button onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white rounded-full text-stone-900 border border-[#E5E0D6] shadow-sm">
+                  <X size={22} />
+                </button>
+              </div>
+
+              <div className="flex-1 p-8 space-y-4 overflow-y-auto">
+                {['Proposals', 'Treasury', 'Guardian'].map((item) => (
+                  <Link key={item} href={`/${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)}>
+                    <div className={`p-5 rounded-2xl flex items-center justify-between bg-white border border-[#E5E0D6] shadow-sm mb-3 ${isSessionActive ? 'text-stone-900' : 'text-stone-400'}`}>
+                      <span className="text-xl font-serif font-medium">{item}</span>
+                      {isSessionActive ? <ArrowRight size={20} /> : <Lock size={18} />}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="p-8 border-t border-[#E5E0D6] bg-white">
+                 {isConnected ? (
+                   <button 
+                     onClick={() => { disconnect(); setMobileMenuOpen(false); }}
+                     className="w-full py-4 flex items-center justify-center gap-2 rounded-xl bg-red-50 text-red-600 border border-red-100 font-sans text-xs font-bold uppercase tracking-widest hover:bg-red-100 transition-colors"
+                   >
+                     <LogOut size={18} /> Disconnect Wallet
+                   </button>
+                 ) : (
+                    <ConnectButton.Custom>
+                      {({ openConnectModal }) => (
+                        <button onClick={openConnectModal} className="w-full py-4 bg-stone-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg">
+                          Connect Wallet
+                        </button>
+                      )}
+                    </ConnectButton.Custom>
+                 )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* --- HERO SECTION --- */}
+      <main className="relative z-10 flex-col items-center pt-40 px-6 w-full">
         
-        <motion.div 
-          variants={containerVariants} initial="hidden" animate="show"
-          className="max-w-[1300px] mx-auto flex flex-col items-center w-full"
-        >
-          <motion.div variants={textRevealVariants} className="mb-10 md:mb-14">
-              <div className="relative">
-                <div className="inline-flex items-center gap-3 px-6 py-2.5 rounded-full border border-white/10 bg-[#0a0a0f] shadow-lg">
-                  {isSessionActive ? 
-                    <span className="flex h-2 w-2 relative">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span> 
-                    : <Terminal size={12} className="text-cyan-400" />
-                  }
-                  <span className={`text-[10px] md:text-xs font-bold tracking-[0.25em] uppercase ${isSessionActive ? 'text-emerald-400' : 'text-cyan-400'}`}>
-                    {isSessionActive ? 'Identity Secured' : 'Protocol V2.0.4 Online'}
-                  </span>
-                </div>
+        <div className="max-w-5xl mx-auto text-center mb-36">
+          
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="mb-10 flex justify-center">
+             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white border border-[#E5E0D6] shadow-sm hover:shadow-md transition-shadow">
+               {isSessionActive ? <div className="w-2.5 h-2.5 bg-emerald-600 rounded-full animate-pulse"/> : <Wind size={16} className="text-stone-400"/>}
+               <span className="text-xs font-sans font-bold tracking-[0.25em] uppercase text-stone-500">
+                 {isSessionActive ? 'Secure Session Active' : 'Protocol V2.0.4'}
+               </span>
              </div>
           </motion.div>
 
-          <div className="relative mb-8 md:mb-12 z-10">
-             <motion.div variants={textRevealVariants} className="mb-2">
-               <h1 className="text-[32px] sm:text-6xl md:text-8xl lg:text-[110px] font-medium text-white tracking-tighter leading-none inline-block relative">
-                 <span className="bg-gradient-to-br from-white via-slate-200 to-slate-500 bg-clip-text text-transparent">Institutional</span>
-               </h1>
-             </motion.div>
+          <motion.h1 
+            variants={fadeUp} initial="hidden" animate="visible"
+            className="text-[52px] sm:text-7xl md:text-9xl font-serif text-black mb-10 tracking-tight leading-[1]"
+          >
+            Governance <br className="hidden md:block"/>
+            <span className="italic font-light text-stone-600">Rooted in Trust.</span>
+          </motion.h1>
 
-             <motion.div variants={textRevealVariants} className="relative">
-               <h1 className="text-[36px] sm:text-7xl md:text-9xl lg:text-[120px] font-black tracking-tighter uppercase leading-[0.9] text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-500 to-cyan-400">
-                 Governance
-               </h1>
-             </motion.div>
-          </div>
-
-          <motion.p variants={textRevealVariants} className="text-slate-400 text-sm md:text-xl max-w-3xl mx-auto mb-16 leading-relaxed font-light tracking-wide px-4">
-            The Operating System for <strong className="text-white font-medium">Decentralized Power</strong>. 
-            Secure Treasury, Modular Logic, and Gasless Voting execution.
+          <motion.p 
+            variants={fadeUp} initial="hidden" animate="visible"
+            className="text-xl md:text-2xl text-stone-700 font-sans font-light max-w-2xl mx-auto leading-relaxed mb-16"
+          >
+            A decentralized system that grows organically. <br className="hidden md:block"/>
+            Immutable rules, fluid execution.
           </motion.p>
 
-          <motion.div variants={textRevealVariants} className="flex flex-col sm:flex-row gap-6 items-center justify-center w-full max-w-sm sm:max-w-none relative z-20 mb-24">
-              <ConnectButton.Custom>
-                {({ account, chain, openConnectModal, mounted: rainbowMounted }) => {
-                  const ready = mounted && rainbowMounted;
-                  const connected = ready && account && chain;
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col sm:flex-row gap-5 justify-center items-center font-sans">
+             <ConnectButton.Custom>
+               {({ account, chain, openConnectModal, mounted: rainbowMounted }) => {
+                 const ready = mounted && rainbowMounted;
+                 const connected = ready && account && chain;
 
-                  return (
-                    <div className="w-full sm:w-[300px] flex flex-col gap-4">
-                      {!ready ? (
-                        <div className="w-full py-5 bg-white/5 rounded-xl animate-pulse"></div>
-                      ) : !connected ? (
-                        <motion.button 
-                          whileTap={{ scale: 0.95 }}
-                          onClick={openConnectModal}
-                          className="relative w-full py-5 bg-white text-black rounded-xl flex items-center justify-center gap-3 font-black text-xs tracking-[0.2em] uppercase shadow-lg active:opacity-90"
-                        >
-                          <Zap size={18} fill="currentColor" /> Launch Terminal
-                        </motion.button>
-                      ) : !isSessionActive ? (
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3">
-                          <motion.button 
-                            whileTap={{ scale: 0.95 }}
-                            onClick={createSession}
-                            disabled={isAALoading}
-                            className="relative w-full py-5 bg-gradient-to-r from-cyan-600 to-cyan-500 rounded-xl flex items-center justify-center gap-3 border border-cyan-400/20 shadow-lg text-white"
-                          >
-                            {isAALoading ? <Loader2 className="animate-spin" size={18} /> : <KeyRound size={18} />}
-                            <span className="font-bold text-xs tracking-[0.2em] uppercase">Verify Identity</span>
-                          </motion.button>
-                          <button onClick={() => disconnect()} className="text-[10px] uppercase tracking-widest text-slate-600 hover:text-red-400 transition-colors py-2">
-                            Disconnect Session
-                          </button>
-                        </motion.div>
-                      ) : (
-                        <Link href="/dashboard" className="w-full">
-                          <motion.button 
-                            whileTap={{ scale: 0.95 }}
-                            className="relative w-full py-5 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center gap-3 font-bold text-xs tracking-[0.2em] uppercase text-white shadow-lg border border-white/10"
-                          >
-                            Enter Dashboard <ArrowRight size={18} />
-                          </motion.button>
-                        </Link>
-                      )}
-                    </div>
-                  );
-                }}
-              </ConnectButton.Custom>
+                 if (!ready) return <div className="w-52 h-14 bg-[#E5E0D6] rounded-xl animate-pulse"/>;
+                 if (!connected) return (
+                   <button 
+                     onClick={openConnectModal}
+                     className="w-full sm:w-auto px-10 h-14 bg-stone-900 text-[#F5F2EB] rounded-xl text-xs font-bold tracking-[0.2em] uppercase hover:bg-black hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
+                   >
+                     <Zap size={18} /> Connect Wallet
+                   </button>
+                 );
+                 if (!isSessionActive) return (
+                   <button 
+                     onClick={createSession}
+                     disabled={isAALoading}
+                     className="w-full sm:w-auto px-10 h-14 bg-[#047857] text-white rounded-xl text-xs font-bold tracking-[0.2em] uppercase hover:bg-[#059669] hover:shadow-lg transition-all flex items-center justify-center gap-3"
+                   >
+                     {isAALoading ? <Loader2 className="animate-spin" /> : <KeyRound size={18} />}
+                     Verify Identity
+                   </button>
+                 );
+                 return (
+                   <Link href="/dashboard">
+                     <button className="w-full sm:w-auto px-10 h-14 bg-stone-900 text-[#F5F2EB] rounded-xl text-xs font-bold tracking-[0.2em] uppercase hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg">
+                       Enter Garden <ArrowRight size={18} />
+                     </button>
+                   </Link>
+                 );
+               }}
+             </ConnectButton.Custom>
 
-              <Link href="/docs" className="w-full sm:w-[240px]">
-                <motion.div 
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full py-5 border border-white/10 bg-[#0a0a0f]/50 rounded-xl text-slate-400 font-bold text-xs tracking-[0.2em] flex items-center justify-center gap-3 uppercase transition-all active:bg-white/5"
-                >
-                  <BookOpen size={18} /> Documentation
-                </motion.div>
-              </Link>
+             <Link href="/docs" className="w-full sm:w-auto">
+               <button className="w-full sm:w-auto px-10 h-14 border border-stone-400 text-stone-800 rounded-xl text-xs font-bold tracking-[0.2em] uppercase hover:bg-white transition-all flex items-center justify-center gap-3">
+                 <BookOpen size={18} /> Read Manifesto
+               </button>
+             </Link>
           </motion.div>
+        </div>
 
-          <motion.div 
-            variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full relative z-10 px-2"
-          >
-              {[
-                { title: "Zero-Trust Kernel", desc: "State logic separated from decision modules via proxy architecture.", icon: Cpu, color: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
-                { title: "Timelock Vault", desc: "Cryptographic 48-hour execution delay on all critical parameters.", icon: Lock, color: "text-indigo-400", bg: "bg-indigo-500/10", border: "border-indigo-500/20" },
-                { title: "Gasless Voting", desc: "Native ERC-4337 Paymaster integration for seamless UX.", icon: Zap, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
-              ].map((item, i) => (
-                <motion.div 
-                  key={i} variants={cardHoverVariants} whileHover="hover"
-                  className={`p-8 bg-[#0a0a0f]/40 backdrop-blur-md border border-white/5 rounded-[2rem] text-left relative overflow-hidden active:scale-[0.98] transition-transform`}
-                >
-                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 border ${item.border} ${item.bg} ${item.color}`}>
-                      <item.icon size={24} />
-                   </div>
-                   <h3 className="text-xl font-bold text-white mb-3 tracking-wide">{item.title}</h3>
-                   <p className="text-sm text-slate-400 leading-relaxed font-light">{item.desc}</p>
-                </motion.div>
-              ))}
-          </motion.div>
+        <div className="max-w-6xl mx-auto pb-40">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+             {[
+               { title: "Immutable Kernel", desc: "Logic rooted in solidity. The rules are set in stone, protecting the DAO from external manipulation.", icon: Shield },
+               { title: "Fluid Voting", desc: "Using Account Abstraction, voting requires no gas. Sign the message, and your voice flows freely.", icon: Feather },
+               { title: "Open Treasury", desc: "Funds managed on-chain. No single person has the key; only consensus unlocks resources.", icon: Anchor },
+             ].map((feature, i) => (
+               <motion.div 
+                 key={i} 
+                 initial={{ opacity: 0, y: 40 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true }}
+                 transition={{ delay: i * 0.2 }}
+                 className="p-10 bg-white border border-[#E5E0D6] rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group z-10 relative"
+               >
+                  <div className="w-14 h-14 bg-[#F5F2EB] rounded-2xl flex items-center justify-center mb-8 text-stone-500 group-hover:text-black group-hover:bg-[#E5E0D6] transition-colors border border-[#e7e5e4]">
+                    <feature.icon size={28} strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-2xl font-serif text-stone-900 mb-4 font-bold">{feature.title}</h3>
+                  <p className="text-stone-600 font-sans leading-relaxed text-base">{feature.desc}</p>
+               </motion.div>
+             ))}
+           </div>
+        </div>
 
-        </motion.div>
+        <div className="max-w-4xl mx-auto text-center pb-32 border-t border-[#E5E0D6] pt-24">
+           <h2 className="text-3xl md:text-6xl font-serif text-stone-900 mb-10 italic">"Code is Law, <br/> Community is Life."</h2>
+           <p className="text-xl text-stone-600 font-sans font-light leading-loose">
+             We are building a system that doesn't just survive, <br className="hidden md:block"/>
+             but thrives through the collective intelligence of its members.
+           </p>
+           
+           <div className="mt-12">
+             <Link href="/docs" className="inline-flex items-center gap-2 text-stone-500 hover:text-stone-900 border-b border-stone-300 hover:border-stone-900 pb-1 transition-colors uppercase tracking-widest text-xs font-bold">
+               Read Full Manifesto <ArrowRight size={14}/>
+             </Link>
+           </div>
+        </div>
+
       </main>
 
-      <motion.footer 
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-        className="w-full border-t border-white/5 bg-[#030305] py-8 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center text-[10px] md:text-xs text-slate-600 font-bold uppercase tracking-[0.15em] z-50 gap-6"
-      >
-         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
-            <span className="flex items-center gap-2"><Activity size={14} className="text-emerald-500"/> All Systems Nominal</span>
-            <span className="flex items-center gap-2"><Server size={14} className="text-indigo-500"/> Sepolia: 4829104</span>
-         </div>
-         <div className="hover:text-slate-400 transition-colors cursor-default">
-           Engineered by <span className="text-slate-300">NexTech Architect</span>
-         </div>
-      </motion.footer>
+      <footer className="border-t border-[#E5E0D6] bg-[#EBE9E4] py-12 px-6 mt-auto relative z-20">
+        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center text-xs font-sans font-bold tracking-widest text-stone-500 uppercase gap-8">
+           <div className="flex gap-10">
+             <Link href="/docs" className="hover:text-black transition-colors">Documentation</Link>
+             <a href="https://github.com/NexTechArchitect/Sentinel-DAO" target="_blank" className="hover:text-black transition-colors">Contracts</a>
+             <a href="/dashboard" className="hover:text-black transition-colors">Dashboard</a>
+           </div>
+           <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full border border-[#E5E0D6]">
+             <span className="w-2 h-2 bg-emerald-600 rounded-full animate-pulse"></span>
+             System Operational
+           </div>
+           <div>
+             Engineered by <span className="text-stone-900">NexTech Architect</span>
+           </div>
+        </div>
+      </footer>
 
     </div>
   );
