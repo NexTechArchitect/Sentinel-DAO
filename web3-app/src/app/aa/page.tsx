@@ -10,7 +10,6 @@ import { Activity, Cpu, Fingerprint, Shield, Zap , Loader2 } from 'lucide-react'
 export default function AADebugPage() {
   const { address, isConnected } = useAccount();
   
-  // NEW OFF-CHAIN HOOK DESTRUCTURING
   const { 
     isSessionActive, 
     nonce, 
