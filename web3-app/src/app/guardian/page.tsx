@@ -126,7 +126,6 @@ export default function GuardianMatrix() {
 
   if (!isMounted) return null;
 
-  // --- ACCESS DENIED SCREEN (Light Mode) ---
   if (isConnected && !hasAccess) {
       return (
           <div className="h-screen w-full bg-[#F5F2EB] flex flex-col items-center justify-center text-center p-6 relative overflow-hidden">
@@ -147,7 +146,7 @@ export default function GuardianMatrix() {
   }
 
   return (
-    // Background: Cream | Text: Black
+   
     <div className="min-h-screen w-full bg-[#F5F2EB] text-stone-900 font-serif flex flex-col relative selection:bg-red-200">
       
       {/* Background Elements */}
