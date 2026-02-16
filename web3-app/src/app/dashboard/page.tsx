@@ -48,7 +48,6 @@ const itemVariants = {
   }
 };
 
-// --- FALLING ANIMATION (Matching Docs Page) ---
 const fallingVariants = {
   initial: { y: -100, x: 0, opacity: 0, rotate: 0 },
   animate: (custom: number) => ({
@@ -203,7 +202,7 @@ export default function Dashboard() {
     <SessionGuard requireSession={true}>
       <div className="min-h-screen w-full bg-[#F5F2EB] text-stone-900 font-sans flex flex-col relative selection:bg-emerald-200 overflow-x-hidden">
         
-        {/* --- BACKGROUND LAYERS --- */}
+        {/* BACKGROUND LAYERS  */}
         <div className="fixed inset-0 z-0 opacity-[0.4] pointer-events-none mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
         {/* Falling Leaves Background */}
