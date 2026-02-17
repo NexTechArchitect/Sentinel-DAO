@@ -66,16 +66,15 @@ export default function Home() {
 
   if (!mounted) return null;
 
-  // Premium Muted Colors
   const natureColors = ["#84a98c", "#c2a878", "#9ca3af", "#b08968"];
 
   return (
     <div className="min-h-screen relative text-stone-900 font-serif bg-[#F5F2EB] overflow-x-hidden flex flex-col">
       
-      {/* 1. Texture Layer */}
+      {/* Texture Layer */}
       <div className="fixed inset-0 z-0 opacity-[0.35] pointer-events-none mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
-      {/* 2. FLOATING ELEMENTS (Increased to 15 for better density) */}
+      {/* FLOATING ELEMENTS */}
       <div className="fixed inset-0 z-0 overflow-hidden h-full pointer-events-none">
         {[...Array(15)].map((_, i) => {
           const isFeather = i % 2 === 0;
