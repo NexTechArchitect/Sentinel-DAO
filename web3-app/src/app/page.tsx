@@ -25,7 +25,7 @@ const floatingVariants = {
     rotate: [ 0, 45, 135, 90 ], 
     opacity: [ 0, 0.5, 0.5, 0 ], 
     transition: {
-      duration: 25 + Math.random() * 10, 
+      duration: 30 + Math.random() * 10, 
       repeat: Infinity,
       ease: "easeInOut", 
       delay: Math.random() * 15
