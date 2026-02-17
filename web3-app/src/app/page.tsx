@@ -12,21 +12,20 @@ import { useAccount, useDisconnect } from 'wagmi';
 import { useAASession } from '@/hooks/useAASession';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- PREMIUM FLOATING PHYSICS ---
 const floatingVariants = {
   initial: { y: -100, x: 0, opacity: 0, rotate: 0 },
   animate: (custom: number) => ({
-    y: [ -100, 1200 ], // Top to bottom
+    y: [ -100, 1200 ],m
     x: [ 
       0, 
-      custom * 120,   // Wider Sway Right
-      -custom * 80,   // Wider Sway Left
+      custom * 120,   
+      -custom * 80,  
       0 
     ], 
     rotate: [ 0, 45, 135, 90 ], 
-    opacity: [ 0, 0.6, 0.6, 0 ], // Thoda sa visible aur kiya hai (0.4 -> 0.6)
+    opacity: [ 0, 0.5, 0.5, 0 ], 
     transition: {
-      duration: 30 + Math.random() * 10, // Smooth Floating Speed
+      duration: 25 + Math.random() * 10, 
       repeat: Infinity,
       ease: "easeInOut", 
       delay: Math.random() * 15
