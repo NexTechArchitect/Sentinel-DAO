@@ -105,7 +105,7 @@ export default function Home() {
         })}
       </div>
 
-      {/* --- NAVBAR --- */}
+      {/* NAVBAR */}
       <motion.nav 
         initial={{ y: -20, opacity: 0 }} 
         animate={{ y: 0, opacity: 1 }} 
@@ -308,7 +308,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* --- CORE FEATURES --- */}
+        {/* CORE FEATURES */}
         <motion.div 
           variants={staggerContainer}
           initial="hidden"
