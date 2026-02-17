@@ -23,7 +23,7 @@ const floatingVariants = {
       0 
     ], 
     rotate: [ 0, 45, 135, 90 ], 
-    opacity: [ 0, 0.5, 0.5, 0 ], 
+    opacity: [ 0, 0.6, 0.6, 0 ], 
     transition: {
       duration: 30 + Math.random() * 10, 
       repeat: Infinity,
