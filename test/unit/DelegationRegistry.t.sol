@@ -8,7 +8,6 @@ import {IERC1271} from "@openzeppelin/contracts/interfaces/IERC1271.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {InvalidSignature, SignatureExpired} from "../../src/contracts/errors/GovernanceErrors.sol";
 
-
 contract MockSmartWallet is IERC1271 {
     address public owner;
     constructor(address _owner) {
