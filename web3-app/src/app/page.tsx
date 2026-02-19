@@ -12,8 +12,6 @@ import { useAccount, useDisconnect } from 'wagmi';
 import { useAASession } from '@/hooks/useAASession';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- ANIMATION VARIANTS (Fixed Missing Definitions) ---
-
 const fallingVariants = {
   initial: { y: -100, x: 0, opacity: 0, rotate: 0 },
   animate: (custom: number) => ({
@@ -238,7 +236,6 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* --- HERO SECTION --- */}
       <main className="relative z-10 flex-col items-center pt-40 px-6 w-full">
         
         <motion.div 
@@ -316,7 +313,6 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* --- CORE FEATURES --- */}
         <motion.div 
           variants={staggerContainer}
           initial="hidden"
@@ -345,7 +341,6 @@ export default function Home() {
            </div>
         </motion.div>
 
-        {/* --- MANIFESTO SECTION --- */}
         <div className="max-w-4xl mx-auto text-center pb-32 border-t border-[#E5E0D6] pt-24">
            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
              <h2 className="text-3xl md:text-6xl font-serif text-stone-900 mb-10 italic">"Code is Law, <br/> Community is Life."</h2>
