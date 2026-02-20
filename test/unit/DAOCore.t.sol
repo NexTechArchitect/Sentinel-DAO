@@ -7,7 +7,6 @@ import {GovernanceToken} from "../../src/contracts/governance/GovernanceToken.so
 import {RoleManager} from "../../src/contracts/security/RoleManager.sol";
 import {Unauthorized} from "../../src/contracts/errors/CommonErrors.sol";
 
-
 contract DAOCoreTest is Test {
     DAOCore public core;
     RoleManager public roleManager;
