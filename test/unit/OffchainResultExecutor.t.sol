@@ -4,7 +4,6 @@ pragma solidity ^0.8.30;
 import {Test} from "forge-std/Test.sol";
 import {OffchainResultExecutor} from "../../src/contracts/offchain/OffchainResultExecutor.sol";
 import {MessageHashUtils} from "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
-// Ensure this path matches exactly where your error file is
 import {OnlyTimelock, InvalidSignature, ResultAlreadyExecuted} from "../../src/contracts/errors/GovernanceErrors.sol";
 
 contract OffchainResultExecutorTest is Test {
@@ -18,9 +17,6 @@ contract OffchainResultExecutorTest is Test {
     bytes32 public constant RESULT_TYPEHASH =
         keccak256("OffchainResult(uint256 proposalId,bytes32 resultHash)");
 
-    // IMPORTANT: Yeh Event definition tumhare main contract se MATCH honi chahiye.
-    // Agar main contract mein 'indexed' keyword hai, toh yahan bhi lagana padega.
-    // Currently assuming NO indexed based on your code.
     event ResultExecuted(uint256 indexed proposalId, bytes32 resultHash);
     event SignerUpdated(address oldSigner, address newSigner);
 
@@ -108,13 +104,11 @@ contract OffchainResultExecutorTest is Test {
     function test_SetSigner_Success() public {
         address newSigner = makeAddr("newSigner");
         
-        // Fetch current signer directly from contract to avoid mismatch errors
+       
         address currentSigner = executor.signer();
 
         vm.prank(timelock);
-        
-        // Checking: Topic 0 (Event Sig) = TRUE, Data = TRUE. 
-        // Topics 1,2,3 are FALSE because your event has NO indexed params.
+
         vm.expectEmit(false, false, false, true);
         emit SignerUpdated(currentSigner, newSigner);
         
