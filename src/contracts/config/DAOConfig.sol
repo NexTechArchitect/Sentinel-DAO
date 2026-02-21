@@ -24,7 +24,6 @@ contract DAOConfig {
     uint256 public constant MIN_QUORUM = 0; 
     uint256 public constant MAX_QUORUM = 100;
 
-
     /**
      * @notice Emitted when a parameter is updated by the Timelock
      */
@@ -80,7 +79,6 @@ contract DAOConfig {
         emit ConfigUpdated("votingDelay", newDelay);
     }
 
-
     /**
      * @notice Updates the voting period (duration of active voting)
      */
@@ -102,7 +100,6 @@ contract DAOConfig {
         proposalThreshold = newThreshold;
         emit ConfigUpdated("proposalThreshold", newThreshold);
     }
-
 
     /**
      * @notice Updates the percentage of votes required for a quorum
