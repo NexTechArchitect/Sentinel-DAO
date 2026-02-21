@@ -11,7 +11,7 @@ error InvalidProposalId();
 error ProposalNotActive();
 error VotingNotStarted();
 error VotingEnded();
-error InvalidSupport(); // For vote type (0,1,2)
+error InvalidSupport(); 
 error AlreadyVoted();
 
 // --- Governance Token ---
