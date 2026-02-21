@@ -31,7 +31,6 @@ contract HybridGovernorDynamic is
     GovernorTimelockControl,
     ReentrancyGuard
 {
-    // --- Governance States ---
     
     DAOConfig public daoConfig;
     address public vetoCouncil;
@@ -39,7 +38,6 @@ contract HybridGovernorDynamic is
     address public analytics;
     VotingStrategies.Strategy public currentStrategy;
     
-    // --- Reputation & Anti-Spam Mappings ---
 
     mapping(address => int256) public proposerReputation;
     mapping(address => uint256) public tokenAcquisitionTime;
@@ -48,7 +46,6 @@ contract HybridGovernorDynamic is
     mapping(address => uint256[]) private _userActiveProposals;
     mapping(uint256 => VotingStrategies.Strategy) public proposalStrategy;
 
-    // --- Governance Constants ---
 
     uint256 public constant MAX_ACTIVE_PROPOSALS = 10;
     uint256 public constant MIN_COOLDOWN = 1 hours;
@@ -59,7 +56,6 @@ contract HybridGovernorDynamic is
     uint256 public spamThresholdTokens;
     uint256 private constant MAX_CLEANUP_ITERATIONS = 50;
 
-    // --- Events & Errors ---
 
     event ReputationUpdated(address indexed user, int256 newReputation);
     event StrategyUpdated(VotingStrategies.Strategy newStrategy);
@@ -302,8 +298,6 @@ contract HybridGovernorDynamic is
         }
     }
 
-
-    // --- Governance Overrides ---
 
     function proposalProposer(uint256 proposalId) public view override returns (address) { 
         return _proposalProposers[proposalId]; 
