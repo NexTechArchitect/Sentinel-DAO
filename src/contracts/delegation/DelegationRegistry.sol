@@ -66,7 +66,6 @@ contract DelegationRegistry is EIP712 {
         _delegate(msg.sender, delegatee);
     }
 
-
     /**
      * @notice Delegates voting power using an EIP-712 off-chain signature.
      * @param delegator The address granting delegation.
